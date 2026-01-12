@@ -26,6 +26,7 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
     Route::get('/all', [DashboardController::class, 'viewAll'])->name('dashboard.viewAll');
     Route::get('/bookmarked', [DashboardController::class, 'bookmarked'])->name('dashboard.bookmarked');
+    Route::get('/history', [DashboardController::class, 'bookmarked'])->name('dashboard.history'); // remove here if already implemented in the middleware group below
 });
 
 // == BOOKS ==
@@ -40,7 +41,6 @@ Route::middleware(['check.login'])->group(function () {
     // Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
 });
 
-Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
 
 Route::fallback(function () {
     return redirect()->route('welcome');
