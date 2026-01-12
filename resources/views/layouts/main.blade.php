@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- <head>
+<!-- unsure ako which one should be used here -->
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'PUP LMS')</title>
@@ -23,8 +23,8 @@
   @include('layouts.footer')
 </body>
 
-</html> -->
-<head>
+</html>
+<!-- <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'PUPShelf')</title>
@@ -39,4 +39,4 @@
     @include('layouts.footer')
 </body>
 
-</html>
+</html> -->
