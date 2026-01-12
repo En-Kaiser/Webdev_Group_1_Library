@@ -1,5 +1,5 @@
 <!-- Footer -->
-<footer class="text-white" style="background-color: #550000; display: flex; flex-direction: column;">
+<footer class="text-white mt-5" style="background-color: #550000; display: flex; flex-direction: column;">
 
   <div class="container py-5">
     <div class="row">

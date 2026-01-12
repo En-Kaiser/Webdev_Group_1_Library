@@ -1,0 +1,133 @@
+
+/* --- SIGN-UP --- */
+.auth-container {
+    display: flex;
+    height: calc(100vh - 56px);
+    background: white;
+    margin: 0; /* ← Remove any margin */
+    padding: 0; /* ← Remove any padding */
+}
+
+.auth-image.signup-bg {
+    flex: 7;
+    background: url('/images/pup_signup.png') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    color: #FFDF00;
+}
+
+.auth-image.login-bg {
+    flex: 7;
+    background: url('/images/pup_login.png') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem;
+    color: #FFDF00;
+}
+
+.auth-image h1 {
+    font-size: 5.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    font-weight: bold;
+    
+}
+
+.auth-image p {
+    font-size: 1.5rem;
+    max-width: 700px;
+    line-height: 1.6;
+    color: white;
+}
+
+
+.auth-form-section {
+    flex: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.auth-form {
+    background: linear-gradient(180deg, #550000, #800000);
+    padding: 2rem;          
+    border-radius: 30px;      
+    width: 95%;               
+    max-width: 600px; 
+    max-height: 900px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    color: #333;
+}
+
+.auth-form h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2.3rem;
+    color: white; 
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.auth-form input,
+.auth-form select {
+    width: 100%;
+    padding: 1.1rem 1rem;
+    margin-bottom: 1.1rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 1rem;
+    background: white;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+    outline: none;
+    border-color: #FFDF00;
+    box-shadow: 0 0 0 2px rgba(255, 223, 0, 0.2);
+}
+
+.auth-form button {
+    width: 100%;
+    background: #FFDF00; /* Yellow button */
+    color: #800000;
+    border: none;
+    padding: 1.1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 1rem;
+}
+
+.auth-form button:hover {
+    background: #D9A41F;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 1.2rem;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.auth-footer a {
+    color: white; 
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.divider {
+    height: 2px;
+    background: #D9A41F;
+    margin: 1.2rem 1.7rem; /* Space above and below */
+    margin-bottom: 2rem;
+}
+
+
