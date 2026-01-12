@@ -1,0 +1,192 @@
+/* ===== BOOK CONTAINER ===== */
+.book-container {
+    margin-top: 3rem;
+    width: 100%;
+    padding: 0 5%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* ===== HERO SECTION ===== */
+.book-hero-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 2.5rem;
+    margin-top: 3rem;
+    position: relative;
+    z-index: 5;
+}
+
+/* ===== LEFT SIDE: VOTE ICONS + IMAGE ===== */
+.hero-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-left: 12rem; 
+}
+
+.side-votes {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-top: 2rem;
+    margin-right: 7rem;
+
+}
+
+.side-votes .icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+.side-votes .icon:hover {
+    transform: scale(1.15);
+    fill: #2F0909;
+}
+
+.book-hero-image {
+    margin-bottom: -80px; /* for overlap */
+}
+
+.book-hero-image img {
+    width: 220px;
+    height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    display: block;object-fit: cover; 
+    object-position: center top; 
+}
+
+/* ===== META TEXT ===== */
+.book-meta {
+    padding-top: 0.5rem;
+}
+
+.book-meta h1 {
+    margin-top: 1.5rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2F0909;
+}
+
+.book-meta .author,
+.book-meta .year {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #800000;
+    margin: 0.3rem 0;
+}
+
+.book-meta .genre {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #8A8A8A;
+    margin-top: 1rem;
+}
+
+/* ===== BIG GREY BOX ===== */
+.big-info-box {
+    background: #EAEBEA;
+    padding: 6rem 2rem 2rem; /* for overlap */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    position: relative; 
+    z-index: 1;
+}
+
+/* ===== AVAILABILITY OVERLAY (aligned with title) ===== */
+.availability-overlay {
+    position: absolute;
+    top: 1rem;
+    left: 38.5rem; 
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 2;
+}
+
+.availability-badge {
+    background: #FFD600;
+    color: #2F0909;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 1.2rem;
+    border-radius: 999px;
+}
+
+.availability-badge.available {
+    background: #FFD600;
+    color: #2F0909;
+}
+
+.availability-badge.borrowed {
+    background: #D9A41F;
+    color: #2F0909;
+}
+
+.bookmark-controls {
+    display: flex;
+    align-items: center;
+    
+}
+
+.bookmark-icon {
+    width: 25px;
+    height: 23px;
+    right: 50rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+    margin-left: 45rem;
+}
+
+.bookmark-icon:hover {
+    transform: scale(1.15);
+    color: #2F0909;
+}
+
+.bookmark-icon.bookmarked {
+    fill: #FFD600;
+}
+
+/* ===== DIVIDER & COLUMNS ===== */
+.info-divider {
+    position: absolute;
+    top: 3.5rem;          
+    left: 37rem;         
+    right: 2rem;           
+    height: 1px;
+    background: #3f3f3f;
+    margin: 1rem;
+    padding: 0;
+    border: none;
+    z-index: 1;
+}
+
+.content-columns {
+    display: flex;
+    gap: 5rem;
+}
+
+.left-column,
+.right-column {
+    flex: 1;
+}
+
+.left-column strong,
+.right-column strong {
+    display: block;
+    color: #550000;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.left-column p,
+.right-column p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+

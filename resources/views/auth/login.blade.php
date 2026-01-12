@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -17,4 +17,47 @@
     </form>
 </body>
 
-</html>
+</html> -->
+
+@extends('layouts.auth')
+@section('title', 'Log In')
+
+@section('styles')
+<link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+@endsection
+
+@section('content')
+<div class="container-fluid p-0">
+    <div class="auth-container">
+
+        <!-- IMAGE -->
+        <div class="auth-image login-bg">
+        </div>
+
+        <!-- LOG-IN FORM -->
+        <div class="auth-form-section">
+            <form method="POST" action="{{ route('auth.signup') }}" class="auth-form">
+                @csrf
+                <h2>Welcome Back!</h2>
+
+                <input type="email" placeholder="Email" name="email" required>
+                <input type="password" placeholder="Password" name="password" required>
+
+                <div class="divider"></div>
+
+                <select name="course" required>
+                    <option value="" disabled selected>Choose Course</option>
+                    <option value="BSIT">BSIT</option>
+                    <option value="BSCS">BSCS</option>
+                </select>
+
+                <button type="submit" style="margin-top: 8rem;">Log In</button>
+
+                <div class="auth-footer">
+                    Dont have an account? <a href="{{ route('auth.signup') }}">Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
