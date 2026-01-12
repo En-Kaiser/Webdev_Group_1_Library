@@ -25,6 +25,7 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
     Route::get('/all', [DashboardController::class, 'viewAll'])->name('dashboard.viewAll');
+    Route::get('/bookmarked', [DashboardController::class, 'bookmarked'])->name('dashboard.bookmarked');
 });
 
 // == BOOKS ==
@@ -36,8 +37,10 @@ Route::middleware(['check.login'])->group(function () {
     Route::get('/books/{id}/borrow', [BookController::class, 'showBorrowPrompt'])->name('books.showBorrowPrompt');
     Route::post('/books/{id}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
     // history
-    Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
+    // Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
 });
+
+Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
 
 Route::fallback(function () {
     return redirect()->route('welcome');

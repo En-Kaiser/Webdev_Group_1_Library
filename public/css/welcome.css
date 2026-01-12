@@ -1,0 +1,56 @@
+.welcome-bg {
+  background: url('/images/pup_welcome.png');
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome-title {
+  color: var(--primary-yellow);
+  font-size: 4rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.welcome-subtitle {
+  color: white;
+  font-size: 1.15rem;
+  max-width: 800px;
+  margin-bottom: 36px;
+}
+
+.get-started-btn {
+  background-color: #FFD700;
+  color: var(--primary-maroon);
+  font-weight: bold;
+  padding: 15px 40px;
+  border-radius: 15px;
+  text-decoration: none;
+  margin-top: 20px;
+  transition: transform 0.2s;
+}
+
+.get-started-btn:hover {
+  transform: scale(1.05);
+  background-color: #ffcc00;
+}
+
+.status-box {
+  background-color: white;
+  border-radius: 4;
+  border-color: var(--secondary-maroon);
+}
+
+.status-box h3 {
+  font-weight: bold;
+  margin-bottom: 0;
+  color: black;
+}
+
+.status-box p {}

@@ -1,0 +1,117 @@
+:root {
+  --primary-maroon: #800000;
+  --primary-yellow: #FFDF00;
+
+  --secondary-maroon: #550000;
+  --secondary-yellow: #D9A41F;
+}
+
+.dashboard-hero {
+  background: linear-gradient(var(--primary-maroon), var(--secondary-maroon));
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  padding: 80px 80px;
+  margin-bottom: 35px;
+  overflow: hidden;
+  box-shadow: 2px 2px 7px 2px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard-title {
+  color: var(--primary-yellow);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  line-height: 1.1;
+  margin-bottom: 25px;
+}
+
+.dashboard-subtitle {
+  color: white;
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+}
+
+/* ANIMTAIONS */
+.hero-side-img {
+  max-height: 400px;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Responsive adjustment: hide image on small devices */
+@media (max-width: 991px) {
+  .dashboard-hero {
+    text-align: center;
+    padding-bottom: 0px;
+  }
+
+  .search-container {
+    margin: 0 auto;
+    margin-bottom: 3rem;
+  }
+}
+
+/* SEARCH BAR */
+.search-container {
+  position: relative;
+  max-width: 560px;
+}
+
+.form-control {
+  border-radius: 35px;
+  padding: 18px 20px 18px 55px;
+  border: none;
+  font-size: 1rem;
+  box-shadow: inset 0 0 8px #000000;
+}
+
+.card-container {
+  margin-bottom: 50px;
+}
+
+/* ACTION CARDS */
+.action-card {
+  background-color: var(--secondary-maroon);
+  border-radius: 30px;
+  padding: 35px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 2px 2px 7px 2px rgba(0, 0, 0, 0.5);
+}
+
+.action-card i {
+  font-size: 2.5rem;
+  color: white;
+  margin-right: 25px;
+  padding: 0;
+}
+
+.action-card h3 {
+  color: white;
+  font-weight: 700;
+  font-size: 1.75rem;
+  margin-bottom: 0;
+}
+
+.bi-search {
+  color: var(--secondary-maroon);
+}
