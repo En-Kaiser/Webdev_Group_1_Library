@@ -51,17 +51,31 @@
             <form method="POST" action="{{ route('auth.signup') }}" class="auth-form">
                 @csrf
                 <h2>Welcome to PUPShelf</h2>
-
+                @error('first_name')
+                    <div style="color: Yellow;">{{ $message }}</div>
+                @enderror
                 <input type="text" placeholder="First Name" name="first_name" required>
+                @error('last_name')
+                    <div style="color: Yellow;">{{ $message }}</div>
+                @enderror
                 <input type="text" placeholder="Last Name" name="last_name" required>
-
+                
+                @error('email')
+                    <div style="color: Yellow;">{{ $message }}</div>
+                @enderror
                 <input type="email" placeholder="Email" name="email" required>
+                @error('password')
+                    <div style="color: Yellow;">{{ $message }}</div>
+                @enderror
                 <input type="password" placeholder="Password" name="password" required>
-
-                <select name="course" required>
-                    <option value="" disabled selected>Choose Course</option>
-                    <option value="BSIT">BSIT</option>
-                    <option value="BSCS">BSCS</option>
+                @error('course')
+                    <div style="color: Yellow;">{{ $message }}</div>
+                @enderror
+                <select class='form-select' name="course" required>
+                    <option  disabled selected>Choose Course</option>
+                    @foreach($courses as $course)
+                        <option value="{{$course->course_id}}">{{$course->name}}</option>
+                    @endforeach
                 </select>
 
                 <button type="submit" style="margin-top: 1.8rem;">Create Account</button>
