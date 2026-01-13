@@ -28,10 +28,9 @@
           <li>
             <hr class="dropdown-divider">
           </li>
-          <li><a class="dropdown-item filter-opt" data-value="Fiction">Fiction</a></li>
-          <li><a class="dropdown-item filter-opt" data-value="Classic">Classic</a></li>
-          <li><a class="dropdown-item filter-opt" data-value="Dystopian">Dystopian</a></li>
-          <li><a class="dropdown-item filter-opt" data-value="RomCom">Romcom</a></li>
+          @foreach($genres as $genre)
+            <li><a class="dropdown-item filter-opt" data-value="{{ $genre->name }}">{{ $genre->name }}</a></li>
+          @endforeach
         </ul>
       </div>
     </div>
@@ -42,11 +41,12 @@
     @forelse($books as $book)
     <div class="col book-card-item" data-genre="{{ $book->genre }}">
       <x-book-card
-        :id="$book->id"
+        :id="$book->book_id"
         :title="$book->title"
         :author="$book->author"
         :genre="$book->genre"
-        :cover="$book->cover_image" />
+        />
+        <!-- :cover="$book->cover_image" -->
     </div>
     @empty
     <div class="col-12 text-center py-5">

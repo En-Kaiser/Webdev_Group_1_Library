@@ -18,7 +18,7 @@
             with access to thousands of books, resources, and academic materials anytime, anywhere.
         </p>
 
-        <a class="get-started-btn" href="#" class="btn btn-lg px-5 py-3 fw-bold">
+        <a class="get-started-btn" href="{{route('dashboard.index')}}" class="btn btn-lg px-5 py-3 fw-bold">
             Get Started
         </a>
 
