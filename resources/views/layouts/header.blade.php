@@ -35,10 +35,10 @@
           <span style="height: 24px; width: 1px; background-color: rgba(255, 255, 255, 0.3); margin: 0 0.5rem;"></span>
         </li>
         <li class="nav-item ">
-          <a href="#" class="nav-link">Sign in</a>
+          <a href="{{route('auth.showLogIn')}}" class="nav-link">Sign in</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="btn btn-signup">Sign up</a>
+          <a href="{{route('auth.showSignUp')}}" class="btn btn-signup">Sign up</a>
         </li>
       </ul>
     </div>

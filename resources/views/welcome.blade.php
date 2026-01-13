@@ -18,7 +18,7 @@
             with access to thousands of books, resources, and academic materials anytime, anywhere.
         </p>
 
-        <a class="get-started-btn" href="#" class="btn btn-lg px-5 py-3 fw-bold">
+        <a class="get-started-btn" href="{{route('dashboard.index')}}" class="btn btn-lg px-5 py-3 fw-bold">
             Get Started
         </a>
 
@@ -34,7 +34,7 @@
 
             <!-- CARD 2 -->
             <div class="col-md-3 col-6">
-                <div class="p-4 bg-white rounded-4 shadow" style="border-bottom: 5px solid #800000;">
+                <div class="status-box" style="border-bottom: 5px solid #800000;">
                     <h3 class="fw-bold mb-0 text-dark">5K+</h3>
                     <small class="text-muted fw-bold text-uppercase">Students</small>
                 </div>
@@ -42,7 +42,7 @@
 
             <!-- CARD 3 -->
             <div class="col-md-3 col-6">
-                <div class="p-4 bg-white rounded-4 shadow" style="border-bottom: 5px solid #800000;">
+                <div class="status-box" style="border-bottom: 5px solid #800000;">
                     <h3 class="fw-bold mb-0 text-dark">24/7</h3>
                     <small class="text-muted fw-bold text-uppercase">Access</small>
                 </div>

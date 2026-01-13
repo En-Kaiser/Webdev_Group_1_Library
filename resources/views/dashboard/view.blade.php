@@ -15,8 +15,24 @@
     <div class="page-header">
 
         <h1 class="page-title">All Books</h1>
+        <!-- Added by Jarell: Added a search bar here, pafix nalang if may problem-->
+        <div class="header-controls">  
+            
+            <div class="search-container position-relative me-2">
+                <form action="{{ route('dashboard.search') }}" method="GET" class="d-flex align-items-center">
+                    
+                    <i class="bi bi-search position-absolute ms-3 text-muted"></i>
 
-        <div class="header-controls">
+                    <input name="search" 
+                           class="form-control ps-5" 
+                           type="search" 
+                           placeholder="Search books..."
+                           value="{{ $searchTerm ?? '' }}"
+                           aria-label="Search">
+                           
+                    <button type="submit" class="d-none">Search</button>    
+                </form>
+            </div>
 
             <div class="dropdown">
                 <button class="btn-filter dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,10 +44,10 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item filter-opt" data-value="Fiction">Fiction</a></li>
-                    <li><a class="dropdown-item filter-opt" data-value="Classic">Classic</a></li>
-                    <li><a class="dropdown-item filter-opt" data-value="Dystopian">Dystopian</a></li>
-                    <li><a class="dropdown-item filter-opt" data-value="RomCom">Romcom</a></li>
+                    @foreach($genres as $genre)
+                        <li><a class="dropdown-item filter-opt" data-value="{{ $genre->name }}">{{ $genre->name }}</a></li>
+                    @endforeach
+    
                 </ul>
             </div>
             <a href="{{ route('dashboard.bookmarked') }}" class="icon-bookmark">
@@ -44,12 +60,15 @@
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4">
         @forelse($books as $book)
         <div class="col book-card-item" data-genre="{{ $book->genre }}">
+            
             <x-book-card
-                :id="$book->id"
+                :id="$book->book_id"
                 :title="$book->title"
                 :author="$book->author"
                 :genre="$book->genre"
-                :cover="$book->cover_image" />
+                :year="$book->year" 
+            />
+            <!-- :cover="$book->cover_image" -->
         </div>
         @empty
         <div class="col-12 text-center py-5">

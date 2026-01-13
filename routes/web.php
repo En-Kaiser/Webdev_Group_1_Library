@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LogInController;
+use App\Http\Controllers\SignUpController;
 use App\Http\Controllers\Testing;
 use Illuminate\Support\Facades\Route;
 
@@ -10,15 +12,13 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('/testing', [Testing::class, 'index']);
-
-Route::get('/testing/{id}', [Testing::class, 'show']);
-
+// == TESTING ==
+Route::get('/test', [SignUpController::class, 'json_string']);
 // == AUTH ==
-Route::get('/signup', [AuthController::class, 'showSignUp'])->name('auth.showSignUp');
-Route::post('/signup', [AuthController::class, 'signup'])->name('auth.signup');
-Route::get('/login', [AuthController::class, 'showLogIn'])->name('auth.showLogIn');
-Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::get('/signup', [SignUpController::class, 'showSignUp'])->name('auth.showSignUp');
+Route::post('/signup', [SignUpController::class, 'signup'])->name('auth.signup');
+Route::get('/login', [LogInController::class, 'showLogIn'])->name('auth.showLogIn');
+Route::post('/login', [LogInController::class, 'login'])->name('auth.login');
 
 // == DASHBOARD ==
 Route::group(['prefix' => 'dashboard'], function () {
