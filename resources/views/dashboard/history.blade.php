@@ -16,15 +16,15 @@
             <div class="dropdown">
                 <button class="btn-filter dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-funnel"></i>
-                    <span id="current-filter">Filter</span>
+                    <span id="current-filter">{{ request('status') ? (request('status')) : 'Filter' }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item filter-opt" data-value="all">All Status</a></li>
+                    <li><a class="dropdown-item filter-opt" href="{{ route('dashboard.history') }}">All Status</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item filter-opt" data-value="Borrowed">Borrowed</a></li>
-                    <li><a class="dropdown-item filter-opt" data-value="Returned">Returned</a></li>
+                    <li><a class="dropdown-item filter-opt" href="{{ route('dashboard.history', ['status' => 'borrowed']) }}">Borrowed</a></li>
+                    <li><a class="dropdown-item filter-opt" href="{{ route('dashboard.history', ['status' => 'returned']) }}">Returned</a></li>
                 </ul>
             </div>
         </div>
@@ -44,14 +44,14 @@
             </thead>
             <tbody>
                 @forelse($history as $item)
-                <tr class="history-row" data-status="{{ $item->status }}">
+                <tr class="history-row">
                     <td class="fw-medium text-muted">{{ $item->title }}</td>
-                    <td class="text-muted">{{ $item->type }}</td>
+                    <td class="text-muted">{{ ($item->type) }}</td>
                     <td class="text-muted">{{ $item->date_borrowed }}</td>
-                    <td class="text-muted">{{ $item->date_returned ?? '-' }}</td>
+                    <td class="text-muted">{{ $item->date_return ?? '-' }}</td>
                     <td>
                         <span class="badge-status {{ strtolower($item->status) }}">
-                            {{ $item->status }}
+                            {{ ($item->status) }}
                         </span>
                     </td>
                 </tr>
@@ -75,37 +75,3 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const filterOptions = document.querySelectorAll('.filter-opt');
-        const historyRows = document.querySelectorAll('.history-row');
-        const filterLabel = document.getElementById('current-filter');
-
-        filterOptions.forEach(option => {
-            option.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const selectedStatus = this.getAttribute('data-value');
-
-                // Update Label
-                if (filterLabel) {
-                    filterLabel.innerText = selectedStatus === 'all' ? 'Filter' : selectedStatus;
-                }
-
-                // Filter Rows
-                historyRows.forEach(row => {
-                    const rowStatus = row.getAttribute('data-status');
-
-                    if (selectedStatus === 'all' || rowStatus === selectedStatus) {
-                        row.classList.remove('d-none');
-                    } else {
-                        row.classList.add('d-none');
-                    }
-                });
-            });
-        });
-    });
-</script>
-@endpush

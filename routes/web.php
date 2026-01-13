@@ -26,19 +26,19 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
     Route::get('/all', [DashboardController::class, 'viewAll'])->name('dashboard.viewAll');
     Route::get('/bookmarked', [DashboardController::class, 'bookmarked'])->name('dashboard.bookmarked');
-    Route::get('/history', [DashboardController::class, 'bookmarked'])->name('dashboard.history'); // remove here if already implemented in the middleware group below
+    // Route::get('/history', [DashboardController::class, 'bookmarked'])->name('dashboard.history'); // remove here if already implemented in the middleware group below
 });
 
 // == BOOKS ==
 Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 
 // == requires login ==
-Route::middleware(['check.login'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // borrowing
     Route::get('/books/{id}/borrow', [BookController::class, 'showBorrowPrompt'])->name('books.showBorrowPrompt');
     Route::post('/books/{id}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
     // history
-    // Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
+    Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
 });
 
 

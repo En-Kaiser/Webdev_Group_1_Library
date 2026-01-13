@@ -26,13 +26,13 @@ class DashboardController extends Controller
             ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
             ->where('b.title', 'LIKE', "%{$searchTerm}%")
             ->orWhere('a.name', 'LIKE', "%{$searchTerm}%")
-            ->select('b.*', 'a.name as author','g.genre_id','g.name as genre')
+            ->select('b.*', 'a.name as author', 'g.genre_id', 'g.name as genre')
             ->get();
-            
-        
+
+
         $genres = DB::table('genres')->get();
 
-        return view('dashboard.view', compact('books','genres','searchTerm'));
+        return view('dashboard.view', compact('books', 'genres', 'searchTerm'));
     }
 
     public function viewAll()
@@ -43,10 +43,10 @@ class DashboardController extends Controller
             ->join('genres as g', 'g.genre_id', '=', 'bjb.genre_id')
             ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
             ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
-            ->select('b.*', 'a.name as author','g.genre_id','g.name as genre')
+            ->select('b.*', 'a.name as author', 'g.genre_id', 'g.name as genre')
             ->get();
 
-        
+
         $genres = DB::table('genres')->get();
 
         return view('dashboard.view', compact('books', 'genres'));
@@ -61,24 +61,32 @@ class DashboardController extends Controller
             ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
             ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
             ->where('bm.user_id', '=', Auth::id())
-            ->select('b.*', 'a.name as author','g.name as genre')
+            ->select('b.*', 'a.name as author', 'g.name as genre')
             ->get();
 
         $genres = DB::table('genres')->get();
         return view('dashboard.bookmarked', compact('books', 'genres'));
     }
 
-
-    public function history()
+    public function history(Request $request)
     {
-
-        $history = DB::table('history as h')
+        $query = DB::table('history as h')
             ->join('books as b', 'b.book_id', '=', 'h.book_id')
-            ->join('user_accounts as ua', 'ua.user_id', '=', 'h.user_id')
-            ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
-            ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
-            ->where('h.user_id', '=', Auth::id())
-            ->select('h.*', 'b.title as title','a.name as author')
+            ->where('h.user_id', '=', Auth::id());
+
+        if ($request->has('status') && $request->status !== 'all') {
+            $query->where('h.status', '=', $request->status);
+        }
+
+        $history = $query->select(
+            'h.history_id',
+            'b.title',
+            'h.type',
+            'h.status',
+            'h.date_borrowed',
+            'h.date_return'
+        )
+            ->orderBy('h.date_borrowed', 'desc')
             ->get();
 
         return view('dashboard.history', compact('history'));

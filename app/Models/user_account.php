@@ -13,6 +13,8 @@ class user_account extends Authenticatable
 
     protected $table = 'user_accounts';
 
+    protected $primaryKey = 'user_id';
+
     protected $hidden = [
         'password'
     ];

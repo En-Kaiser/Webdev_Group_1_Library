@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('courses', function (Blueprint $table) {
-            $table->id('course_id'); 
+            $table->id('course_id');
             $table->string('name');
         });
 
@@ -35,14 +35,16 @@ return new class extends Migration
             $table->string('image');
         });
 
-        
+
         Schema::create('user_accounts', function (Blueprint $table) {
             $table->id('user_id');
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
             $table->foreignId('course_id')->constrained('courses', 'course_id');
-            $table->timestamp('date_joined')->useCurrent(); 
-            $table->timestamps(); 
+            $table->timestamp('date_joined')->useCurrent();
+            $table->timestamps();
         });
 
         Schema::create('bookmarks', function (Blueprint $table) {
@@ -85,7 +87,7 @@ return new class extends Migration
             $table->enum('availability', ['available', 'unavailable']);
         });
 
-    
+
         $SeedLibraryProcedure = "
             DROP PROCEDURE IF EXISTS SeedLibraryData;
 
@@ -148,10 +150,10 @@ return new class extends Migration
             (6, 'physical', 'unavailable');
 
             
-            INSERT INTO user_accounts (email, password, course_id, date_joined) VALUES 
-            ('john.doe@uni.edu', 'pass123', '1', NOW()),
-            ('jane.smith@uni.edu', 'secure456', '2', NOW()),
-            ('bob.jones@uni.edu', 'qwerty789', '3', NOW());
+            INSERT INTO user_accounts (first_name, last_name, email, password, course_id, date_joined) VALUES 
+            ('John', 'Doe', 'john.doe@uni.edu', 'pass123', '1', NOW()),
+            ('Jane', 'Smith', 'jane.smith@uni.edu', 'secure456', '2', NOW()),
+            ('Bob', 'Jones', 'bob.jones@uni.edu', 'qwerty789', '3', NOW());
 
         
             INSERT INTO history (user_id, book_id, type, date_borrowed, date_return, status) VALUES 
