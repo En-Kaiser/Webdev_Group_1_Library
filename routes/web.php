@@ -26,7 +26,6 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
     Route::get('/all', [DashboardController::class, 'viewAll'])->name('dashboard.viewAll');
     Route::get('/bookmarked', [DashboardController::class, 'bookmarked'])->name('dashboard.bookmarked');
-    // Route::get('/history', [DashboardController::class, 'bookmarked'])->name('dashboard.history'); // remove here if already implemented in the middleware group below
 });
 
 // == BOOKS ==

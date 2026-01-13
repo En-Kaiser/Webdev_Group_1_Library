@@ -52,19 +52,30 @@ class DashboardController extends Controller
         return view('dashboard.view', compact('books', 'genres'));
     }
 
-    public function bookmarked()
+    public function bookmarked(Request $request)
     {
-        $books = DB::table('books as b')
+        $query = DB::table('books as b')
             ->join('bookmarks as bm', 'bm.book_id', '=', 'b.book_id')
-            ->join('books_joint_genres as bjb', 'bjb.book_id', '=', 'b.book_id')
-            ->join('genres as g', 'g.genre_id', '=', 'bjb.genre_id')
-            ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
-            ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
-            ->where('bm.user_id', '=', Auth::id())
-            ->select('b.*', 'a.name as author', 'g.name as genre')
+            ->leftJoin('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
+            ->leftJoin('authors as a', 'a.author_id', '=', 'bja.author_id')
+            ->leftJoin('books_joint_genres as bjg', 'bjg.book_id', '=', 'b.book_id')
+            ->leftJoin('genres as g', 'g.genre_id', '=', 'bjg.genre_id')
+            ->where('bm.user_id', '=', Auth::id());
+
+        if ($request->has('genre') && $request->genre !== 'all') {
+            $query->where('g.name', '=', $request->genre);
+        }
+
+        $books = $query->select(
+            'b.*',
+            DB::raw('GROUP_CONCAT(DISTINCT a.name SEPARATOR ", ") as author'),
+            DB::raw('GROUP_CONCAT(DISTINCT g.name SEPARATOR ", ") as genre')
+        )
+            ->groupBy('b.book_id')
             ->get();
 
         $genres = DB::table('genres')->get();
+
         return view('dashboard.bookmarked', compact('books', 'genres'));
     }
 
