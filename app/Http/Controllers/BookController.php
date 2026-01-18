@@ -10,6 +10,11 @@ class BookController extends Controller
 {
     public function show($id)
     {
+        if (!Auth::check()) {
+            return redirect()->route('auth.showSignUp')
+                ->with('info', 'Join PUPShelf to view book details and start borrowing!');
+        }
+
         $dummyBooks = [
             1 => [
                 'title' => 'It Ends With Us',
@@ -61,8 +66,16 @@ class BookController extends Controller
         // ✅ Check if ANY copy type has stock
         $isAvailable = $availability->contains(fn($item) => $item->copies_available > 0);
 
-        $isLoggedIn = true;
-        $isBookmarked = ($id == 1);
+        // $isLoggedIn = true;
+        // $isBookmarked = ($id == 1);
+
+        // Checks if user is logged in
+        $isLoggedIn = Auth::check();
+
+        $isBookmarked = false;
+        if ($isLoggedIn) {
+            $isBookmarked = ($id == 1);
+        }
 
         return view('books.show', compact(
             'book',
