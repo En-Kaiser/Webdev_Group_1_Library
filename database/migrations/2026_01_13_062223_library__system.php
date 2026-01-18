@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->enum('role',['student','librarian']);
             $table->string('password');
             $table->foreignId('course_id')->constrained('courses', 'course_id');
             $table->timestamp('date_joined')->useCurrent();
@@ -233,8 +234,33 @@ return new class extends Migration
         ";
 
         DB::unprepared($TruncateSingleTable);
-    }
 
+        $books_info = "
+        DROP PROCEDURE IF EXISTS books_info;
+        CREATE PROCEDURE books_info()
+        BEGIN
+            SELECT 
+                b.*,                       
+                bta.availability,          
+                a.name AS author_name,     
+                g.name AS genre_name       
+            FROM books AS b
+            
+            LEFT JOIN book_type_avail AS bta 
+            ON b.book_id = bta.book_id
+            LEFT JOIN books_joint_authors AS bja 
+            ON b.book_id = bja.book_id
+            LEFT JOIN authors AS a 
+            ON bja.author_id = a.author_id
+            LEFT JOIN books_joint_genres AS bjg 
+            ON b.book_id = bjg.book_id
+            LEFT JOIN genres AS g 
+            ON bjg.genre_id = g.genre_id;
+            END;
+        ";
+    
+        DB::unprepared($books_info);
+    }
     /**
      * Reverse the migrations.
      */

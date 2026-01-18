@@ -30,6 +30,8 @@ Route::group(['prefix' => 'dashboard'], function () {
 
 // == BOOKS ==
 Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
+Route::post('/books/{id}', [BookController::class, 'borrow'])->name('books.borrow');
+Route::post('/books/{id}', [BookController::class, 'bookmark'])->name('books.bookmark');
 
 // == requires login ==
 Route::middleware(['auth'])->group(function () {

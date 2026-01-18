@@ -1,19 +1,9 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    BOOK DETAILS
-</body>
-
-</html> -->
-
 @extends('layouts.main')
+
+@php
+$hasPhysical = $book_type_avail->where('type', 'physical')->where('availability', 'available')->first();
+$hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'available')->first();
+@endphp
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/student_book.css') }}">
@@ -23,70 +13,129 @@
 <div class="book-container">
 
     <div class="book-hero-section">
-        <!-- Arrow Icons AND Book Cover -->
         <div class="hero-left">
             <div class="side-votes">
                 <img src="{{ asset('icons/arrow-up.svg') }}" class="icon" alt="Arrow Up">
                 <img src="{{ asset('icons/arrow-down.svg') }}" class="icon" alt="Arrow Down">
             </div>
 
-            <!-- Book Images -->
             <div class="book-hero-image">
-                <img
-                    src="{{ asset('images/' . $book->cover_image) }}"
-                    alt="{{ $book->title }} Cover">
+                <img src="{{ asset('images/pup_book01.png') }}" alt="{{ $book->title }} Cover">
             </div>
         </div>
 
-        <!-- Title, Author, Genre -->
         <div class="book-meta">
             <h1>{{ $book->title }}</h1>
-            <p class="author">{{ $book->author_name }}</p>
-            <p class="year">{{ $book->year }}</p>
-            <p class="genre">{{ $genres->pluck('name')->implode(', ') }}</p>
+            @foreach($authors as $author)
+            <span class="author-tag">Author: <b>{{ $author->name }}</b></span>{{ !$loop->last ? ',' : '' }}
+            @endforeach
+            <p class="year">Year: <b>{{ $book->year }}</b></p>
+            <p class="genre">
+                @foreach($genres as $genre)
+                <span class="genre-tag">Genre: <b>{{ $genre->name }}</b></span>{{ !$loop->last ? ',' : '' }}
+                @endforeach
+            </p>
+        </div>
+
+        <div class="big-info-box">
+
+            <div class="book_type_avail-overlay d-flex justify-content-between align-items-center">
+
+                <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}">
+                    Availability: <b>{{ $isAvailable ? 'Available' : 'Unavailable' }}</b>
+                </span>
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <button type="button"
+                        class="btn btn-primary btn-sm px-4"
+                        data-bs-toggle="modal"
+                        data-bs-target="#borrowModal">
+                        Borrow Book
+                    </button>
+
+                    <div class="bookmark-controls">
+                        <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
+                            @csrf
+
+                            <button type="submit" style="border: none; background: none; padding: 0;">
+                                <img src="{{ $isBookmarked ? asset('icons/bookmarked.svg') : asset('icons/bookmark.svg') }}"
+                                    class="bookmark-icon"
+                                    alt="Bookmark"
+                                    title="{{ $isBookmarked ? 'Remove Bookmark' : 'Add Bookmark' }}"
+                                    style="width:22px; height:22px; cursor:pointer;">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function toggleBookmark(el) {
+                    const bookmark = "{{ asset('icons/bookmark.svg') }}";
+                    const bookmarked = "{{ asset('icons/bookmarked.svg') }}";
+                    el.src = el.src.includes('bookmarked.svg') ? bookmark : bookmarked;
+                }
+            </script>
+
+            <div class="big-info-content">
+                <hr class="info-divider">
+                <div class="content-columns">
+                    <div class="left-column">
+                        <strong>Description</strong>
+                        <p>{{ $book->short_description }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- BIG GREY BOX -->
-    <div class="big-info-box">
-
-        <!-- Available/Borrowed AND Bookmark/Bookmarked -->
-        <div class="availability-overlay">
-            <span class="availability-badge {{ $isAvailable ? 'available' : 'borrowed' }}">
-                {{ $isAvailable ? 'Available' : 'Borrowed' }}</span>
-            <div class="bookmark-controls">
-                <img src="{{ asset('icons/bookmark.svg') }}" class="bookmark-icon"
-                    alt="Bookmark"
-                    onclick="toggleBookmark(this)"
-                    style="width:22px; height:22px; cursor:pointer;">
+<div class="modal fade" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="borrowModalLabel">Borrow Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div>
 
-        <script>
-            function toggleBookmark(el) {
-                const bookmark = "{{ asset('icons/bookmark.svg') }}";
-                const bookmarked = "{{ asset('icons/bookmarked.svg') }}";
-                el.src = el.src.includes('bookmarked.svg') ? bookmark : bookmarked;
-            }
-        </script>
+            <form action="{{ route('books.borrow', $book->book_id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3 p-3 bg-light rounded">
+                        <p class="mb-1"><strong>Book Title:</strong> {{ $book->title }}</p>
+                        <p class="mb-1"><strong>Genre:</strong> {{ $genres->pluck('name')->implode(', ') }}</p>
+                        <p class="mb-1"><strong>Author:</strong> {{ $authors->pluck('name')->implode(', ') }}</p>
+                        <p class="mb-0"><strong>Year:</strong> {{ $book->year }}</p>
+                    </div>
 
+                    <div class="mb-3">
+                        <label for="book_type_id" class="form-label">Choose Format</label>
 
-        <!-- Description, Language, ISBN -->
-        <div class="big-info-content">
-            <hr class="info-divider">
+                        <select name="book_type_id" id="book_type_id" class="form-select" required>
+                            <option value="" selected disabled>Select format...</option>
 
-            <div class="content-columns">
-                <div class="left-column">
-                    <strong>Description</strong>
-                    <p>{{ $book->description }}</p>
-                </div>
-                <div class="right-column">
-                    <strong>Language</strong>
-                    <p>{{ $book->language }}</p>
-                    <strong style="margin-top: 2rem">ISBN</strong>
-                    <p>{{ $book->isbn }}</p>
-                </div>
-            </div>
+                            <option value="{{ $hasPhysical ? $hasPhysical->book_type_id : '' }}"
+                                {{ !$hasPhysical ? 'disabled' : '' }}>
+                                Physical {{ !$hasPhysical ? '(Not Available)' : '' }}
+                            </option>
+
+                            <option value="{{ $hasEbook ? $hasEbook->book_type_id : '' }}"
+                                {{ !$hasEbook ? 'disabled' : '' }}>
+                                E-Book {{ !$hasEbook ? '(Not Available)' : '' }}
+                            </option>
+                        </select>
+
+                        @if(!$hasPhysical && !$hasEbook)
+                        <div class="form-text text-danger">No copies are currently available.</div>
+                        @endif
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success" {{ !$isAvailable ? 'disabled' : '' }}>Borrow</button>
+                    </div>
+            </form>
         </div>
     </div>
 </div>

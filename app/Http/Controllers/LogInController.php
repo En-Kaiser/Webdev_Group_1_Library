@@ -21,8 +21,10 @@ class LogInController extends Controller
     {
         $email = $request -> input('email');
         $password = $request -> input('password');
+        $course = $request -> input('course');
 
-        $user = user_account::where('email', $email)->first();
+        $user = user_account::where('email', $email)
+                ->first();
 
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
