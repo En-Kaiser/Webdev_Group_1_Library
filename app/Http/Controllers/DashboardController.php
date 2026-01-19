@@ -66,13 +66,20 @@ class DashboardController extends Controller
             $query->where('g.name', '=', $request->genre);
         }
 
-        $books = $query->select(
-            'b.*',
+        $books_concat = $query->select(
+            'b.book_id',
             DB::raw('GROUP_CONCAT(DISTINCT a.name SEPARATOR ", ") as author'),
             DB::raw('GROUP_CONCAT(DISTINCT g.name SEPARATOR ", ") as genre')
         )
-            ->groupBy('b.book_id')
-            ->get();
+            ->groupBy('b.book_id');
+            
+        $books = DB::table('books AS b')
+                -> joinSub($books_concat,'bc',function($join){
+                    $join->on('b.book_id','=','bc.book_id');
+                })
+                -> select('b.*','bc.author','bc.genre')
+                ->get();
+
 
         $genres = DB::table('genres')->get();
 

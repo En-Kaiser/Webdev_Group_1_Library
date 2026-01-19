@@ -13,9 +13,21 @@ class BookController extends Controller
 {
     public function show($id)
     {
-        $full_info = DB::select("CALL books_info()");
+        $bookRows = DB::table('books as b')
+        ->select(
+            'b.*',
+            'bta.availability',
+            'a.name as author_name',
+            'g.name as genre_name'
+        )
+        ->leftJoin('book_type_avail as bta', 'b.book_id', '=', 'bta.book_id')
+        ->leftJoin('books_joint_authors as bja', 'b.book_id', '=', 'bja.book_id')
+        ->leftJoin('authors as a', 'bja.author_id', '=', 'a.author_id')
+        ->leftJoin('books_joint_genres as bjg', 'b.book_id', '=', 'bjg.book_id')
+        ->leftJoin('genres as g', 'bjg.genre_id', '=', 'g.genre_id')
+        ->where('b.book_id', $id)
+        ->get();
 
-        $bookRows = collect($full_info)->where('book_id', $id);
      
         if ($bookRows->isEmpty()) {
             abort(404, 'Book not found');
@@ -48,7 +60,7 @@ class BookController extends Controller
     }
 
 
-    // For now made it so that user could only choose physical or e_book. Cannot be both
+    
     public function borrow(Request $request, $id)
     {
         if (!Auth::check()) {
