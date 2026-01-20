@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LogInController;
 use App\Http\Controllers\SignUpController;
 use App\Http\Controllers\Testing;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,6 +43,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('dashboard.history');
 });
 
+// Admin Routes - User Management
+Route::prefix('admin')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::post('/users/{user}/suspend', [UserController::class, 'suspend']);
+    Route::post('/users/{user}/activate', [UserController::class, 'activate']);
+});
 
 Route::fallback(function () {
     return redirect()->route('welcome');

@@ -43,7 +43,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->enum('role',['student','librarian']);
             $table->string('password');
-            $table->foreignId('course_id')->constrained('courses', 'course_id');
+            $table->foreignId('course')->constrained('courses', 'course_id');
             $table->timestamp('date_joined')->useCurrent();
             $table->timestamps();
         });
@@ -86,6 +86,17 @@ return new class extends Migration
             // $table->integer('total_copies');
             // $table->integer('available_copies');
             $table->enum('availability', ['available', 'unavailable']);
+        });
+
+        Schema::create('admin_history', function (Blueprint $table) {
+            $table->id('history_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('user_id')->on('user_accounts');
+            $table->unsignedBigInteger('book_id');
+            $table->foreign('book_id')->references('book_id')->on('books');
+            $table->text('description');
+            $table->enum('status', ['pending', 'active', 'suspended']); 
+            $table->timestamp('change_created')->useCurrent();
         });
 
 
@@ -276,6 +287,7 @@ return new class extends Migration
         Schema::dropIfExists('authors');
         Schema::dropIfExists('genres');
         Schema::dropIfExists('courses');
+        Schema::dropIfExists('admin_history');
 
         DB::unprepared("DROP PROCEDURE IF EXISTS SeedLibraryData;");
         DB::unprepared("DROP PROCEDURE IF EXISTS TruncateAllTables;");
