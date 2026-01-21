@@ -15,7 +15,7 @@ class UserController extends Controller
         $suspendedUsers = 0;
         $newUsers = 0;
 
-        return view('dashboard.librarian.user_management', compact(
+        return view('dashboard.librarian.monitor_users', compact(
             'users',
             'totalUsers',
             'activeUsers',
