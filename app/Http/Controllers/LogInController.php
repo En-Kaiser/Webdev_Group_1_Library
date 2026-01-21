@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
-use App\Models\Admin;
 use App\Models\user_account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,15 +30,6 @@ class LogInController extends Controller
             Auth::login($user);
             $request->session()->regenerate();
             return redirect('/home');
-        }
-
-        $admin = Admin::where('email', $email)->first();
-
-        if ($admin && Hash::check($password, $admin->password)) {
-            Auth::login($admin);
-            $request->session()->regenerate();
-
-            return redirect('/librarian/all');
         }
 
         return back()->withErrors([
