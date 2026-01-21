@@ -14,38 +14,38 @@ class BookController extends Controller
     public function show($id)
     {
         $bookRows = DB::table('books as b')
-        ->select(
-            'b.*',
-            'bta.availability',
-            'a.name as author_name',
-            'g.name as genre_name'
-        )
-        ->leftJoin('book_type_avail as bta', 'b.book_id', '=', 'bta.book_id')
-        ->leftJoin('books_joint_authors as bja', 'b.book_id', '=', 'bja.book_id')
-        ->leftJoin('authors as a', 'bja.author_id', '=', 'a.author_id')
-        ->leftJoin('books_joint_genres as bjg', 'b.book_id', '=', 'bjg.book_id')
-        ->leftJoin('genres as g', 'bjg.genre_id', '=', 'g.genre_id')
-        ->where('b.book_id', $id)
-        ->get();
+            ->select(
+                'b.*',
+                'bta.availability',
+                'a.name as author_name',
+                'g.name as genre_name'
+            )
+            ->leftJoin('book_type_avail as bta', 'b.book_id', '=', 'bta.book_id')
+            ->leftJoin('books_joint_authors as bja', 'b.book_id', '=', 'bja.book_id')
+            ->leftJoin('authors as a', 'bja.author_id', '=', 'a.author_id')
+            ->leftJoin('books_joint_genres as bjg', 'b.book_id', '=', 'bjg.book_id')
+            ->leftJoin('genres as g', 'bjg.genre_id', '=', 'g.genre_id')
+            ->where('b.book_id', $id)
+            ->get();
 
-     
+
         if ($bookRows->isEmpty()) {
             abort(404, 'Book not found');
         }
 
-        $book = $bookRows->first(); 
+        $book = $bookRows->first();
 
-        $authors = $bookRows->pluck('author_name')->unique()->map(function($name) {
+        $authors = $bookRows->pluck('author_name')->unique()->map(function ($name) {
             return (object)['name' => $name];
         });
 
-        $genres = $bookRows->pluck('genre_name')->unique()->map(function($name) {
+        $genres = $bookRows->pluck('genre_name')->unique()->map(function ($name) {
             return (object)['name' => $name];
         });
 
         $book_type_avail = DB::table('book_type_avail')
-                           ->where('book_id',$id)
-                           ->get();
+            ->where('book_id', $id)
+            ->get();
         $isAvailable = $book_type_avail->contains('availability', 'available');
 
         $isBookmarked = false;
@@ -60,7 +60,7 @@ class BookController extends Controller
     }
 
 
-    
+
     public function borrow(Request $request, $id)
     {
         if (!Auth::check()) {
@@ -75,7 +75,7 @@ class BookController extends Controller
         $bookTypeId = $request->input('book_type_id');
 
         $availability = DB::table('book_type_avail')
-            ->where('book_type_id', $bookTypeId) 
+            ->where('book_type_id', $bookTypeId)
             ->where('book_id', $id)
             ->where('availability', 'available')
             ->first();
@@ -85,7 +85,7 @@ class BookController extends Controller
                 ->with('error', 'This copy is currently unavailable.');
         }
 
-    
+
         $alreadyBorrowed = DB::table('history')
             ->where('user_id', $userId)
             ->where('book_id', $id)
@@ -100,22 +100,22 @@ class BookController extends Controller
 
 
         DB::transaction(function () use ($userId, $id, $availability, $bookTypeId) {
-            
-    
+
+
             DB::table('history')->insert([
                 'user_id' => $userId,
                 'book_id' => $id,
-                'type' => $availability -> type, 
+                'type' => $availability->type,
                 'date_borrowed' => now(),
                 'date_return' => NULL,
                 'status' => 'borrowed',
             ]);
 
-        
+
             if ($availability->type === 'physical') {
                 DB::table('book_type_avail')
-                    ->where('book_type_id', $bookTypeId) 
-                    ->update(['availability' => 'unavailable']); 
+                    ->where('book_type_id', $bookTypeId)
+                    ->update(['availability' => 'unavailable']);
             }
         });
 
@@ -147,7 +147,7 @@ class BookController extends Controller
             ]);
         }
 
-        return back(); 
+        return back();
     }
 
     public function returnBook($historyId)
@@ -155,7 +155,7 @@ class BookController extends Controller
         // to be implemented
     }
 
-    
+
 
     public function byAuthor($authorId)
     {
