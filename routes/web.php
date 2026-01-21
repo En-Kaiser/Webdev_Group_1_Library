@@ -59,7 +59,6 @@ Route::middleware(['auth'])->group(function () {
 // Admin Routes - User Management
 Route::prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::post('/users/{id}/suspend', [UserController::class, 'suspend'])->name('admin.users.suspend');
     Route::post('/users/{id}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
