@@ -32,7 +32,7 @@ class UserController extends Controller
         // Get users with borrowed books count
         $users = $query->withCount(['history as borrowed_books_count' => function ($q) {
             $q->where('status', 'borrowed');
-        }])->orderBy('date_joined', 'desc')->get();
+        }])->orderBy('user_id', 'asc')->get();
 
         // Add full name
         foreach ($users as $user) {
