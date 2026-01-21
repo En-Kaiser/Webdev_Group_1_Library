@@ -40,7 +40,7 @@
                         @endforeach
                 </select>
 
-                <button type="submit" style="margin-top: 8rem;">Log In</button>
+                <button type="submit" style="margin-top: 6rem;">Log In</button>
 
                 <div class="auth-footer">
                     Dont have an account? <a href="{{ route('auth.signup') }}">Sign up</a>
