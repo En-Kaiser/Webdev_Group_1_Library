@@ -7,16 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use function Symfony\Component\Clock\now;
-
 class DashboardController extends Controller
 {
-    // == SHARED PAGES ==
     public function index()
     {
-        if (!Auth::check()) {
-            return view('dashboard.index');
-        }
 
         return view('dashboard.index');
     }
@@ -38,11 +32,10 @@ class DashboardController extends Controller
 
         $genres = DB::table('genres')->get();
 
-        return view('dashboard.student.view', compact('books', 'genres', 'searchTerm'));
+        return view('dashboard.view', compact('books', 'genres', 'searchTerm'));
     }
 
-    // == STUDENT PAGES ==
-    public function studentViewAll()
+    public function viewAll()
     {
 
         $books = DB::table('books as b')
@@ -56,7 +49,7 @@ class DashboardController extends Controller
 
         $genres = DB::table('genres')->get();
 
-        return view('dashboard.student.view', compact('books', 'genres'));
+        return view('dashboard.view', compact('books', 'genres'));
     }
 
     public function bookmarked(Request $request)
@@ -90,7 +83,7 @@ class DashboardController extends Controller
 
         $genres = DB::table('genres')->get();
 
-        return view('dashboard.student.bookmarked', compact('books', 'genres'));
+        return view('dashboard.bookmarked', compact('books', 'genres'));
     }
 
     public function history(Request $request)
@@ -114,59 +107,6 @@ class DashboardController extends Controller
             ->orderBy('h.date_borrowed', 'desc')
             ->get();
 
-        return view('dashboard.student.history', compact('history'));
-    }
-
-    // == LIBRARIAN PAGES == 
-    public function librarianViewAll() {
-        // Logic
-        return view('dashboard.librarian.view');
-    }
-
-    public function createSubmission(Request $request)
-    {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->route('dashboard.index')->with('error', 'Unauthorized access.');
-        }
-
-        return view('dashboard.librarian.create_submission');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max2048',
-        ]);
-
-        $filename = null;
-
-        if ($request->hasFile('cover_image')) {
-            // This saves the file to storage/app/public/books
-            // It returns a unique name
-            $path = $request->file('cover_image')->store('books', 'public');
-            $filename = basename($path);
-        }
-
-        DB::table('books')->insert([
-            'title' => $request->title,
-            'image' => $filename ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return redirect()->route('dashboard.view')->with('success', 'Book added successfully!');
-    }
-
-    public function monitorUsers()
-    {
-        // Logic
-        return view('dashboard.librarian.monitor_users');
-    }
-
-    public function transactions()
-    {
-        // 
-        return view('dashboard.librarian.transactions');
+        return view('dashboard.history', compact('history'));
     }
 }

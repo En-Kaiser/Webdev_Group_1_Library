@@ -23,12 +23,12 @@
                 <div class="search-container position-relative">
                     <form method="GET" action="{{ route('dashboard.search') }}" class="d-flex align-items-center">
                         <i class="bi bi-search position-absolute ms-4"></i>
-                        <input name="search"
-                            class="form-control"
-                            type="search"
-                            placeholder="What book are you looking for?"
-                            value="{{ $searchTerm ?? '' }}" />
-                        <button type="submit" style="display: none;">Search</button>
+                        <input name="search" 
+                               class="form-control"
+                               type="search"
+                               placeholder="What book are you looking for?"
+                               value="{{ $searchTerm ?? '' }}"/>
+                        <button type="submit" style="display: none;">Search</button>    
                     </form>
                 </div>
             </div>
@@ -46,37 +46,9 @@
 <div class="card-container container">
     <div class="row g-4 px-md-5">
 
-        @auth
-        {{-- If the user is logged in, check their specific role --}}
-        @if(Auth::user()->role === 'librarian')
         <!-- ALL BOOKS CARD -->
         <div class="col-md-4">
-            <a href="{{ route('librarian.viewAll') }}" class="action-card ">
-                <i class="bi bi-collection"></i>
-                <h3>Manage Books</h3>
-            </a>
-        </div>
-
-        <!-- MONITOR USERS CARD -->
-        <div class="col-md-4">
-            <a href="{{ route('librarian.monitorUsers') }}" class="action-card">
-                <i class="bi bi-people"></i>
-                <h3>Monitor Users</h3>
-            </a>
-        </div>
-
-        <!-- TRANSACTIONS CARD -->
-        <div class="col-md-4">
-            <a href="{{ route('librarian.transactions') }}" class="action-card">
-                <i class="bi bi-archive"></i>
-                <h3>Transactions</h3>
-            </a>
-        </div>
-
-        @else
-        <!-- ALL BOOKS CARD -->
-        <div class="col-md-4">
-            <a href="{{ route('student.viewAll') }}" class="action-card ">
+            <a href="{{ route('dashboard.viewAll') }}" class="action-card ">
                 <i class="bi bi-collection"></i>
                 <h3>All Books</h3>
             </a>
@@ -84,7 +56,7 @@
 
         <!-- BOOKMARKED CARD -->
         <div class="col-md-4">
-            <a href="{{ route('student.bookmarked') }}" class="action-card">
+            <a href="{{ route('dashboard.bookmarked') }}" class="action-card">
                 <i class="bi bi-bookmark"></i>
                 <h3>Bookmarked</h3>
             </a>
@@ -92,23 +64,11 @@
 
         <!-- HISTORY CARD -->
         <div class="col-md-4">
-            <a href="{{ route('student.history') }}" class="action-card">
+            <a href="{{ route('dashboard.history') }}" class="action-card">
                 <i class="bi bi-clock-history"></i>
                 <h3>History</h3>
             </a>
         </div>
-        @endif
-        @endauth
-
-        @guest
-        <div class="col-md-12">
-            <a href="{{ route('student.viewAll') }}" class="action-card text-center">
-                <i class="bi bi-collection"></i>
-                <h3>All Books</h3><br>
-            </a>
-        </div>
-        @endguest
-
     </div>
 </div>
 

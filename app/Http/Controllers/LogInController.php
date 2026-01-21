@@ -19,12 +19,12 @@ class LogInController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $course = $request->input('course');
+        $email = $request -> input('email');
+        $password = $request -> input('password');
+        $course = $request -> input('course');
 
         $user = user_account::where('email', $email)
-            ->first();
+                ->first();
 
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
@@ -35,15 +35,5 @@ class LogInController extends Controller
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('welcome')->with('success', 'Logged out successfully!');
     }
 }

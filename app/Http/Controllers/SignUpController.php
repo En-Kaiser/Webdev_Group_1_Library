@@ -25,17 +25,20 @@ class SignUpController extends Controller
         $user_account->course = $request->input('course');
         $user_account->email = $request->input('email');
         $user_account->password = Hash::make($request->input('password'));
-        $user_account->role = 'student';
         $user_account->date_joined = NOW();
         $user_account->save();
 
         Auth::login($user_account);
 
-        return redirect()->route('dashboard.index');
+        return redirect('/home');
     }
 
     public function json_string()
     {
         return user_account::all();
     }
+
+
+
+    // logout function to be implemented
 }

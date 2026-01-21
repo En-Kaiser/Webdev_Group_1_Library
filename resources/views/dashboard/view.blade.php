@@ -50,7 +50,7 @@
     
                 </ul>
             </div>
-            <a href="{{ route('student.bookmarked') }}" class="icon-bookmark">
+            <a href="{{ route('dashboard.bookmarked') }}" class="icon-bookmark">
                 <i class="bi bi-bookmark" title="View Bookmarks"></i>
             </a>
         </div>

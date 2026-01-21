@@ -19,12 +19,12 @@
                     <span id="current-filter">{{ request('status') ? (request('status')) : 'Filter' }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item filter-opt" href="{{ route('student.history') }}">All Status</a></li>
+                    <li><a class="dropdown-item filter-opt" href="{{ route('dashboard.history') }}">All Status</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item filter-opt" href="{{ route('student.history', ['status' => 'borrowed']) }}">Borrowed</a></li>
-                    <li><a class="dropdown-item filter-opt" href="{{ route('student.history', ['status' => 'returned']) }}">Returned</a></li>
+                    <li><a class="dropdown-item filter-opt" href="{{ route('dashboard.history', ['status' => 'borrowed']) }}">Borrowed</a></li>
+                    <li><a class="dropdown-item filter-opt" href="{{ route('dashboard.history', ['status' => 'returned']) }}">Returned</a></li>
                 </ul>
             </div>
         </div>
