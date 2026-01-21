@@ -18,4 +18,19 @@ class user_account extends Authenticatable
     protected $hidden = [
         'password'
     ];
+
+    public function course()
+    {
+        return $this->belongsTo(course::class, 'course_id', 'course_id');
+    }
+
+    public function history()
+    {
+        return $this->hasMany(history::class, 'user_id', 'user_id');
+    }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany(book::class, 'bookmarks', 'user_id', 'book_id');
+    }
 }

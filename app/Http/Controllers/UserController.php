@@ -2,61 +2,151 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\history;
+use App\Models\user_account;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        // Empty data just for UI testing
-        $users = [];
-        $totalUsers = 0;
-        $activeUsers = 0;
-        $suspendedUsers = 0;
-        $newUsers = 0;
+        $query = user_account::with('course')
+            ->where('role', 'student');
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('user_id', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by course
+        if ($request->filled('course_id')) {
+            $query->where('course_id', $request->course_id);
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'date_joined');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        $allowedSortFields = ['user_id', 'first_name', 'last_name', 'email', 'status', 'date_joined', 'last_active'];
+        if (in_array($sortBy, $allowedSortFields)) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        $query->withCount(['history as borrowed_books_count' => function ($q) {
+            $q->where('status', 'borrowed');
+        }]);
+
+        $users = $query->get();
+
+        foreach ($users as $user) {
+            $user->name = $user->first_name . ' ' . $user->last_name;
+        }
+
+        // Stats
+        $totalUsers = user_account::where('role', 'student')->count();
+
+        $activeUsers = user_account::where('role', 'student')
+            ->where('status', 'active')
+            ->count();
+
+        $suspendedUsers = user_account::where('role', 'student')
+            ->where('status', 'suspended')
+            ->count();
+
+        $newUsers = user_account::where('role', 'student')
+            ->whereMonth('date_joined', Carbon::now()->month)
+            ->whereYear('date_joined', Carbon::now()->year)
+            ->count();
+
+        // Check if we need to show a specific user (VIEW)
+        $viewUser = null;
+        if ($request->filled('view_user')) {
+            $viewUser = user_account::with('course')
+                ->where('user_id', $request->view_user)
+                ->where('role', 'student')
+                ->withCount(['history as borrowed_books_count' => function ($q) {
+                    $q->where('status', 'borrowed');
+                }])
+                ->first();
+        }
+
+        // Check if we need to show edit modal
+        $editUser = null;
+        if ($request->filled('edit_user')) {
+            $editUser = user_account::where('user_id', $request->edit_user)
+                ->where('role', 'student')
+                ->first();
+        }
 
         return view('dashboard.librarian.monitor_users', compact(
             'users',
             'totalUsers',
             'activeUsers',
             'suspendedUsers',
-            'newUsers'
+            'newUsers',
+            'viewUser',
+            'editUser'
         ));
-    }
-
-    public function show($id)
-    {
-        // Dummy data for testing- remove niyo nalang
-        return response()->json([
-            'id' => $id,
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'role' => 'student',
-            'status' => 'Active',
-            'profile_image' => null,
-            'borrowed_books_count' => 0,
-            'created_at' => '18/01/2026',
-            'last_active' => 'Never',
-        ]);
-    }
-
-    public function store(Request $request)
-    {
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
     public function update(Request $request, $id)
     {
-        return response()->json(['success' => true, 'message' => 'User updated successfully']);
+        $user = user_account::where('user_id', $id)->firstOrFail();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:user_accounts,email,' . $user->user_id . ',user_id',
+            'status' => 'required|in:active,suspended,pending',
+        ]);
+
+        $nameParts = explode(' ', $request->name, 2);
+
+        $user->first_name = $nameParts[0];
+        $user->last_name = $nameParts[1] ?? '';
+        $user->email = $request->email;
+        $user->status = $request->status;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Student updated successfully');
     }
 
     public function suspend($id)
     {
-        return response()->json(['success' => true, 'message' => 'User suspended successfully']);
+        $user = user_account::where('user_id', $id)->firstOrFail();
+        $user->status = 'suspended';
+        $user->save();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Student suspended successfully');
     }
 
     public function activate($id)
     {
-        return response()->json(['success' => true, 'message' => 'User activated successfully']);
+        $user = user_account::where('user_id', $id)->firstOrFail();
+        $user->status = 'active';
+        $user->save();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Student activated successfully');
     }
 }

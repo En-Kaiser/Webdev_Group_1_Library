@@ -59,11 +59,10 @@ Route::middleware(['auth'])->group(function () {
 // Admin Routes - User Management
 Route::prefix('admin')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::get('/users/{user}', [UserController::class, 'show']);
     Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
-    Route::post('/users/{user}/suspend', [UserController::class, 'suspend']);
-    Route::post('/users/{user}/activate', [UserController::class, 'activate']);
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::post('/users/{id}/suspend', [UserController::class, 'suspend'])->name('admin.users.suspend');
+    Route::post('/users/{id}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
 });
 
 Route::fallback(function () {

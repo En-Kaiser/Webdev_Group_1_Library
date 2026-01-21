@@ -7,66 +7,9 @@
 @endpush
 
 @section('content')
-@php // remove niyo lang to if itrtry niyo na sa actual db
-use Carbon\Carbon;
-
-$users = [
-(object)[
-'id' => 1001,
-'name' => 'Juan Dela Cruz',
-'email' => 'juan.delacruz@student.edu',
-'status' => 'Active',
-'borrowed_books_count' => 3,
-'profile_image' => null,
-'created_at' => Carbon::now()->subMonths(3),
-'last_active' => Carbon::now()->subHours(2),
-],
-(object)[
-'id' => 1002,
-'name' => 'Maria Santos',
-'email' => 'maria.santos@student.edu',
-'status' => 'Suspended',
-'borrowed_books_count' => 1,
-'profile_image' => null,
-'created_at' => Carbon::now()->subMonths(5),
-'last_active' => Carbon::now()->subDays(12),
-],
-(object)[
-'id' => 1003,
-'name' => 'Carlos Reyes',
-'email' => 'carlos.reyes@student.edu',
-'status' => 'Pending',
-'borrowed_books_count' => 0,
-'profile_image' => null,
-'created_at' => Carbon::now()->subDays(10),
-'last_active' => null,
-],
-(object)[
-'id' => 1004,
-'name' => 'Anne Villanueva',
-'email' => 'anne.villanueva@student.edu',
-'status' => 'Active',
-'borrowed_books_count' => 5,
-'profile_image' => null,
-'created_at' => Carbon::now()->subYear(),
-'last_active' => Carbon::now()->subMinutes(30),
-],
-];
-
-$totalUsers = count($users);
-$activeUsers = collect($users)->where('status', 'Active')->count();
-$suspendedUsers = collect($users)->where('status', 'Suspended')->count();
-$newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())->count();
-@endphp // hanggang here yung ireremove
 <div class="container px-md-5 mt-3">
   <div class="page-header">
     <h1 class="page-title">User Management</h1>
-    <div class="header-controls">
-      <button class="btn-signup" data-bs-toggle="modal" data-bs-target="#addUserModal">
-        <i class="bi bi-plus-circle"></i>
-        Add Student
-      </button>
-    </div>
   </div>
 
   <div class="row mb-3">
@@ -124,41 +67,73 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
     </div>
   </div>
 
-  <div class="search-box">
-    <div class="row g-3">
-      <div class="col-md-9">
-        <div class="search-input-group">
-          <input type="text" class="form-control" id="searchUsers"
-            placeholder="Search by name, email, or ID..."
-            value="{{ request('search') }}">
-          <button class="btn-search" onclick="filterUsers()">
-            <i class="bi bi-search"></i> Search
-          </button>
+  <form method="GET" action="{{ route('admin.users.index') }}" id="searchForm">
+    <div class="search-box">
+      <div class="row g-3">
+        <div class="col-md-9">
+          <div class="search-input-group">
+            <input type="text"
+              class="form-control"
+              name="search"
+              id="searchUsers"
+              placeholder="Search by name, email, or ID..."
+              value="{{ request('search') }}">
+            <button type="submit" class="btn-search">
+              <i class="bi bi-search"></i> Search
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="col-md-3">
-        <div class="dropdown">
-          <button class="btn-filter dropdown-toggle w-100"
-            type="button"
-            id="statusFilterDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-funnel"></i>
-            <span id="status-filter-label">All Status</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end w-100" aria-labelledby="statusFilterDropdown">
-            <li><a class="dropdown-item filter-status" href="#" data-value="all">All Status</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item filter-status" href="#" data-value="Active">Active</a></li>
-            <li><a class="dropdown-item filter-status" href="#" data-value="Suspended">Suspended</a></li>
-            <li><a class="dropdown-item filter-status" href="#" data-value="Pending">Pending</a></li>
-          </ul>
+        <div class="col-md-3">
+          <input type="hidden" name="status" id="statusInput" value="{{ request('status', 'all') }}">
+          <div class="dropdown">
+            <button class="btn-filter dropdown-toggle w-100"
+              type="button"
+              id="statusFilterDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-funnel"></i>
+              <span id="status-filter-label">
+                @if(request('status') == 'active')
+                Active
+                @elseif(request('status') == 'suspended')
+                Suspended
+                @elseif(request('status') == 'pending')
+                Pending
+                @else
+                All Status
+                @endif
+              </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end w-100" aria-labelledby="statusFilterDropdown">
+              <li>
+                <a class="dropdown-item filter-status {{ request('status', 'all') == 'all' ? 'active' : '' }}"
+                  href="#"
+                  data-value="all">All Status</a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+                <a class="dropdown-item filter-status {{ request('status') == 'active' ? 'active' : '' }}"
+                  href="#"
+                  data-value="active">Active</a>
+              </li>
+              <li>
+                <a class="dropdown-item filter-status {{ request('status') == 'suspended' ? 'active' : '' }}"
+                  href="#"
+                  data-value="suspended">Suspended</a>
+              </li>
+              <li>
+                <a class="dropdown-item filter-status {{ request('status') == 'pending' ? 'active' : '' }}"
+                  href="#"
+                  data-value="pending">Pending</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </form>
 
   <div class="table-responsive user-table-container shadow-sm">
     <table class="table table-hover mb-0">
@@ -175,17 +150,16 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
         </tr>
       </thead>
       <tbody>
-        @forelse($users ?? [] as $user)
+        @foreach($users as $user)
         <tr class="user-row" data-status="{{ $user->status }}">
-          <td class="fw-medium text-muted">#{{ $user->id }}</td>
+          <td class="fw-medium text-muted">#{{ $user->user_id }}</td>
           <td>
             <div class="d-flex align-items-center">
               @if($user->profile_image)
-              <img src="{{ asset($user->profile_image) }}" alt="{{ $user->name }}"
-                class="user-avatar">
+              <img src="{{ asset($user->profile_image) }}" alt="{{ $user->name }}" class="user-avatar">
               @else
               <span class="user-avatar">
-                {{ strtoupper(substr($user->name, 0, 2)) }}
+                {{ strtoupper(substr($user->first_name, 0, 1)) . strtoupper(substr($user->last_name, 0, 1)) }}
               </span>
               @endif
               <span class="fw-medium">{{ $user->name }}</span>
@@ -198,65 +172,69 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
               {{ ucfirst($user->status) }}
             </span>
           </td>
-          <td class="text-muted">{{ \Carbon\Carbon::parse($user->created_at)->format('d/m/Y') }}</td>
+          <td class="text-muted">{{ \Carbon\Carbon::parse($user->date_joined)->format('d/m/Y') }}</td>
           <td class="text-muted">{{ $user->last_active ? \Carbon\Carbon::parse($user->last_active)->diffForHumans() : 'Never' }}</td>
           <td>
             <div class="d-flex justify-content-center gap-1">
-              <button class="btn-action view"
-                data-bs-toggle="modal"
-                data-bs-target="#viewUserModal"
-                data-user-id="{{ $user->id }}"
+              {{-- VIEW --}}
+              <a href="{{ route('admin.users.index', ['view_user' => $user->user_id, 'open' => 1]) }}"
+                class="btn-action view"
                 title="View Details">
                 <i class="bi bi-eye"></i>
-              </button>
-              <button class="btn-action edit"
-                data-bs-toggle="modal"
-                data-bs-target="#editUserModal"
-                data-user-id="{{ $user->id }}"
+              </a>
+
+              {{-- EDIT --}}
+              <a href="{{ route('admin.users.index', ['edit_user' => $user->user_id, 'open_edit' => 1]) }}"
+                class="btn-action edit"
                 title="Edit Student">
                 <i class="bi bi-pencil"></i>
-              </button>
-              @if($user->status == 'Active')
-              <button class="btn-action danger"
-                data-bs-toggle="modal"
-                data-bs-target="#suspendConfirmModal"
-                data-user-id="{{ $user->id }}"
-                data-user-name="{{ $user->name }}"
-                title="Suspend Student">
-                <i class="bi bi-ban"></i>
-              </button>
+              </a>
+
+              @if($user->status == 'active')
+              <form action="{{ route('admin.users.suspend', $user->user_id) }}" method="POST" class="d-inline">
+                @csrf
+                <button type="button" class="btn-action danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#suspendConfirmModal"
+                  data-user-id="{{ $user->user_id }}"
+                  data-user-name="{{ $user->name }}"
+                  title="Suspend Student">
+                  <i class="bi bi-ban"></i>
+                </button>
+              </form>
               @else
-              <button class="btn-action success"
-                data-bs-toggle="modal"
-                data-bs-target="#activateConfirmModal"
-                data-user-id="{{ $user->id }}"
-                data-user-name="{{ $user->name }}"
-                title="Activate Student">
-                <i class="bi bi-check-circle"></i>
-              </button>
+              <form action="{{ route('admin.users.activate', $user->user_id) }}" method="POST" class="d-inline">
+                @csrf
+                <button type="button" class="btn-action success"
+                  data-bs-toggle="modal"
+                  data-bs-target="#activateConfirmModal"
+                  data-user-id="{{ $user->user_id }}"
+                  data-user-name="{{ $user->name }}"
+                  title="Activate Student">
+                  <i class="bi bi-check-circle"></i>
+                </button>
+              </form>
               @endif
             </div>
           </td>
         </tr>
-        @empty
-        @for($i = 0; $i < 8; $i++)
-          <tr>
-          <td class="text-muted">-</td>
-          <td class="text-muted">-</td>
-          <td class="text-muted">-</td>
-          <td class="text-muted text-center">-</td>
-          <td><span class="badge-status">-</span></td>
-          <td class="text-muted">-</td>
-          <td class="text-muted">-</td>
-          <td class="text-center">-</td>
-          </tr>
-          @endfor
-          @endforelse
+        @endforeach
       </tbody>
     </table>
   </div>
 </div>
 
+{{-- Auto-open View Modal --}}
+@if(request('open') == 1 && $viewUser)
+<button type="button"
+  id="autoOpenViewModal"
+  data-bs-toggle="modal"
+  data-bs-target="#viewUserModal"
+  hidden>
+</button>
+@endif
+
+{{-- View User Modal --}}
 <div class="modal fade" id="viewUserModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -264,17 +242,90 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
         <h5 class="modal-title fw-bold">Student Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body" id="userDetailsContent">
-        <div class="text-center py-5">
-          <div class="spinner-border text-danger" role="status">
-            <span class="visually-hidden">Loading...</span>
+
+      <div class="modal-body">
+        @if(isset($viewUser))
+        <div class="row">
+          <div class="col-md-4 text-center mb-3">
+            @if($viewUser->profile_image)
+            <img src="{{ asset($viewUser->profile_image) }}"
+              class="rounded-circle mb-3"
+              width="120"
+              height="120"
+              alt="{{ $viewUser->first_name }}"
+              style="object-fit: cover;">
+            @else
+            <span class="user-avatar"
+              style="width: 120px; height: 120px; font-size: 2.5rem; margin: 0 auto; display: inline-flex; align-items: center; justify-content: center;">
+              {{ strtoupper(substr($viewUser->first_name, 0, 1)) . strtoupper(substr($viewUser->last_name, 0, 1)) }}
+            </span>
+            @endif
+
+            <h5 class="fw-bold mt-3">{{ $viewUser->first_name }} {{ $viewUser->last_name }}</h5>
+            <p class="text-muted">{{ $viewUser->email }}</p>
+          </div>
+
+          <div class="col-md-8">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th width="40%">Student ID:</th>
+                  <td>#{{ $viewUser->user_id }}</td>
+                </tr>
+                <tr>
+                  <th>Status:</th>
+                  <td>
+                    <span class="badge-status {{ strtolower($viewUser->status) }}">
+                      {{ ucfirst($viewUser->status) }}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Course:</th>
+                  <td>{{ $viewUser->course->name ?? 'N/A' }}</td>
+                </tr>
+                <tr>
+                  <th>Books Borrowed:</th>
+                  <td>{{ $viewUser->borrowed_books_count ?? 0 }}</td>
+                </tr>
+                <tr>
+                  <th>Date Joined:</th>
+                  <td>{{ \Carbon\Carbon::parse($viewUser->date_joined)->format('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                  <th>Last Active:</th>
+                  <td>{{ $viewUser->last_active ? \Carbon\Carbon::parse($viewUser->last_active)->format('d/m/Y H:i') : 'Never' }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+        @else
+        <div class="alert alert-info text-center">
+          <i class="bi bi-info-circle me-2"></i>
+          Click on a student's view button to see their details.
+        </div>
+        @endif
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
+{{-- Auto-open Edit Modal --}}
+@if(request('open_edit') == 1 && $editUser)
+<button type="button"
+  id="autoOpenEditModal"
+  data-bs-toggle="modal"
+  data-bs-target="#editUserModal"
+  hidden>
+</button>
+@endif
+
+{{-- Edit User Modal --}}
 <div class="modal fade" id="editUserModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -282,30 +333,36 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
         <h5 class="modal-title fw-bold">Edit Student</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <form id="editUserForm">
+      <form action="{{ $editUser ? route('admin.users.update', $editUser->user_id) : '' }}" method="POST" id="editUserForm">
         @csrf
         @method('PUT')
         <div class="modal-body">
           <div class="row">
             <div class="col-md-4 text-center mb-3">
-              <span class="user-avatar" id="editUserAvatar" style="width: 120px; height: 120px; font-size: 2.5rem; margin: 0 auto;">--</span>
-              <input type="hidden" id="editUserId" name="user_id">
+              <span class="user-avatar" id="editUserAvatar"
+                style="width: 120px; height: 120px; font-size: 2.5rem; margin: 0 auto; display: inline-flex; align-items: center; justify-content: center;">
+                @if($editUser)
+                {{ strtoupper(substr($editUser->first_name, 0, 1) . substr($editUser->last_name, 0, 1)) }}
+                @else
+                --
+                @endif
+              </span>
             </div>
             <div class="col-md-8">
               <div class="mb-3">
                 <label class="form-label fw-medium">Full Name</label>
-                <input type="text" class="form-control" id="editUserName" name="name" required>
+                <input type="text" class="form-control" id="editUserName" name="name" value="{{ $editUser ? $editUser->first_name . ' ' . $editUser->last_name : '' }}" required>
               </div>
               <div class="mb-3">
                 <label class="form-label fw-medium">Email Address</label>
-                <input type="email" class="form-control" id="editUserEmail" name="email" required>
+                <input type="email" class="form-control" id="editUserEmail" name="email" value="{{ $editUser ? $editUser->email : '' }}" required>
               </div>
               <div class="mb-3">
                 <label class="form-label fw-medium">Status</label>
                 <select class="form-select" id="editUserStatus" name="status" required>
-                  <option value="Active">Active</option>
-                  <option value="Suspended">Suspended</option>
-                  <option value="Pending">Pending</option>
+                  <option value="active" {{ $editUser && $editUser->status === 'active' ? 'selected' : '' }}>Active</option>
+                  <option value="suspended" {{ $editUser && $editUser->status === 'suspended' ? 'selected' : '' }}>Suspended</option>
+                  <option value="pending" {{ $editUser && $editUser->status === 'pending' ? 'selected' : '' }}>Pending</option>
                 </select>
               </div>
               <div class="mb-3">
@@ -316,7 +373,7 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <a href="{{ route('admin.users.index') }}" class="btn btn-light">Cancel</a>
           <button type="submit" class="btn-signup">Save Changes</button>
         </div>
       </form>
@@ -324,39 +381,7 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
   </div>
 </div>
 
-<div class="modal fade" id="addUserModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold">Add New Student</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form action="{{ route('admin.users.store') }}" method="POST">
-        @csrf
-        <input type="hidden" name="role" value="student">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label fw-medium">Full Name</label>
-            <input type="text" class="form-control" name="name" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-medium">Email Address</label>
-            <input type="email" class="form-control" name="email" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-medium">Password</label>
-            <input type="password" class="form-control" name="password" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn-signup">Add Student</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
+{{-- Suspend Confirmation Modal --}}
 <div class="modal fade" id="suspendConfirmModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -372,17 +397,21 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
           Are you sure you want to suspend <strong id="suspendUserName"></strong>?
           This student will not be able to access the system until reactivated.
         </p>
-        <div class="d-flex gap-2 justify-content-center">
-          <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-danger px-4" id="confirmSuspendBtn">
-            <i class="bi bi-ban"></i> Suspend Account
-          </button>
-        </div>
+        <form action="" method="POST" id="suspendForm">
+          @csrf
+          <div class="d-flex gap-2 justify-content-center">
+            <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger px-4">
+              <i class="bi bi-ban"></i> Suspend Account
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
 
+{{-- Activate Confirmation Modal --}}
 <div class="modal fade" id="activateConfirmModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -398,12 +427,15 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
           Are you sure you want to activate <strong id="activateUserName"></strong>?
           This student will regain access to the system.
         </p>
-        <div class="d-flex gap-2 justify-content-center">
-          <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-success px-4" id="confirmActivateBtn">
-            <i class="bi bi-check-circle"></i> Activate Account
-          </button>
-        </div>
+        <form action="" method="POST" id="activateForm">
+          @csrf
+          <div class="d-flex gap-2 justify-content-center">
+            <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success px-4">
+              <i class="bi bi-check-circle"></i> Activate Account
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -413,246 +445,66 @@ $newUsers = collect($users)->filter(fn($u) => $u->created_at->isCurrentMonth())-
 @push('scripts')
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    let currentStatusFilter = 'all';
 
-    // Status Filter
-    const statusFilters = document.querySelectorAll('.filter-status');
-    const statusLabel = document.getElementById('status-filter-label');
-
-    statusFilters.forEach(option => {
-      option.addEventListener('click', function(e) {
-        e.preventDefault();
-        currentStatusFilter = this.getAttribute('data-value');
-        statusLabel.innerText = currentStatusFilter === 'all' ? 'All Status' : currentStatusFilter;
-        filterUsers();
-      });
-    });
-
-    // Search on Enter key
-    const searchInput = document.getElementById('searchUsers');
-    searchInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        filterUsers();
+    // Auto-open view modal
+    const autoBtn = document.getElementById('autoOpenViewModal');
+    if (autoBtn) {
+      autoBtn.click();
+      const viewModalEl = document.getElementById('viewUserModal');
+      if (viewModalEl) {
+        viewModalEl.addEventListener('hidden.bs.modal', function() {
+          window.location.href = "{{ route('admin.users.index') }}";
+        }, {
+          once: true
+        });
       }
-    });
-
-    // Filter Users Function
-    window.filterUsers = function() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const userRows = document.querySelectorAll('.user-row');
-
-      userRows.forEach(row => {
-        const status = row.getAttribute('data-status');
-        const rowText = row.textContent.toLowerCase();
-
-        const matchesStatus = currentStatusFilter === 'all' || status === currentStatusFilter;
-        const matchesSearch = searchTerm === '' || rowText.includes(searchTerm);
-
-        if (matchesStatus && matchesSearch) {
-          row.classList.remove('d-none');
-        } else {
-          row.classList.add('d-none');
-        }
-      });
     }
 
-    // View User Modal Handler
-    const viewUserModal = document.getElementById('viewUserModal');
-    viewUserModal.addEventListener('show.bs.modal', function(event) {
-      const button = event.relatedTarget;
-      const userId = button.getAttribute('data-user-id');
-      loadUserDetails(userId);
-    });
-
-    // Edit Button Handler - Open modal with user data
-    document.querySelectorAll('.btn-action.edit').forEach(button => {
-      button.addEventListener('click', function() {
-        const userId = this.getAttribute('data-user-id');
-        loadUserForEdit(userId);
-      });
-    });
-
-    // Edit Form Submit Handler
-    const editUserForm = document.getElementById('editUserForm');
-    editUserForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const userId = document.getElementById('editUserId').value;
-      const formData = new FormData(this);
-
-      fetch(`/admin/users/${userId}`, {
-          method: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          },
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            location.reload();
-          } else {
-            alert('Failed to update student');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred');
+    // Auto-open edit modal
+    const autoEditBtn = document.getElementById('autoOpenEditModal');
+    if (autoEditBtn) {
+      autoEditBtn.click();
+      const editModalEl = document.getElementById('editUserModal');
+      if (editModalEl) {
+        editModalEl.addEventListener('hidden.bs.modal', function() {
+          window.location.href = "{{ route('admin.users.index') }}";
+        }, {
+          once: true
         });
-    });
+      }
+    }
 
-    // -------------------------------------------------------------------
-    // UPDATED SUSPEND/ACTIVATE HANDLERS (Fix for missing Bootstrap global)
-    // -------------------------------------------------------------------
+    // Suspend Modal
+    document.getElementById('suspendConfirmModal')
+      .addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        document.getElementById('suspendUserName').textContent =
+          button.dataset.userName;
+        document.getElementById('suspendForm').action =
+          `/admin/users/${button.dataset.userId}/suspend`;
+      });
 
-    // Suspend Modal Handler
-    const suspendModalEl = document.getElementById('suspendConfirmModal');
-    suspendModalEl.addEventListener('show.bs.modal', function(event) {
-      // Button that triggered the modal
-      const button = event.relatedTarget;
+    // Activate Modal
+    document.getElementById('activateConfirmModal')
+      .addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        document.getElementById('activateUserName').textContent =
+          button.dataset.userName;
+        document.getElementById('activateForm').action =
+          `/admin/users/${button.dataset.userId}/activate`;
+      });
 
-      // Extract info from data-* attributes
-      const userId = button.getAttribute('data-user-id');
-      const userName = button.getAttribute('data-user-name');
-
-      // Update the modal's content
-      document.getElementById('suspendUserName').textContent = userName;
-
-      // Handle the confirm click
-      const confirmBtn = document.getElementById('confirmSuspendBtn');
-
-      // Clone the button to remove old event listeners (prevents multiple clicks)
-      const newBtn = confirmBtn.cloneNode(true);
-      confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
-
-      newBtn.addEventListener('click', function() {
-        // Disable button to prevent double submit
-        this.disabled = true;
-        suspendUser(userId);
+    // Status filter
+    document.querySelectorAll('.filter-status').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const statusValue = this.dataset.value;
+        document.getElementById('statusInput').value = statusValue;
+        document.getElementById('status-filter-label').textContent = this.textContent;
+        document.getElementById('searchForm').submit();
       });
     });
 
-    // Activate Modal Handler
-    const activateModalEl = document.getElementById('activateConfirmModal');
-    activateModalEl.addEventListener('show.bs.modal', function(event) {
-      const button = event.relatedTarget;
-      const userId = button.getAttribute('data-user-id');
-      const userName = button.getAttribute('data-user-name');
-
-      document.getElementById('activateUserName').textContent = userName;
-
-      const confirmBtn = document.getElementById('confirmActivateBtn');
-      const newBtn = confirmBtn.cloneNode(true);
-      confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
-
-      newBtn.addEventListener('click', function() {
-        this.disabled = true;
-        activateUser(userId);
-      });
-    });
-
-    // Load User Details
-    function loadUserDetails(userId) {
-      fetch(`/admin/users/${userId}`)
-        .then(response => response.json())
-        .then(data => {
-          const avatarHtml = data.profile_image ?
-            `<img src="${data.profile_image}" class="rounded-circle mb-3" width="120" height="120">` :
-            `<span class="user-avatar" style="width: 120px; height: 120px; font-size: 2.5rem; margin: 0 auto;">${data.name.substring(0, 2).toUpperCase()}</span>`;
-
-          document.getElementById('userDetailsContent').innerHTML = `
-                        <div class="row">
-                            <div class="col-md-4 text-center mb-3">
-                                ${avatarHtml}
-                                <h5 class="fw-bold mt-3">${data.name}</h5>
-                                <p class="text-muted">${data.email}</p>
-                            </div>
-                            <div class="col-md-8">
-                                <table class="table">
-                                    <tr><th>Student ID:</th><td>#${data.id}</td></tr>
-                                    <tr><th>Status:</th><td><span class="badge-status ${data.status.toLowerCase()}">${data.status}</span></td></tr>
-                                    <tr><th>Books Borrowed:</th><td>${data.borrowed_books_count || 0}</td></tr>
-                                    <tr><th>Joined:</th><td>${data.created_at}</td></tr>
-                                    <tr><th>Last Active:</th><td>${data.last_active || 'Never'}</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                    `;
-        })
-        .catch(error => {
-          console.error('Error loading student details:', error);
-          document.getElementById('userDetailsContent').innerHTML = `
-                        <div class="alert alert-danger">Failed to load student details.</div>
-                    `;
-        });
-    }
-
-    // Load User For Edit
-    function loadUserForEdit(userId) {
-      fetch(`/admin/users/${userId}`)
-        .then(response => response.json())
-        .then(data => {
-          // Set form values
-          document.getElementById('editUserId').value = data.id;
-          document.getElementById('editUserName').value = data.name;
-          document.getElementById('editUserEmail').value = data.email;
-          document.getElementById('editUserStatus').value = data.status;
-          document.getElementById('editUserPassword').value = '';
-
-          // Set avatar
-          const avatar = document.getElementById('editUserAvatar');
-          avatar.textContent = data.name.substring(0, 2).toUpperCase();
-        })
-        .catch(error => {
-          console.error('Error loading student for edit:', error);
-          alert('Failed to load student data');
-        });
-    }
-
-    // Suspend User
-    function suspendUser(userId) {
-      fetch(`/admin/users/${userId}/suspend`, {
-          method: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            location.reload();
-          } else {
-            alert('Failed to suspend student');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred');
-        });
-    }
-
-    // Activate User
-    function activateUser(userId) {
-      fetch(`/admin/users/${userId}/activate`, {
-          method: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            location.reload();
-          } else {
-            alert('Failed to activate student');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred');
-        });
-    }
   });
 </script>
 @endpush
