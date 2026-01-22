@@ -26,8 +26,8 @@
     </div>
 
     <!-- AVAILABILITY TABLE -->
-    <div class="table-responsive shadow-sm rounded">
-        <table class="table table-hover align-middle mb-0">
+    <div class="table-responsive table-container shadow-sm">
+        <table class="table table-hover mb-0">
             <thead class="table-dark">
                 <tr>
                     <th>Book Title</th>

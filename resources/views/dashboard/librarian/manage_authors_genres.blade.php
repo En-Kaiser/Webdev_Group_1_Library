@@ -39,8 +39,8 @@
     <div class="row">
         <!-- Authors Table -->
         <div class="col-md-6">
-            <div class="table-responsive shadow-sm rounded">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive table-container shadow-sm">
+                <table class="table table-hover mb-0">
                     <thead class="table-dark">
                         <tr>
                             <th>Author</th>
@@ -78,8 +78,8 @@
 
         <!-- Genres Table -->
         <div class="col-md-6">
-            <div class="table-responsive shadow-sm rounded">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive table-container shadow-sm">
+                <table class="table table-hover mb-0">
                     <thead class="table-dark">
                         <tr>
                             <th>Genre</th>

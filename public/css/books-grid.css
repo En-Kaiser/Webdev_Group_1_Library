@@ -58,28 +58,24 @@
   text-overflow: ellipsis;
 }
 
-/* Filter Button Styling */
-.btn-filter {
-  border: 2px solid var(--primary-maroon);
-  color: var(--primary-maroon);
-  border-radius: 10px;
-  padding: 5px 20px;
-  font-weight: 600;
-  background: white;
-  transition: 0.2s;
-}
-
-.btn-filter:hover {
-  transform: scale(1.1);
-}
-
 /* Bookmark Icon Styling */
 .icon-bookmark {
   font-size: 1.8rem;
   color: var(--secondary-yellow);
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
-.icon-bookmark:hover {
-  transform: scale(1.1);
+.icon-bookmark .fill-icon {
+  display: none;
+}
+
+.icon-bookmark:hover .outline-icon {
+  display: none;
+}
+
+.icon-bookmark:hover .fill-icon {
+  display: inline-block;
+  transform: scale(1.02);
 }

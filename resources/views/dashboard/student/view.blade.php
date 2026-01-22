@@ -16,21 +16,21 @@
 
         <h1 class="page-title">All Books</h1>
         <!-- Added by Jarell: Added a search bar here, pafix nalang if may problem-->
-        <div class="header-controls">  
+        <div class="header-controls">
             <!-- SEACH BAR -->
             <div class="search-container position-relative me-2">
                 <form action="{{ route('dashboard.search') }}" method="GET" class="d-flex align-items-center">
-                    
+
                     <i class="bi bi-search position-absolute ms-3 text-muted"></i>
 
-                    <input name="search" 
-                           class="form-control ps-5" 
-                           type="search" 
-                           placeholder="Search books..."
-                           value="{{ $searchTerm ?? '' }}"
-                           aria-label="Search">
-                           
-                    <button type="submit" class="d-none">Search</button>    
+                    <input name="search"
+                        class="form-control ps-5"
+                        type="search"
+                        placeholder="Search books..."
+                        value="{{ $searchTerm ?? '' }}"
+                        aria-label="Search">
+
+                    <button type="submit" class="d-none">Search</button>
                 </form>
             </div>
 
@@ -45,14 +45,17 @@
                         <hr class="dropdown-divider">
                     </li>
                     @foreach($genres as $genre)
-                        <li><a class="dropdown-item filter-opt" data-value="{{ $genre->name }}">{{ $genre->name }}</a></li>
+                    <li><a class="dropdown-item filter-opt" data-value="{{ $genre->name }}">{{ $genre->name }}</a></li>
                     @endforeach
-    
+
                 </ul>
             </div>
+            @auth
             <a href="{{ route('student.bookmarked') }}" class="icon-bookmark">
-                <i class="bi bi-bookmark" title="View Bookmarks"></i>
+                <i class="bi bi-bookmark outline-icon" title="View Bookmarks"></i>
+                <i class="bi bi-bookmark-fill fill-icon" title="View Bookmarks"></i>
             </a>
+            @endauth
         </div>
     </div>
 
@@ -60,16 +63,15 @@
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4">
         @forelse($books as $book)
         <div class="col book-card-item" data-genre="{{ $book->genre }}">
-            
+
             <x-book-card
                 :id="$book->book_id"
                 :title="$book->title"
                 :author="$book->author"
                 :genre="$book->genre"
                 :year="$book->year"
-                :cover="$book->image" 
-            />
-            
+                :cover="$book->image" />
+
         </div>
         @empty
         <div class="col-12 text-center py-5">
