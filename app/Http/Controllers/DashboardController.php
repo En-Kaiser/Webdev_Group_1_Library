@@ -182,60 +182,60 @@ class DashboardController extends Controller
     public function transactions()
     {
         // Dummy Pending Requests (Top section)
-    $pendingRequests = collect([
-        (object)[
-            'id'     => 1,
-            'type'   => 'Physical',
-            'status' => 'Available',
-            'user'   => (object)['first_name' => 'Juan', 'last_name' => 'Dela Cruz'],
-            'book'   => (object)['title' => 'Introduction to Laravel']
-        ],
-        (object)[
-            'id'     => 2,
-            'type'   => 'E-Book',
-            'status' => 'Unavailable',
-            'user'   => (object)['first_name' => 'Maria', 'last_name' => 'Clara'],
-            'book'   => (object)['title' => 'Data Structures and Algorithms']
-        ],
-        (object)[
-            'id'     => 3,
-            'type'   => 'Physical',
-            'status' => 'Available',
-            'user'   => (object)['first_name' => 'Jose', 'last_name' => 'Rizal'],
-            'book'   => (object)['title' => 'Noli Me Tangere']
-        ]
-    ]);
+        $pendingRequests = collect([
+            (object)[
+                'id'     => 1,
+                'type'   => 'Physical',
+                'status' => 'Available',
+                'user'   => (object)['first_name' => 'Juan', 'last_name' => 'Dela Cruz'],
+                'book'   => (object)['title' => 'Introduction to Laravel']
+            ],
+            (object)[
+                'id'     => 2,
+                'type'   => 'E-Book',
+                'status' => 'Unavailable',
+                'user'   => (object)['first_name' => 'Maria', 'last_name' => 'Clara'],
+                'book'   => (object)['title' => 'Data Structures and Algorithms']
+            ],
+            (object)[
+                'id'     => 3,
+                'type'   => 'Physical',
+                'status' => 'Available',
+                'user'   => (object)['first_name' => 'Jose', 'last_name' => 'Rizal'],
+                'book'   => (object)['title' => 'Noli Me Tangere']
+            ]
+        ]);
 
-    // Dummy Completed Transactions (Bottom table section)
-    $completedTransactions = collect([
-        (object)[
-            'user_name'   => 'Cardo Dalisay',
-            'book_title'  => 'Web Development 101',
-            'type'        => 'Physical',
-            'borrow_date' => '01-10-2026',
-            'due_date'    => '01-17-2026',
-            'return_date' => '01-17-2026',
-            'status'      => 'Returned'
-        ],
-        (object)[
-            'user_name'   => 'Cardo Dalisay',
-            'book_title'  => 'Web Development 101',
-            'type'        => 'Physical',
-            'borrow_date' => '01-10-2026',
-            'due_date'    => '01-17-2026',
-            'return_date' => '01-17-2026',
-            'status'      => 'Returned'
-        ],
-        (object)[
-            'user_name'   => 'Niana Guerrero',
-            'book_title'  => 'Modern Database Systems',
-            'type'        => 'E-Book',
-            'borrow_date' => '01-15-2026',
-            'due_date'    => '01-17-2026',
-            'return_date' => null,
-            'status'      => 'Borrowed'
-        ]
-    ]);
+        // Dummy Completed Transactions (Bottom table section)
+        $completedTransactions = collect([
+            (object)[
+                'user_name'   => 'Cardo Dalisay',
+                'book_title'  => 'Web Development 101',
+                'type'        => 'Physical',
+                'borrow_date' => '01-10-2026',
+                'due_date'    => '01-17-2026',
+                'return_date' => '01-17-2026',
+                'status'      => 'Returned'
+            ],
+            (object)[
+                'user_name'   => 'Cardo Dalisay',
+                'book_title'  => 'Web Development 101',
+                'type'        => 'Physical',
+                'borrow_date' => '01-10-2026',
+                'due_date'    => '01-17-2026',
+                'return_date' => '01-17-2026',
+                'status'      => 'Returned'
+            ],
+            (object)[
+                'user_name'   => 'Niana Guerrero',
+                'book_title'  => 'Modern Database Systems',
+                'type'        => 'E-Book',
+                'borrow_date' => '01-15-2026',
+                'due_date'    => '01-17-2026',
+                'return_date' => null,
+                'status'      => 'Borrowed'
+            ]
+        ]);
 
 
         // == DB Connected Version: NEED TRANSACTION MODEL ==
@@ -248,11 +248,13 @@ class DashboardController extends Controller
         return view('dashboard.librarian.transactions', compact('pendingRequests', 'completedTransactions'));
     }
 
-    public function approve($id) {
+    public function approve($id)
+    {
         return redirect()->back()->with('success', 'Transaction approved!');
     }
 
-    public function reject($id) {
+    public function reject($id)
+    {
         return redirect()->back()->with('success', 'Transaction rejected!');
     }
 
@@ -340,39 +342,64 @@ class DashboardController extends Controller
     }
 
     // --- MANAGE AVAILABILITY ---
-    public function manageAvailability()
+    public function manageAvailability(Request $request)
     {
-        $books = DB::table('books as b')
-            ->leftJoin('book_type_avail as bta', 'bta.book_id', '=', 'b.book_id')
+        $latestHistory = DB::table('history')
+            ->select(
+                'book_id',
+                DB::raw('MAX(date_borrowed) as latest_borrow')
+            )
+            ->where('status', '!=', 'returned')
+            ->groupBy('book_id');
+
+        $query = DB::table('books as b')
+            ->leftJoinSub($latestHistory, 'lh', function ($join) {
+                $join->on('lh.book_id', '=', 'b.book_id');
+            })
+            ->leftJoin('history as h', function ($join) {
+                $join->on('h.book_id', '=', 'b.book_id')
+                    ->on('h.date_borrowed', '=', 'lh.latest_borrow');
+            })
             ->select(
                 'b.book_id',
                 'b.title',
-                'bta.type',
-                'bta.availability as status'
+                DB::raw("COALESCE(h.status, 'available') as current_status")
             )
-            ->get();
+            ->groupBy('b.book_id', 'b.title', 'h.status');
+
+        $books = $query->paginate(10);
 
         return view('dashboard.librarian.manage_availability', compact('books'));
     }
 
-    // Update book status via dropdown
     public function updateStatus(Request $request, $bookId)
     {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->back()->with('error', 'Unauthorized.');
-        }
 
         $request->validate([
-            'status' => 'required|in:Available,Borrowed',
+            'status' => 'required|in:available,borrowed,due',
         ]);
 
-        // Update status in book_type_avail
+        $updated = DB::table('history')
+            ->where('book_id', $bookId)
+            ->where('status', '!=', 'returned') 
+            ->update([
+                'status' => 'returned',
+                'date_return' => now()
+            ]);
+
         DB::table('book_type_avail')
             ->where('book_id', $bookId)
-            ->update(['availability' => $request->status]);
+            ->update(['availability' => 'available']);
 
-        return redirect()->route('librarian.manageAvailability')->with('success', 'Status updated successfully!');
+        if ($updated > 0) {
+            return redirect()->route('manageAvailability')
+                ->with('success', 'Book marked as returned and is now available.');
+        } else {
+            return redirect()->route('manageAvailability')
+                ->with('info', 'No active borrow records found. Book is already available.');
+        }
     }
+
 
 
     // ===== BOOKS =====

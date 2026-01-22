@@ -16,8 +16,21 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
     <div class="book-hero-section">
         <div class="hero-left">
             <div class="side-votes">
-                <img src="{{ asset('icons/arrow-up.svg') }}" class="icon" alt="Arrow Up">
-                <img src="{{ asset('icons/arrow-down.svg') }}" class="icon" alt="Arrow Down">
+                @if($prevId)
+                <a href="{{ route('books.show', $prevId) }}" title="Previous Book">
+                    <img src="{{ asset('icons/arrow-up.svg') }}" class="icon" alt="Previous Book">
+                </a>
+                @else
+                <img src="{{ asset('icons/arrow-up.svg') }}" class="icon disabled" alt="No Previous Book" style="opacity: 0.4;">
+                @endif
+
+                @if($nextId)
+                <a href="{{ route('books.show', $nextId) }}" title="Next Book">
+                    <img src="{{ asset('icons/arrow-down.svg') }}" class="icon" alt="Next Book">
+                </a>
+                @else
+                <img src="{{ asset('icons/arrow-down.svg') }}" class="icon disabled" alt="No Next Book" style="opacity: 0.4;">
+                @endif
             </div>
 
             <div class="book-hero-image">
@@ -49,12 +62,13 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 
         <div class="book_type_avail-overlay d-flex justify-content-between align-items-center">
 
-            <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}">
+            <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}" style="margin-left: 37rem;">
                 Availability: <b>{{ $isAvailable ? 'Available' : 'Unavailable' }}</b>
             </span>
 
             <div class="d-flex align-items-center gap-3">
 
+                <!-- Borrow Button -->
                 @auth
                 <button type="button"
                     class="btn btn-primary btn-sm px-4"
@@ -62,7 +76,6 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                     data-bs-target="#borrowModal">
                     Borrow Book
                 </button>
-
                 @else
                 <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
                 @endauth
@@ -82,19 +95,11 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
             </div>
         </div>
 
-        <script>
-            function toggleBookmark(el) {
-                const bookmark = "{{ asset('icons/bookmark.svg') }}";
-                const bookmarked = "{{ asset('icons/bookmarked.svg') }}";
-                el.src = el.src.includes('bookmarked.svg') ? bookmark : bookmarked;
-            }
-        </script>
-
         <hr class="info-divider">
-        
+
         <div class="big-info-content">
             <div class="content-columns">
-                <div class="left-column">
+                <div class="left-column mt-5">
                     <strong>Description</strong>
                     <p>{{ $book->short_description }}</p>
                 </div>

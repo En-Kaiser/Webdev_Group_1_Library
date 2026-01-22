@@ -89,7 +89,7 @@
 /* ===== BIG GREY BOX ===== */
 .big-info-box {
     background: #EAEBEA;
-    padding: 6rem 2rem 2rem; /* for overlap */
+    padding: 1rem 2rem 2rem; /* for overlap */
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     position: relative; 
@@ -146,7 +146,7 @@
 /* ===== DIVIDER & COLUMNS ===== */
 .info-divider {
     position: absolute;
-    top: 3.5rem;          
+    top: 3rem;          
     left: 37rem;         
     right: 2rem;           
     height: 1px;
@@ -162,21 +162,18 @@
     gap: 5rem;
 }
 
-.left-column,
-.right-column {
+.left-column {
     flex: 1;
 }
 
-.left-column strong,
-.right-column strong {
+.left-column strong{
     display: block;
     color: #550000;
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
 
-.left-column p,
-.right-column p {
+.left-column p{
     margin: 0;
     color: #666;
     font-size: 0.95rem;
