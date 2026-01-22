@@ -20,7 +20,13 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
             </div>
 
             <div class="book-hero-image">
-                <img src="{{ asset('images/pup_book01.png') }}" alt="{{ $book->title }} Cover">
+                @if($book->image)
+                <img src="{{ asset('images/' . $book->image) }}" alt="{{ $book->title }} Cover">
+                @else
+                <div class="d-flex align-items-center justify-content-center" style="width:220px; height:300px; background:#f8f9fa;">
+                    <i class="bi bi-book text-secondary" style="font-size: 3rem;"></i>
+                </div>
+                @endif
             </div>
         </div>
 
@@ -36,59 +42,60 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                 @endforeach
             </p>
         </div>
+    </div>
 
-        <div class="big-info-box">
+    <div class="big-info-box mb-5">
 
-            <div class="book_type_avail-overlay d-flex justify-content-between align-items-center">
+        <div class="book_type_avail-overlay d-flex justify-content-between align-items-center">
 
-                <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}">
-                    Availability: <b>{{ $isAvailable ? 'Available' : 'Unavailable' }}</b>
-                </span>
+            <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}">
+                Availability: <b>{{ $isAvailable ? 'Available' : 'Unavailable' }}</b>
+            </span>
 
-                <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3">
 
-                    @auth
-                    <button type="button"
-                        class="btn btn-primary btn-sm px-4"
-                        data-bs-toggle="modal"
-                        data-bs-target="#borrowModal">
-                        Borrow Book
-                    </button>
+                @auth
+                <button type="button"
+                    class="btn btn-primary btn-sm px-4"
+                    data-bs-toggle="modal"
+                    data-bs-target="#borrowModal">
+                    Borrow Book
+                </button>
 
-                    @else
-                    <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
-                    @endauth
-                    <div class="bookmark-controls">
-                        <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
-                            @csrf
+                @else
+                <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
+                @endauth
+                <div class="bookmark-controls">
+                    <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
+                        @csrf
 
-                            <button type="submit" style="border: none; background: none; padding: 0;">
-                                <img src="{{ $isBookmarked ? asset('icons/bookmarked.svg') : asset('icons/bookmark.svg') }}"
-                                    class="bookmark-icon"
-                                    alt="Bookmark"
-                                    title="{{ $isBookmarked ? 'Remove Bookmark' : 'Add Bookmark' }}"
-                                    style="width:22px; height:22px; cursor:pointer;">
-                            </button>
-                        </form>
-                    </div>
+                        <button type="submit" style="border: none; background: none; padding: 0;">
+                            <img src="{{ $isBookmarked ? asset('icons/bookmarked.svg') : asset('icons/bookmark.svg') }}"
+                                class="bookmark-icon"
+                                alt="Bookmark"
+                                title="{{ $isBookmarked ? 'Remove Bookmark' : 'Add Bookmark' }}"
+                                style="width:22px; height:22px; cursor:pointer;">
+                        </button>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <script>
-                function toggleBookmark(el) {
-                    const bookmark = "{{ asset('icons/bookmark.svg') }}";
-                    const bookmarked = "{{ asset('icons/bookmarked.svg') }}";
-                    el.src = el.src.includes('bookmarked.svg') ? bookmark : bookmarked;
-                }
-            </script>
+        <script>
+            function toggleBookmark(el) {
+                const bookmark = "{{ asset('icons/bookmark.svg') }}";
+                const bookmarked = "{{ asset('icons/bookmarked.svg') }}";
+                el.src = el.src.includes('bookmarked.svg') ? bookmark : bookmarked;
+            }
+        </script>
 
-            <div class="big-info-content">
-                <hr class="info-divider">
-                <div class="content-columns">
-                    <div class="left-column">
-                        <strong>Description</strong>
-                        <p>{{ $book->short_description }}</p>
-                    </div>
+        <hr class="info-divider">
+        
+        <div class="big-info-content">
+            <div class="content-columns">
+                <div class="left-column">
+                    <strong>Description</strong>
+                    <p>{{ $book->short_description }}</p>
                 </div>
             </div>
         </div>
