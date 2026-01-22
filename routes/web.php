@@ -59,6 +59,10 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::put('/users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
         Route::post('/users/{id}/suspend', [AdminController::class, 'suspend'])->name('admin.users.suspend');
         Route::post('/users/{id}/activate', [AdminController::class, 'activate'])->name('admin.users.activate');
+
+        // Transaction Actions
+        Route::post('/transactions/approve/{id}', [DashboardController::class, 'approve'])->name('librarian.transactions.approve');
+        Route::post('/transactions/reject/{id}', [DashboardController::class, 'reject'])->name('librarian.transactions.reject');
     });
 });
 

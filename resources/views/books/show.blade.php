@@ -1,13 +1,14 @@
 @extends('layouts.main')
+@section('title', $book->title)
 
 @php
 $hasPhysical = $book_type_avail->where('type', 'physical')->where('availability', 'available')->first();
 $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'available')->first();
 @endphp
 
-@section('styles')
+@push('styles')
 <link rel="stylesheet" href="{{ asset('css/student_book.css') }}">
-@endsection
+@endpush
 
 @section('content')
 <div class="book-container">
