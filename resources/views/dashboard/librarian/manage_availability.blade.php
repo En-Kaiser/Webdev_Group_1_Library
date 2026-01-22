@@ -40,27 +40,25 @@
                 @forelse($books as $book)
                 <tr>
                     <td>{{ $book->title }}</td>
-                    <td>{{ $book->type ?? 'Physical Book' }}</td>
+                    <td>Physical Copy</td> 
                     <td>
-                        <span class="badge-status  {{ strtolower($book->status) }}">
-                            {{ strtoupper($book->status) }}
+                        <span class="badge-status {{ strtolower($book->current_status) }}">
+                            {{ strtoupper($book->current_status) }}
                         </span>
                     </td>
                     <td>
                         <form action="{{ route('librarian.updateStatus', $book->book_id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('PUT')
-
                             <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                <option value="available" {{ $book->status === 'available' ? 'selected' : '' }}>
+                                <option value="available" {{ $book->current_status === 'available' ? 'selected' : '' }}>
                                     Available
                                 </option>
-                                <option value="borrowed" {{ $book->status === 'borrowed' ? 'selected' : '' }}>
+                                <option value="borrowed" {{ $book->current_status === 'borrowed' ? 'selected' : '' }}>
                                     Borrowed
                                 </option>
                             </select>
                         </form>
-
                     </td>
                 </tr>
                 @empty
@@ -70,6 +68,9 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+    <div class="mt-3">
+        {{ $books->appends(request()->query())->links() }}
     </div>
 </div>
 @endsection
