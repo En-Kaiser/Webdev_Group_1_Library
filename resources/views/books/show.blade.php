@@ -47,6 +47,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 
                 <div class="d-flex align-items-center gap-3">
 
+                    @auth
                     <button type="button"
                         class="btn btn-primary btn-sm px-4"
                         data-bs-toggle="modal"
@@ -54,6 +55,9 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                         Borrow Book
                     </button>
 
+                    @else
+                    <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
+                    @endauth
                     <div class="bookmark-controls">
                         <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
                             @csrf

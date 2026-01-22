@@ -1,4 +1,10 @@
 <!-- Header -->
+
+@php
+$currentUser = Auth::guard('admin')->check()
+? Auth::guard('admin')->user()
+: Auth::user();
+@endphp
 <nav class="navbar navbar-expand-lg navbar-puplms">
   <div class="container-fluid">
     <!-- Logo/Brand -->
@@ -55,12 +61,39 @@
 
         @if(Auth::guard('admin')->check() || Auth::check())
         {{-- Logged in (either admin or student) --}}
-        <li class="nav-item">
-          <form action="{{ route('auth.logout') }}" method="POST" style="margin: 0;">
-            @csrf
-            <button type="submit" class="nav-link btn-logout-link">Logout</button>
-          </form>
+
+        @if($currentUser)
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle"></i>
+            {{ $currentUser->first_name }}
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li class="px-3 py-2">
+              <div class="fw-semibold">
+                {{ $currentUser->first_name }} {{ $currentUser->last_name }}
+              </div>
+              <small class="text-muted text-capitalize">
+                {{ Auth::guard('admin')->check() ? 'Librarian' : ($currentUser->role ?? 'Student') }}
+              </small>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <form method="POST" action="{{ route('auth.logout') }}">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">Log out</button>
+              </form>
+            </li>
+          </ul>
         </li>
+        @else
+        {{-- Guest buttons remain the same --}}
+        @endif
+
         @else
         {{-- Guest --}}
         <li class="nav-item">
