@@ -46,68 +46,54 @@
 <div class="card-container container">
     <div class="row g-4 px-md-5">
 
-        @auth
-        {{-- If the user is logged in, check their specific role --}}
-        @if(Auth::user()->role === 'librarian')
-        <!-- ALL BOOKS CARD -->
+        @if(Auth::guard('admin')->check())
+        <!-- Librarian cards -->
         <div class="col-md-4">
-            <a href="{{ route('librarian.viewAll') }}" class="action-card ">
+            <a href="{{ route('librarian.viewAll') }}" class="action-card">
                 <i class="bi bi-collection"></i>
                 <h3>Manage Books</h3>
             </a>
         </div>
-
-        <!-- MONITOR USERS CARD -->
         <div class="col-md-4">
-            <a href="{{ route('librarian.monitorUsers') }}" class="action-card">
+            <a href="{{ route('admin.users.index') }}" class="action-card">
                 <i class="bi bi-people"></i>
                 <h3>Monitor Users</h3>
             </a>
         </div>
-
-        <!-- TRANSACTIONS CARD -->
         <div class="col-md-4">
             <a href="{{ route('librarian.transactions') }}" class="action-card">
                 <i class="bi bi-archive"></i>
                 <h3>Transactions</h3>
             </a>
         </div>
-
-        @else
-        <!-- ALL BOOKS CARD -->
+        @elseif(Auth::check())
         <div class="col-md-4">
-            <a href="{{ route('student.viewAll') }}" class="action-card ">
+            <a href="{{ route('student.viewAll') }}" class="action-card">
                 <i class="bi bi-collection"></i>
                 <h3>All Books</h3>
             </a>
         </div>
-
-        <!-- BOOKMARKED CARD -->
         <div class="col-md-4">
             <a href="{{ route('student.bookmarked') }}" class="action-card">
                 <i class="bi bi-bookmarks"></i>
                 <h3>Bookmarks</h3>
             </a>
         </div>
-
-        <!-- HISTORY CARD -->
         <div class="col-md-4">
             <a href="{{ route('student.history') }}" class="action-card">
                 <i class="bi bi-clock-history"></i>
                 <h3>History</h3>
             </a>
         </div>
-        @endif
-        @endauth
-
-        @guest
+        @else
+        <!-- Guest cards -->
         <div class="col-md-12">
             <a href="{{ route('student.viewAll') }}" class="action-card text-center">
                 <i class="bi bi-collection"></i>
-                <h3>All Books</h3><br>
+                <h3>All Books</h3>
             </a>
         </div>
-        @endguest
+        @endif
 
     </div>
 </div>
