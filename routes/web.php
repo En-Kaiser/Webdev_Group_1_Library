@@ -81,6 +81,10 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::put('/books/{bookId}', [DashboardController::class, 'updateBook'])->name('librarian.books.update');
         Route::put('/books/{book_id}/status', [DashboardController::class, 'updateStatus'])->name('librarian.updateStatus');
         Route::delete('/books/{id}', [DashboardController::class, 'destroyBook'])->name('librarian.books.destroy');
+
+        // Transaction Actions
+        Route::post('/transactions/approve/{id}', [DashboardController::class, 'approve'])->name('librarian.transactions.approve');
+        Route::post('/transactions/reject/{id}', [DashboardController::class, 'reject'])->name('librarian.transactions.reject');
     });
 });
 

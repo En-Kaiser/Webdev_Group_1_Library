@@ -17,7 +17,7 @@
         <h1 class="page-title">All Books</h1>
         <!-- Added by Jarell: Added a search bar here, pafix nalang if may problem-->
         <div class="header-controls">  
-            
+            <!-- SEACH BAR -->
             <div class="search-container position-relative me-2">
                 <form action="{{ route('dashboard.search') }}" method="GET" class="d-flex align-items-center">
                     
