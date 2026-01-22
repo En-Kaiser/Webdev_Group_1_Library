@@ -34,6 +34,7 @@
             <li><a class="dropdown-item" href="{{ route('librarian.create') }}">Add New Book</a></li>
             @elseif(Auth::check())
             {{-- Student Pages --}}
+            (Auth::check())
             <li><a class="dropdown-item" href="{{ route('student.viewAll') }}">All Books</a></li>
             <li><a class="dropdown-item" href="{{ route('student.bookmarked') }}">Bookmarked</a></li>
             <li><a class="dropdown-item" href="{{ route('student.history') }}">History</a></li>

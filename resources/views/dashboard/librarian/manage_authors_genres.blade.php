@@ -14,7 +14,7 @@
         <!-- TABS -->
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('manageBooks') ? 'active' : '' }}" href="{{ route('manageBooks') }}">Books</a>
+                <a class="nav-link {{ request()->routeIs('admin.manageBooks') ? 'active' : '' }}" href="{{ route('admin.manageBooks') }}">Books</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('manageAuthorsGenres') ? 'active' : '' }}" href="{{ route('manageAuthorsGenres') }}">Authors & Genres</a>
@@ -55,11 +55,11 @@
                             <td>{{ $author->books_count }}</td>
                             <td>
                                 <div class="action-icons">
-                                   
+
                                     <form action="{{ route('librarian.authors.destroy', $author->author_id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="delete-icon" style="margin-right: 1rem;" title="Delete" onclick="return confirm('Are you sure?')">
+                                        <button type="submit" class="delete-icon" style="margin-right: 1rem;" title="Delete" onclick="return confirm('Are you sure you want to remove {{  $author->name  }}?')">
                                             <img src="{{ asset('icons/delete.svg') }}" alt="Delete" style="margin-right: 3rem;" width="20" height="20">
                                         </button>
                                     </form>
@@ -74,6 +74,12 @@
                     </tbody>
                 </table>
             </div>
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mt-2 pr-2 pt-2" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
         </div>
 
         <!-- Genres Table -->
@@ -97,7 +103,7 @@
                                     <form action="{{ route('librarian.genres.destroy', $genre->genre_id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="delete-icon" style="margin-left: -5rem;" title="Delete" onclick="return confirm('Are you sure?')">
+                                        <button type="submit" class="delete-icon" style="margin-left: -5rem;" title="Delete" onclick="return confirm('Are you sure you want to remove {{  $genre->name  }}?')">
                                             <img src="{{ asset('icons/delete.svg') }}" style="margin-right: -5rem;" alt="Delete" width="20" height="20">
                                         </button>
                                     </form>

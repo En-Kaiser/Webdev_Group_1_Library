@@ -14,7 +14,7 @@
         <!-- TABS -->
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('manageBooks') ? 'active' : '' }}" href="{{ route('manageBooks') }}">Books</a>
+                <a class="nav-link {{ request()->routeIs('admin.manageBooks') ? 'active' : '' }}" href="{{ route('admin.manageBooks') }}">Books</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('manageAuthorsGenres') ? 'active' : '' }}" href="{{ route('manageAuthorsGenres') }}">Authors & Genres</a>
@@ -55,12 +55,11 @@
                                 <option value="available" {{ $book->status === 'available' ? 'selected' : '' }}>
                                     Available
                                 </option>
-                                <option value="borrowed" {{ $book->status === 'borrowed' ? 'selected' : '' }}>
-                                    Borrowed
+                                <option value="unavailable" {{ $book->status === 'unavailable' ? 'selected' : '' }}>
+                                    Unavailable
                                 </option>
                             </select>
                         </form>
-
                     </td>
                 </tr>
                 @empty

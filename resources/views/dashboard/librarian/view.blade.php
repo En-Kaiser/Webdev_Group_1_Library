@@ -1,4 +1,3 @@
-
 @extends('layouts.main')
 @section('title', 'All Books')
 
@@ -52,7 +51,7 @@
                 </ul>
             </div>
 
-            <a href="{{ route('manageBooks') }}" class="btn-yellow">
+            <a href="{{ route('admin.manageBooks') }}" class="btn-yellow">
                 <i class="fas fa-cogs me-1"></i> Manage Books
             </a>
         </div>

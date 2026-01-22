@@ -16,10 +16,10 @@
                         <div class="col-md-4">
                             <div class="d-flex gap-2">
                                 <div class="flex-grow-1">
-                                    <input type="text" class="form-control" placeholder="Choose Book Cover" readonly>
-                                    <input type="file" name="cover_image" class="d-none" accept="image/*">
+                                    <input type="text" id="coverImageText" class="form-control" placeholder="Choose Book Cover" readonly>
+                                    <input type="file" id="coverImageFile" name="cover_image" class="d-none" accept="image/*" onchange="document.getElementById('coverImageText').value = this.files[0]?.name || ''">
                                 </div>
-                                <button type="button" class="btn btn-light" onclick="document.querySelector('input[name=cover_image]').click()">
+                                <button type="button" class="btn btn-light" onclick="document.getElementById('coverImageFile').click()">
                                     Browse
                                 </button>
                             </div>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-2 d-flex align-items-center">
                             <button type="button" class="btn btn-add-action" data-bs-toggle="modal" data-bs-target="#addGenreModal">
-                                + Add Genre  
+                                + Add Genre
                             </button>
                         </div>
                     </div>
@@ -82,8 +82,8 @@
                         <div class="col-md-6">
                             <select name="status" class="form-select" required>
                                 <option value="">Status</option>
-                                <option value="Available">Available</option>
-                                <option value="Borrowed">Borrowed</option>
+                                <option value="available">Available</option>
+                                <option value="unavailable">Unavailable</option>
                             </select>
                         </div>
                     </div>
