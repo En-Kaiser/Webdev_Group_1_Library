@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\Admin;
 use App\Models\user_account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,21 +20,28 @@ class LogInController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $course = $request->input('course');
+        $email = $request->email;
+        $password = $request->password;
 
-        $user = user_account::where('email', $email)
-            ->first();
-
+        // Student login
+        $user = user_account::where('email', $email)->first();
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
             $request->session()->regenerate();
-            return redirect('/home');
+            return redirect()->route('dashboard.index');
         }
 
+        // Librarian login
+        $admin = Admin::where('email', $email)->first();
+        if ($admin && Hash::check($password, $admin->password)) {
+            Auth::login($admin);
+            $request->session()->regenerate();
+            return redirect('/librarian/dash');
+        }
+
+        // Invalid credentials
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'The provided credentials do not match our records.'
         ])->onlyInput('email');
     }
 

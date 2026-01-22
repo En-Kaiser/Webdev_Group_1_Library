@@ -47,8 +47,11 @@
     <div class="row g-4 px-md-5">
 
         @auth
+        @php
+        $role = Auth::user()->role;
+        @endphp
         {{-- If the user is logged in, check their specific role --}}
-        @if(Auth::user()->role === 'librarian')
+        @if($role === 'librarian')
         <!-- ALL BOOKS CARD -->
         <div class="col-md-4">
             <a href="{{ route('librarian.viewAll') }}" class="action-card ">
@@ -59,7 +62,7 @@
 
         <!-- MONITOR USERS CARD -->
         <div class="col-md-4">
-            <a href="{{ route('librarian.monitorUsers') }}" class="action-card">
+            <a href="{{ route('admin.users.index') }}" class="action-card">
                 <i class="bi bi-people"></i>
                 <h3>Monitor Users</h3>
             </a>

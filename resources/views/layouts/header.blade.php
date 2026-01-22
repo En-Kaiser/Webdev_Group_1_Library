@@ -24,7 +24,10 @@
             <li><a class="dropdown-item" href="{{ route('dashboard.index') }}">Dashboard</a></li>
 
             @auth
-            @if(Auth::user()->role == 'librarian')
+            @php
+            $role = Auth::user()->role;
+            @endphp
+            @if($role === 'librarian')
             {{-- Librarian Pages --}}
             <li><a class="dropdown-item" href="{{ route('librarian.viewAll') }}">Manage Books</a></li>
             <li><a class="dropdown-item" href="{{ route('librarian.monitorUsers') }}">Monitor Users</a></li>
