@@ -28,6 +28,33 @@
   margin: 0;
 }
 
+.header-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.header-controls .dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 0.5rem 0;
+  margin-top: 10px !important;
+}
+
+.header-controls .dropdown-item {
+  transition: all 0.2s ease;
+}
+
+.header-controls .dropdown-item:hover {
+  background-color: #f8e5e5;
+  color: var(--primary-maroon);
+}
+
+.header-controls .dropdown-divider {
+  margin: 0.5rem 0;
+}
+
 /* == FILTER BUTTON == */
 .btn-filter {
   border: 2px solid var(--primary-maroon);
@@ -45,6 +72,33 @@
   transform: scale(1.02);
   background-color: var(--primary-maroon);
   color: white;
+}
+
+/* == BOOKMARK BUTTON == */
+.icon-bookmark {
+  font-size: 1.8rem;
+  color: var(--secondary-yellow);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.icon-bookmark .fill-icon {
+  display: none;
+}
+
+.icon-bookmark:hover .outline-icon {
+  display: none;
+}
+
+.icon-bookmark:hover .fill-icon {
+  display: inline-block;
+  transform: scale(1.02);
+}
+
+.icon-bookmark:active {
+  filter: brightness(0.9);
+  transition: transform 0.5s ease;
 }
 
 /* == BOOK STATUS == */
@@ -118,6 +172,7 @@
   /* For too long text */
   text-overflow: ellipsis;
 }
+
 
 .btn-yellow {
   margin-left: 0.5rem;

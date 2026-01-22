@@ -83,12 +83,13 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                     <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
                         @csrf
 
-                        <button type="submit" style="border: none; background: none; padding: 0;">
-                            <img src="{{ $isBookmarked ? asset('icons/bookmarked.svg') : asset('icons/bookmark.svg') }}"
-                                class="bookmark-icon"
-                                alt="Bookmark"
-                                title="{{ $isBookmarked ? 'Remove Bookmark' : 'Add Bookmark' }}"
-                                style="width:22px; height:22px; cursor:pointer;">
+                        <button type="submit" style="border: none; background: none; padding: 0;" class="icon-bookmark">
+                                @if($isBookmarked)
+                                <i class="bi bi-bookmark-fill" title="Remove Bookmark"></i>
+                                @else
+                                <i class="bi bi-bookmark outline-icon" title="Add Bookmark"></i>
+                                <i class="bi bi-bookmark-fill fill-icon" title="Add Bookmark"></i>
+                                @endif
                         </button>
                     </form>
                 </div>

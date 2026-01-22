@@ -3,7 +3,7 @@
     background: #f5f5f5;
     border-radius: 8px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     margin-bottom: 1rem;
 }
 
@@ -34,7 +34,7 @@
     background: white;
     border-radius: 8px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     margin-bottom: 1.5rem;
 }
 
@@ -195,20 +195,6 @@
     color: white;
 }
 
-/* Page Header */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.page-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0;
-}
-
 /* Signup/Add Button */
 .btn-signup {
     background: #8B0000;
@@ -259,7 +245,7 @@
 
 /* Dropdown Menu */
 .dropdown-menu {
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid #dee2e6;
 }
 
@@ -285,19 +271,19 @@
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .stats-card {
         margin-bottom: 1rem;
     }
-    
+
     .search-box {
         padding: 1rem;
     }
-    
+
     .btn-filter {
         justify-content: center;
     }
-    
+
     .table-responsive {
         overflow-x: auto;
     }
