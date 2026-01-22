@@ -31,7 +31,7 @@ $currentUser = Auth::guard('admin')->check()
 
             @if(Auth::guard('admin')->check())
             {{-- Librarian Pages --}}
-            <li><a class="dropdown-item" href="{{ route('librarian.viewAll') }}">Manage Books</a></li>
+            <li><a class="dropdown-item" href="{{ route('librarian.viewAll') }}">All Books</a></li>
             <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Monitor Users</a></li>
             <li><a class="dropdown-item" href="{{ route('librarian.transactions') }}">Transactions</a></li>
             @elseif(Auth::check())
