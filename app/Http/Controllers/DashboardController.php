@@ -18,7 +18,12 @@ class DashboardController extends Controller
             return view('dashboard.index');
         }
 
-        return view('dashboard.index');
+        // If logged in, check role and redirect appropriately
+        if (Auth::user()->role === 'librarian') {
+            return view('dashboard.index'); // Shows librarian cards
+        } else {
+            return view('dashboard.index'); // Shows student cards
+        }
     }
 
     public function search(Request $request)
@@ -79,13 +84,13 @@ class DashboardController extends Controller
             DB::raw('GROUP_CONCAT(DISTINCT g.name SEPARATOR ", ") as genre')
         )
             ->groupBy('b.book_id');
-            
+
         $books = DB::table('books AS b')
-                -> joinSub($books_concat,'bc',function($join){
-                    $join->on('b.book_id','=','bc.book_id');
-                })
-                -> select('b.*','bc.author','bc.genre')
-                ->get();
+            ->joinSub($books_concat, 'bc', function ($join) {
+                $join->on('b.book_id', '=', 'bc.book_id');
+            })
+            ->select('b.*', 'bc.author', 'bc.genre')
+            ->get();
 
 
         $genres = DB::table('genres')->get();
@@ -118,7 +123,8 @@ class DashboardController extends Controller
     }
 
     // == LIBRARIAN PAGES == 
-    public function librarianViewAll() {
+    public function librarianViewAll()
+    {
         // Logic
         return view('dashboard.librarian.view');
     }

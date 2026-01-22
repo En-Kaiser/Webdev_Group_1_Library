@@ -56,7 +56,6 @@ Route::middleware(['auth'])->group(function () {
     // });
     // Admin Routes - User Management
     Route::prefix('librarian')->group(function () {
-        Route::get('/dash', [DashboardController::class, 'libDash'])->name('librarian.dashboard');
         Route::get('/all', [DashboardController::class, 'librarianViewAll'])->name('librarian.viewAll');
         Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
         Route::get('/transactions', [DashboardController::class, 'transactions'])->name('librarian.transactions');
