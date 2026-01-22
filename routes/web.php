@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
@@ -50,9 +51,30 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/create', [DashboardController::class, 'store'])->name('librarian.store');
         Route::get('/monitor-users', [DashboardController::class, 'monitorUsers'])->name('librarian.monitorUsers');
         Route::get('/transactions', [DashboardController::class, 'transactions'])->name('librarian.transactions');
+
+        // HANNA - me naglagay ng mga ituh
+        Route::get('/manage-books', [DashboardController::class, 'manageBooks'])->name('manageBooks');
+        Route::get('/manage-books/authors-genres', [DashboardController::class, 'manageAuthorsGenres'])->name('manageAuthorsGenres');
+        Route::get('/manage-books/availability', [DashboardController::class, 'manageAvailability'])->name('manageAvailability');
+
+        Route::post('/authors', [DashboardController::class, 'storeAuthor'])->name('librarian.authors.store');
+        Route::get('/authors', [DashboardController::class, 'listAuthors'])->name('librarian.authors.list');
+        Route::delete('/authors/{id}', [DashboardController::class, 'destroyAuthor'])->name('librarian.authors.destroy');
+
+        Route::post('/genres', [DashboardController::class, 'storeGenre'])->name('librarian.genres.store');
+        Route::get('/genres', [DashboardController::class, 'listGenres'])->name('librarian.genres.list');
+        Route::delete('/genres/{id}', [DashboardController::class, 'destroyGenre'])->name('librarian.genres.destroy');
+
+        Route::get('/books/create', [DashboardController::class, 'create'])->name('books.create');
+         Route::post('/books', [DashboardController::class, 'storeBook'])->name('librarian.books.store');
+        Route::get('/books/{id}/edit', [DashboardController::class, 'edit'])->name('books.edit');
+        Route::put('/books/{id}', [DashboardController::class, 'updateBook'])->name('librarian.books.update');
+        Route::put('/books/{book_id}/status', [DashboardController::class, 'updateStatus'])->name('librarian.updateStatus');
+        Route::delete('/books/{id}', [DashboardController::class, 'destroyBook'])->name('librarian.books.destroy');
+
+    
     });
 });
-
 
 Route::fallback(function () {
     return redirect()->route('welcome');
