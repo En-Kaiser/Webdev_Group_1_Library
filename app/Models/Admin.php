@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Admin extends Authenticatable
 {
     protected $table = 'admins';
+    protected $primaryKey = 'admin_id';
 
     public function getRoleAttribute()
     {

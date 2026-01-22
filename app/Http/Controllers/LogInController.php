@@ -23,7 +23,6 @@ class LogInController extends Controller
         $email = $request->email;
         $password = $request->password;
 
-        // Student login
         $user = user_account::where('email', $email)->first();
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
@@ -31,15 +30,11 @@ class LogInController extends Controller
             return redirect()->route('dashboard.index');
         }
 
-        // Librarian login
-        $admin = Admin::where('email', $email)->first();
-        if ($admin && Hash::check($password, $admin->password)) {
-            Auth::login($admin);
+        if (Auth::guard('admin')->attempt(['email' => $email, 'password' => $password])) {
             $request->session()->regenerate();
-            return redirect('/librarian/dash');
+            return redirect()->route('dashboard.index');
         }
 
-        // Invalid credentials
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.'
         ])->onlyInput('email');
@@ -47,7 +42,16 @@ class LogInController extends Controller
 
     public function logout(Request $request)
     {
+        if (Auth::check()) {
+            $user = user_account::find(Auth::id());
+            if ($user) {
+                $user->last_active = now();
+                $user->save();
+            }
+        }
+
         Auth::logout();
+        Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

@@ -19,6 +19,11 @@ class user_account extends Authenticatable
         'password'
     ];
 
+    public function getRoleAttribute()
+    {
+        return 'student';
+    }
+
     public function course()
     {
         return $this->belongsTo(course::class, 'course_id', 'course_id');

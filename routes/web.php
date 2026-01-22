@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LogInController;
 use App\Http\Controllers\SignUpController;
-use App\Http\Controllers\Testing;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -36,46 +35,31 @@ Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 Route::post('/books/{id}', [BookController::class, 'borrow'])->name('books.borrow');
 Route::post('/books/{id}', [BookController::class, 'bookmark'])->name('books.bookmark');
 
-// == requires login ==
+// == STUDENT ROUTES - requires login ==
 Route::middleware(['auth'])->group(function () {
     // borrowing
     Route::get('/books/{id}/borrow', [BookController::class, 'showBorrowPrompt'])->name('books.showBorrowPrompt');
     Route::post('/books/{id}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
-
-    // Student 
+    Route::post('/books/{id}/bookmark', [BookController::class, 'bookmark'])->name('books.bookmark');
+    // Student pages
     Route::get('/bookmarked', [DashboardController::class, 'bookmarked'])->name('student.bookmarked');
     Route::get('/dashboard/history', [DashboardController::class, 'history'])->name('student.history');
-
-    // Librarian
-    // Route::group(['prefix' => 'librarian'], function () {
-    //     Route::get('/all', [DashboardController::class, 'librarianViewAll'])->name('librarian.viewAll');
-    //     Route::get('/create', [DashboardController::class, 'createSubmission'])->name('librarian.create');
-    //     Route::post('/create', [DashboardController::class, 'store'])->name('librarian.store');
-    //     Route::get('/monitor-users', [DashboardController::class, 'monitorUsers'])->name('librarian.monitorUsers');
-    //     Route::get('/transactions', [DashboardController::class, 'transactions'])->name('librarian.transactions');
-    // });
-    // Admin Routes - User Management
-    Route::prefix('librarian')->group(function () {
-        Route::get('/all', [DashboardController::class, 'librarianViewAll'])->name('librarian.viewAll');
-        Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-        Route::get('/transactions', [DashboardController::class, 'transactions'])->name('librarian.transactions');
-    });
-
-    Route::prefix('admin')->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-        Route::put('/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
-        Route::post('/users/{id}/suspend', [UserController::class, 'suspend'])->name('admin.users.suspend');
-        Route::post('/users/{id}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
-    });
 });
 
-// // Admin Routes - User Management
-// Route::prefix('admin')->group(function () {
-//     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-//     Route::put('/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
-//     Route::post('/users/{id}/suspend', [UserController::class, 'suspend'])->name('admin.users.suspend');
-//     Route::post('/users/{id}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
-// });
+// == ADMIN/LIBRARIAN ROUTES - requires admin login ==
+Route::middleware(['auth:admin'])->group(function () {
+    Route::prefix('librarian')->group(function () {
+        Route::get('/all', [DashboardController::class, 'librarianViewAll'])->name('librarian.viewAll');
+        Route::get('/transactions', [DashboardController::class, 'transactions'])->name('librarian.transactions');
+        Route::get('/create', [DashboardController::class, 'createSubmission'])->name('librarian.create');
+        Route::post('/create', [DashboardController::class, 'store'])->name('librarian.store');
+        // User monitoring
+        Route::get('/users', [AdminController::class, 'index'])->name('admin.users.index');
+        Route::put('/users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
+        Route::post('/users/{id}/suspend', [AdminController::class, 'suspend'])->name('admin.users.suspend');
+        Route::post('/users/{id}/activate', [AdminController::class, 'activate'])->name('admin.users.activate');
+    });
+});
 
 Route::fallback(function () {
     return redirect()->route('welcome');

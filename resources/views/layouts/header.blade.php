@@ -23,20 +23,16 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{ route('dashboard.index') }}">Dashboard</a></li>
 
-            @auth
-            @php
-            $role = Auth::user()->role;
-            @endphp
-            @if($role === 'librarian')
+            @if(Auth::guard('admin')->check())
             {{-- Librarian Pages --}}
             <li><a class="dropdown-item" href="{{ route('librarian.viewAll') }}">Manage Books</a></li>
-            <li><a class="dropdown-item" href="{{ route('librarian.monitorUsers') }}">Monitor Users</a></li>
+            <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Monitor Users</a></li>
             <li><a class="dropdown-item" href="{{ route('librarian.transactions') }}">Transactions</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
             <li><a class="dropdown-item" href="{{ route('librarian.create') }}">Add New Book</a></li>
-            @else
+            @elseif(Auth::check())
             {{-- Student Pages --}}
             <li><a class="dropdown-item" href="{{ route('student.viewAll') }}">All Books</a></li>
             <li><a class="dropdown-item" href="{{ route('student.bookmarked') }}">Bookmarked</a></li>
@@ -45,13 +41,10 @@
               <hr class="dropdown-divider">
             </li>
             <li><a class="dropdown-item" href="#">About Us</a></li>
-            @endif
-            @endauth
-
-            @guest
+            @else
             {{-- Guest Pages --}}
             <li><a class="dropdown-item" href="{{ route('student.viewAll') }}">All Books</a></li>
-            @endguest
+            @endif
           </ul>
         </li>
 
@@ -60,23 +53,23 @@
           <span style="height: 24px; width: 1px; background-color: rgba(255, 255, 255, 0.3); margin: 0 0.5rem;"></span>
         </li>
 
-        @guest
-        <li class="nav-item ">
-          <a href="{{route('auth.showLogIn')}}" class="nav-link">Sign in</a>
-        </li>
-        <li class="nav-item">
-          <a href="{{route('auth.showSignUp')}}" class="btn btn-signup">Sign up</a>
-        </li>
-        @endguest
-
-        @auth
+        @if(Auth::guard('admin')->check() || Auth::check())
+        {{-- Logged in (either admin or student) --}}
         <li class="nav-item">
           <form action="{{ route('auth.logout') }}" method="POST" style="margin: 0;">
             @csrf
             <button type="submit" class="nav-link btn-logout-link">Logout</button>
           </form>
         </li>
-        @endauth
+        @else
+        {{-- Guest --}}
+        <li class="nav-item">
+          <a href="{{route('auth.showLogIn')}}" class="nav-link">Sign in</a>
+        </li>
+        <li class="nav-item">
+          <a href="{{route('auth.showSignUp')}}" class="btn btn-signup">Sign up</a>
+        </li>
+        @endif
 
       </ul>
     </div>
