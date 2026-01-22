@@ -7,11 +7,16 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LogInController;
 use App\Http\Controllers\SignUpController;
+use App\Models\book;
+use App\Models\user_account;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', function () {
-    return view('welcome');
+    $userCount = user_account::count();
+    $bookCount = book::count();
+
+    return view('welcome', compact('userCount', 'bookCount'));
 })->name('welcome');
 
 // == TESTING ==
