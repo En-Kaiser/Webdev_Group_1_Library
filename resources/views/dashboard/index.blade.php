@@ -51,7 +51,7 @@
         <div class="col-md-4">
             <a href="{{ route('librarian.viewAll') }}" class="action-card">
                 <i class="bi bi-collection"></i>
-                <h3>Manage Books</h3>
+                <h3>All Books</h3>
             </a>
         </div>
         <div class="col-md-4">
@@ -97,14 +97,4 @@
 
     </div>
 </div>
-
-
-
-<!-- <form method="GET" action="{{ route('dashboard.search') }}" class="mb-4">
-        <div class="input-group" style="max-width: 400px;">
-            <input type="text" name="search" placeholder="Search" value="{{ $searchTerm ?? '' }}">
-            <button type="submit">Search</button>
-        </div>
-    </form> -->
-
 @endsection

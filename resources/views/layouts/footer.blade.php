@@ -17,9 +17,7 @@
         <h5 class="text-uppercase mb-4 font-weight-bold" style="color: white;">Features</h5>
 
         @if(Auth::guard('admin')->check())
-        <p><a href="{{ route('librarian.create') }}" class="footer-link">Add New Book</a></p>
-        <!-- <p><a href="{{ route('librarian.viewAll') }}" class="footer-link">Manage Books</a></p> -->
-        <p><a href="{{ route('admin.manageBooks') }}" class="footer-link">Manage Books</a></p>
+        <p><a href="{{ route('librarian.viewAll') }}" class="footer-link">All Books</a></p>
         <p><a href="{{ route('admin.users.index') }}" class="footer-link">Monitor Users</a></p>
         <p><a href="{{ route('librarian.transactions') }}" class="footer-link">Transactions</a></p>
         @elseif(Auth::check())
