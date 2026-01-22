@@ -7,9 +7,8 @@
 
 @section('content')
 <div class="container py-5">
-  <div class="row justify-content-center">
-    <h2>All Books</h2>
-
+  <div class="page-header">
+    <h1 class="page-title">Manage Books</h1>
   </div>
 </div>
 @endsection

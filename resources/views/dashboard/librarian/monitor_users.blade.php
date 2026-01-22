@@ -2,11 +2,8 @@
 @section('title', 'Monitor Users')
 @section('content')
 <div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <h2>Monitor Users</h2>
-
-    </div>
+  <div class="page-header">
+    <h1 class="page-title">Transaction Requests</h1>
   </div>
 </div>
 @endsection

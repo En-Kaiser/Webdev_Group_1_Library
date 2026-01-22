@@ -15,16 +15,22 @@
 
       <div class="col-md-2 col-lg-2 col-xl-2 mx-auto">
         <h5 class="text-uppercase mb-4 font-weight-bold" style="color: white;">Features</h5>
-        <p><a href="{{ route('student.viewAll') }}" class="footer-link">All Books</a></p>
 
         @auth
         @if(Auth::user()->role === 'student')
+        <p><a href="{{ route('student.viewAll') }}" class="footer-link">All Books</a></p>
         <p><a href="{{ route('student.bookmarked') }}" class="footer-link">Bookmarked</a></p>
         <p><a href="{{ route('student.history') }}" class="footer-link">History</a></p>
+        @else
+        <p><a href="{{ route('librarian.create') }}" class="footer-link">Add New Book</a></p>
+        <p><a href="{{ route('librarian.viewAll') }}" class="footer-link">Manage Books</a></p>
+        <p><a href="{{ route('librarian.monitorUsers') }}" class="footer-link">Monitor Users</a></p>
+        <p><a href="{{ route('librarian.transactions') }}" class="footer-link">Transactions</a></p>
         @endif
         @endauth
 
         @guest
+        <p><a href="{{ route('student.viewAll') }}" class="footer-link">All Books</a></p>
         <p><a href="{{ route('auth.showSignUp') }}" class="footer-link">Create Account</a></p>
         <p><a href="{{ route('auth.showLogIn') }}" class="footer-link">Sign In</a></p>
         @endguest

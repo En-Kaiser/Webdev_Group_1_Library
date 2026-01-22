@@ -67,11 +67,34 @@
         @endguest
 
         @auth
-        <li class="nav-item">
-          <form action="{{ route('auth.logout') }}" method="POST" style="margin: 0;">
-            @csrf
-            <button type="submit" class="nav-link btn-logout-link">Logout</button>
-          </form>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle"></i>
+            {{ auth()->user()->first_name }}
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li class="px-3 py-2">
+              <div class="fw-semibold">
+                {{ auth()->user()->first_name }} {{ auth()->user()->last_name }}
+              </div>
+              <small class="text-muted text-capitalize">
+                {{ auth()->user()->role }}
+              </small>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+              <form method="POST" action="{{ route('auth.logout') }}">
+                @csrf
+                <button type="submit" class="dropdown-item text-danger">
+                  Log out
+                </button>
+              </form>
+            </li>
+          </ul>
         </li>
         @endauth
 

@@ -22,7 +22,7 @@ Route::get('/login', [LogInController::class, 'showLogIn'])->name('auth.showLogI
 Route::post('/login', [LogInController::class, 'login'])->name('auth.login');
 Route::post('/logout', [LogInController::class, 'logout'])->name('auth.logout');
 
-// == DASHBOARD (Open ato Guests) ==
+// == DASHBOARD (Open to Guests) ==
 Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
@@ -50,6 +50,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/create', [DashboardController::class, 'store'])->name('librarian.store');
         Route::get('/monitor-users', [DashboardController::class, 'monitorUsers'])->name('librarian.monitorUsers');
         Route::get('/transactions', [DashboardController::class, 'transactions'])->name('librarian.transactions');
+        Route::post('/transactions/approve/{id}', [DashboardController::class, 'approve'])->name('librarian.transactions.approve');
+        Route::post('/transactions/reject/{id}', [DashboardController::class, 'reject'])->name('librarian.transactions.reject');
     });
 });
 

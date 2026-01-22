@@ -31,7 +31,7 @@
     </div>
 
     <!-- TABLE -->
-    <div class="table-responsive history-table-container shadow sm">
+    <div class="table-responsive table-container shadow sm">
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
