@@ -183,60 +183,60 @@ class DashboardController extends Controller
     public function transactions()
     {
         // Dummy Pending Requests (Top section)
-    $pendingRequests = collect([
-        (object)[
-            'id'     => 1,
-            'type'   => 'Physical',
-            'status' => 'Available',
-            'user'   => (object)['first_name' => 'Juan', 'last_name' => 'Dela Cruz'],
-            'book'   => (object)['title' => 'Introduction to Laravel']
-        ],
-        (object)[
-            'id'     => 2,
-            'type'   => 'E-Book',
-            'status' => 'Unavailable',
-            'user'   => (object)['first_name' => 'Maria', 'last_name' => 'Clara'],
-            'book'   => (object)['title' => 'Data Structures and Algorithms']
-        ],
-        (object)[
-            'id'     => 3,
-            'type'   => 'Physical',
-            'status' => 'Available',
-            'user'   => (object)['first_name' => 'Jose', 'last_name' => 'Rizal'],
-            'book'   => (object)['title' => 'Noli Me Tangere']
-        ]
-    ]);
+        $pendingRequests = collect([
+            (object)[
+                'id'     => 1,
+                'type'   => 'Physical',
+                'status' => 'Available',
+                'user'   => (object)['first_name' => 'Juan', 'last_name' => 'Dela Cruz'],
+                'book'   => (object)['title' => 'Introduction to Laravel']
+            ],
+            (object)[
+                'id'     => 2,
+                'type'   => 'E-Book',
+                'status' => 'Unavailable',
+                'user'   => (object)['first_name' => 'Maria', 'last_name' => 'Clara'],
+                'book'   => (object)['title' => 'Data Structures and Algorithms']
+            ],
+            (object)[
+                'id'     => 3,
+                'type'   => 'Physical',
+                'status' => 'Available',
+                'user'   => (object)['first_name' => 'Jose', 'last_name' => 'Rizal'],
+                'book'   => (object)['title' => 'Noli Me Tangere']
+            ]
+        ]);
 
-    // Dummy Completed Transactions (Bottom table section)
-    $completedTransactions = collect([
-        (object)[
-            'user_name'   => 'Cardo Dalisay',
-            'book_title'  => 'Web Development 101',
-            'type'        => 'Physical',
-            'borrow_date' => '01-10-2026',
-            'due_date'    => '01-17-2026',
-            'return_date' => '01-17-2026',
-            'status'      => 'Returned'
-        ],
-        (object)[
-            'user_name'   => 'Cardo Dalisay',
-            'book_title'  => 'Web Development 101',
-            'type'        => 'Physical',
-            'borrow_date' => '01-10-2026',
-            'due_date'    => '01-17-2026',
-            'return_date' => '01-17-2026',
-            'status'      => 'Returned'
-        ],
-        (object)[
-            'user_name'   => 'Niana Guerrero',
-            'book_title'  => 'Modern Database Systems',
-            'type'        => 'E-Book',
-            'borrow_date' => '01-15-2026',
-            'due_date'    => '01-17-2026',
-            'return_date' => null,
-            'status'      => 'Borrowed'
-        ]
-    ]);
+        // Dummy Completed Transactions (Bottom table section)
+        $completedTransactions = collect([
+            (object)[
+                'user_name'   => 'Cardo Dalisay',
+                'book_title'  => 'Web Development 101',
+                'type'        => 'Physical',
+                'borrow_date' => '01-10-2026',
+                'due_date'    => '01-17-2026',
+                'return_date' => '01-17-2026',
+                'status'      => 'Returned'
+            ],
+            (object)[
+                'user_name'   => 'Cardo Dalisay',
+                'book_title'  => 'Web Development 101',
+                'type'        => 'Physical',
+                'borrow_date' => '01-10-2026',
+                'due_date'    => '01-17-2026',
+                'return_date' => '01-17-2026',
+                'status'      => 'Returned'
+            ],
+            (object)[
+                'user_name'   => 'Niana Guerrero',
+                'book_title'  => 'Modern Database Systems',
+                'type'        => 'E-Book',
+                'borrow_date' => '01-15-2026',
+                'due_date'    => '01-17-2026',
+                'return_date' => null,
+                'status'      => 'Borrowed'
+            ]
+        ]);
 
 
         // == DB Connected Version: NEED TRANSACTION MODEL ==
@@ -249,17 +249,15 @@ class DashboardController extends Controller
         return view('dashboard.librarian.transactions', compact('pendingRequests', 'completedTransactions'));
     }
 
-    public function approve($id) {
+    public function approve($id)
+    {
         return redirect()->back()->with('success', 'Transaction approved!');
     }
 
-    public function reject($id) {
+    public function reject($id)
+    {
         return redirect()->back()->with('success', 'Transaction rejected!');
     }
-
-
-
-    // ===== HANNA =====
 
     // --- MANAGE BOOKS ---
     public function manageBooks(Request $request)
