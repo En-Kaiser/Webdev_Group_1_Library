@@ -75,8 +75,8 @@
         </div>
         <div class="col-md-4">
             <a href="{{ route('student.bookmarked') }}" class="action-card">
-                <i class="bi bi-bookmark"></i>
-                <h3>Bookmarked</h3>
+                <i class="bi bi-bookmarks"></i>
+                <h3>Bookmarks</h3>
             </a>
         </div>
         <div class="col-md-4">

@@ -23,7 +23,7 @@ Route::get('/login', [LogInController::class, 'showLogIn'])->name('auth.showLogI
 Route::post('/login', [LogInController::class, 'login'])->name('auth.login');
 Route::post('/logout', [LogInController::class, 'logout'])->name('auth.logout');
 
-// == DASHBOARD (Open ato Guests) ==
+// == DASHBOARD (Open to Guests) ==
 Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');

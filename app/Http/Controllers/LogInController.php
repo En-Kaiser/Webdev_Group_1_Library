@@ -42,20 +42,19 @@ class LogInController extends Controller
 
     public function logout(Request $request)
     {
-        if (Auth::check()) {
-            $user = user_account::find(Auth::id());
-            if ($user) {
-                $user->last_active = now();
-                $user->save();
-            }
+        if (Auth::guard('admin')->check()) {
+            $admin = Auth::guard('admin')->user();
+            Auth::guard('admin')->logout();
         }
-
-        Auth::logout();
-        Auth::guard('admin')->logout();
+        elseif (Auth::check()) {
+            $user = Auth::user();
+            $user->last_active = now();
+            Auth::logout();
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('welcome')->with('success', 'Logged out successfully!');
+        return redirect()->route('welcome');
     }
 }
