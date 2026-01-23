@@ -376,16 +376,33 @@ class DashboardController extends Controller
 
     public function updateStatus(Request $request, $bookId)
     {
+
         $request->validate([
-            'status' => 'required|in:available,unavailable',
+            'status' => 'required|in:available,borrowed,due',
         ]);
+
+        $updated = DB::table('history')
+            ->where('book_id', $bookId)
+            ->where('status', '!=', 'returned') 
+            ->update([
+                'status' => 'returned',
+                'date_return' => now()
+            ]);
 
         DB::table('book_type_avail')
             ->where('book_id', $bookId)
             ->update(['availability' => 'available']);
 
-        return redirect()->route('manageAvailability')->with('success', 'Status updated successfully!');
+        if ($updated > 0) {
+            return redirect()->route('manageAvailability')
+                ->with('success', 'Book marked as returned and is now available.');
+        } else {
+            return redirect()->route('manageAvailability')
+                ->with('info', 'No active borrow records found. Book is already available.');
+        }
     }
+
+
 
     // ===== BOOKS =====
     public function storeBook(Request $request)

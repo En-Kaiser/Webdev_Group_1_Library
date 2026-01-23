@@ -28,6 +28,8 @@
     <!-- Controls: Search, Filter, Add -->
     <div class="d-flex flex-wrap gap-3">
         <div class="search-container position-relative me-2">
+            <!-- <form action="{{ route('dashboard.search') }}" method="GET" class="d-flex align-items-center"> -->
+
             <form action="{{ route('admin.manageBooks') }}" method="GET" class="d-flex align-items-center">
                 <i class="bi bi-search position-absolute ms-3 text-muted"></i>
 

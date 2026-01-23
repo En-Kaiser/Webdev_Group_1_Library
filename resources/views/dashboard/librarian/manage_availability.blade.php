@@ -40,7 +40,7 @@
                 @forelse($books as $book)
                 <tr>
                     <td>{{ $book->title }}</td>
-                    <td>Physical Copy</td> 
+                    <td>Physical Copy</td>
                     <td>
                         <span class="badge-status {{ strtolower($book->current_status) }}">
                             {{ strtoupper($book->current_status) }}
@@ -54,6 +54,8 @@
                                 <option value="available" {{ $book->current_status === 'available' ? 'selected' : '' }}>
                                     Available
                                 </option>
+                                <!-- <option value="borrowed" {{ $book->current_status === 'borrowed' ? 'selected' : '' }}>
+                                    Borrowed -->
                                 <option value="unavailable" {{ $book->status === 'unavailable' ? 'selected' : '' }}>
                                     Unavailable
                                 </option>

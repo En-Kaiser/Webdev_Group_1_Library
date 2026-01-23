@@ -13,6 +13,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 @section('content')
 <div class="book-container">
 
+    <!-- HERO SECTION -->
     <div class="book-hero-section">
         <div class="hero-left">
             <div class="side-votes">
@@ -58,6 +59,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
         </div>
     </div>
 
+    <!-- INFO BOX -->
     <div class="big-info-box mb-5">
 
         <div class="book_type_avail-overlay d-flex justify-content-between align-items-center">
@@ -67,7 +69,6 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
             </span>
 
             <div class="d-flex align-items-center gap-3">
-
                 <!-- Borrow Button -->
                 @auth
                 <button type="button"
@@ -79,6 +80,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                 @else
                 <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
                 @endauth
+
                 <div class="bookmark-controls">
                     @auth
                     <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
@@ -115,29 +117,58 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 </div>
 </div>
 
-<div class="modal fade" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- Borrow Modal -->
+<div class="modal fade pupshelf-modal" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="borrowModalLabel">Borrow Form</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            <div class="modal-header pupshelf-modal-header">
+                <div>
+                    <h5 class="modal-title" id="borrowModalLabel">Borrow Form</h5>
+                    <small class="pupshelf-subtitle">Confirm details and choose a format</small>
+                </div>
+                <button type="button" class="btn-close pupshelf-close" data-bs-dismiss="modal"></button>
             </div>
 
             <form action="{{ route('books.borrow', $book->book_id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
-                    <div class="mb-3 p-3 bg-light rounded">
-                        <p class="mb-1"><strong>Book Title:</strong> {{ $book->title }}</p>
-                        <p class="mb-1"><strong>Genre:</strong> {{ $genres->pluck('name')->implode(', ') }}</p>
-                        <p class="mb-1"><strong>Author:</strong> {{ $authors->pluck('name')->implode(', ') }}</p>
-                        <p class="mb-0"><strong>Year:</strong> {{ $book->year }}</p>
+                    <div class="pupshelf-bookcard">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="pupshelf-label">Book Title</div>
+                                <div class="pupshelf-value">{{ $book->title }}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="pupshelf-label">Year</div>
+                                <div class="pupshelf-value">{{ $book->year }}</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="pupshelf-label">Genre</div>
+                                <div class="pupshelf-value">
+                                    {{ $genres->pluck('name')->implode(', ') }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="pupshelf-label">Author</div>
+                                <div class="pupshelf-value">
+                                    {{ $authors->pluck('name')->implode(', ') }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="book_type_id" class="form-label">Choose Format</label>
+                    <div class="mt-4">
+                        <label for="book_type_id" class="form-label pupshelf-form-label">
+                            Choose Format
+                        </label>
 
-                        <select name="book_type_id" id="book_type_id" class="form-select" required>
-                            <option value="" selected disabled>Select format...</option>
+                        <select name="book_type_id" id="book_type_id"
+                            class="form-select pupshelf-select" required>
+                            <option value="" disabled selected>Select format...</option>
 
                             <option value="{{ $hasPhysical ? $hasPhysical->book_type_id : '' }}"
                                 {{ !$hasPhysical ? 'disabled' : '' }}>
@@ -151,14 +182,26 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                         </select>
 
                         @if(!$hasPhysical && !$hasEbook)
-                        <div class="form-text text-danger">No copies are currently available.</div>
+                        <div class="pupshelf-alert mt-2">
+                            No copies are currently available.
+                        </div>
                         @endif
                     </div>
+                </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success" {{ !$isAvailable ? 'disabled' : '' }}>Borrow</button>
-                    </div>
+                <div class="modal-footer pupshelf-modal-footer">
+                    <button type="button"
+                        class="btn pupshelf-btn-outline"
+                        data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit"
+                        class="pupshelf-btn-primary"
+                        {{ !$isAvailable ? 'disabled' : '' }}>
+                        Borrow
+                    </button>
+                </div>
             </form>
         </div>
     </div>

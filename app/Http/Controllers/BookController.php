@@ -129,7 +129,8 @@ class BookController extends Controller
             }
         });
 
-        return redirect()->route('student.history');
+        // return redirect()->route('student.history');
+        return redirect()->route('dashboard.student.history');
     }
 
     public function bookmark($id)
