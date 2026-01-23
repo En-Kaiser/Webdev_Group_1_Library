@@ -172,7 +172,17 @@ return new class extends Migration
             (3, 'physical', 'unavailable'),
             (4, 'physical', 'available'),
             (5, 'e_book', 'available'),
-            (6, 'physical', 'unavailable');
+            (6, 'physical', 'unavailable')
+            (7, 'physical', 'available'),
+            (8, 'physical', 'available'),
+            (9, 'physical', 'available'),
+            (10, 'physical', 'available'),
+            (11, 'physical', 'available'),
+            (12, 'physical', 'available'),
+            (13, 'physical', 'available'),
+            (14, 'physical', 'available'),
+            (15, 'physical', 'available'),
+            (16, 'physical', 'available');
 
             
             INSERT INTO user_accounts (first_name, last_name, email, password, course_id, date_joined) VALUES 

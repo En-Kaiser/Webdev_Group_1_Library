@@ -99,7 +99,7 @@
                             <form action="{{ route('librarian.books.destroy', $book->book_id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="delete-icon" title="Delete" onclick="return confirm('Are you sure?')">
+                                <button type="submit" class="delete-icon" title="Delete" onclick="return confirm('Are you sure you want to delete {{  $book->title  }}?')">
                                     <img src="{{ asset('icons/delete.svg') }}" alt="Delete" width="20" height="20">
                                 </button>
                             </form>
@@ -256,6 +256,13 @@
             </tbody>
         </table>
     </div>
+
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-2 pr-2 pt-2" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 
     <div class="mt-4 flex justify-content-center">
         {{ $books->appends(request()->query())->links() }}

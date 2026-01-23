@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\author;
+use App\Models\book;
 use App\Models\bookmark;
+use App\Models\genre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -127,34 +130,25 @@ class DashboardController extends Controller
     // == LIBRARIAN PAGES == 
     public function librarianViewAll()
     {
-        $books = DB::table('books as b')
-            ->join('books_joint_genres as bjb', 'bjb.book_id', '=', 'b.book_id')
+        $books = book::query()
+            ->with(['authors', 'genres'])
+            ->join('books_joint_genres as bjb', 'bjb.book_id', '=', 'books.book_id')
             ->join('genres as g', 'g.genre_id', '=', 'bjb.genre_id')
-            ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
+            ->join('books_joint_authors as bja', 'bja.book_id', '=', 'books.book_id')
             ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
-            ->select('b.*', 'a.name as author', 'g.genre_id', 'g.name as genre')
+            ->select('books.*', 'a.name as author', 'g.genre_id', 'g.name as genre')
             ->get();
 
-
-        $genres = DB::table('genres')->get();
+        $genres = genre::all();
 
         return view('dashboard.librarian.view', compact('books', 'genres'));
-    }
-
-    public function createSubmission(Request $request)
-    {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->route('dashboard.index')->with('error', 'Unauthorized access.');
-        }
-
-        return view('dashboard.librarian.create_submission');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max2048',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $filename = null;
@@ -164,20 +158,12 @@ class DashboardController extends Controller
             $filename = basename($path);
         }
 
-        DB::table('books')->insert([
+        book::create([
             'title' => $request->title,
-            'image' => $filename ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'image' => $filename,
         ]);
 
-        return redirect()->route('manageBooks')->with('success', 'Book added successfully!');
-    }
-
-    public function monitorUsers()
-    {
-        // Logic
-        return view('dashboard.librarian.monitor_users');
+        return redirect()->route('admin.manageBooks')->with('success', 'Book added successfully!');
     }
 
     public function transactions()
@@ -262,28 +248,20 @@ class DashboardController extends Controller
     // --- MANAGE BOOKS ---
     public function manageBooks(Request $request)
     {
-        $bookStatusQuery = DB::table('history as h')
-            ->select('h.book_id', DB::raw("'Borrowed' as current_status"))
-            ->where('h.status', 'borrowed')
-            ->whereNull('h.date_return')
-            ->groupBy('h.book_id');
-
-        $query = DB::table('books as b')
-            ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
+        $query = book::query()
+            ->with(['authors', 'genres', 'bookTypeAvail'])
+            ->join('books_joint_authors as bja', 'bja.book_id', '=', 'books.book_id')
             ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
-            ->join('books_joint_genres as bjg', 'bjg.book_id', '=', 'b.book_id')
+            ->join('books_joint_genres as bjg', 'bjg.book_id', '=', 'books.book_id')
             ->join('genres as g', 'g.genre_id', '=', 'bjg.genre_id')
-            ->leftJoinSub($bookStatusQuery, 'current_status', function ($join) {
-                $join->on('current_status.book_id', '=', 'b.book_id');
-            })
-            ->leftJoin('book_type_avail as bta', 'bta.book_id', '=', 'b.book_id')
+            ->leftJoin('book_type_avail as bta', 'bta.book_id', '=', 'books.book_id')
             ->select(
-                'b.book_id',
-                'b.title',
-                'b.short_description',
-                'b.image',
-                'b.year',
-                DB::raw("COALESCE(current_status.current_status, 'Available') as status"),
+                'books.book_id',
+                'books.title',
+                'books.short_description',
+                'books.image',
+                'books.year',
+                'bta.availability as status',
                 'a.name as author',
                 'a.author_id',
                 'g.name as genre',
@@ -296,7 +274,7 @@ class DashboardController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('b.title', 'like', "%{$search}%")
+                $q->where('books.title', 'like', "%{$search}%")
                     ->orWhere('a.name', 'like', "%{$search}%");
             });
         }
@@ -306,10 +284,10 @@ class DashboardController extends Controller
         }
 
         $books = $query->paginate(10);
-        $genres = DB::table('genres')->get();
-        $authors = DB::table('authors')->get();
+        $genres = genre::all();
+        $authors = author::all();
         $searchTerm = $request->search;
-        $selectedGenre = $request->genre; // Add this line
+        $selectedGenre = $request->genre;
 
         return view('dashboard.librarian.manage_books', compact('books', 'genres', 'authors', 'searchTerm', 'selectedGenre'));
     }
@@ -317,24 +295,12 @@ class DashboardController extends Controller
     // --- MANAGE AUTHORS & GENRES ---
     public function manageAuthorsGenres()
     {
-        $authors = DB::table('authors as a')
-            ->leftJoin('books_joint_authors as bja', 'a.author_id', '=', 'bja.author_id')
-            ->select(
-                'a.author_id',
-                'a.name',
-                DB::raw('COUNT(bja.book_id) as books_count')
-            )
-            ->groupBy('a.author_id', 'a.name')
+        $authors = Author::withCount('books')
+            ->orderBy('name')
             ->get();
 
-        $genres = DB::table('genres as g')
-            ->leftJoin('books_joint_genres as bjg', 'g.genre_id', '=', 'bjg.genre_id')
-            ->select(
-                'g.genre_id',
-                'g.name',
-                DB::raw('COUNT(bjg.book_id) as books_count')
-            )
-            ->groupBy('g.genre_id', 'g.name')
+        $genres = Genre::withCount('books')
+            ->orderBy('name')
             ->get();
 
         return view('dashboard.librarian.manage_authors_genres', compact('authors', 'genres'));
@@ -372,10 +338,6 @@ class DashboardController extends Controller
     // ===== BOOKS =====
     public function storeBook(Request $request)
     {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->back()->with('error', 'Unauthorized.');
-        }
-
         $request->validate([
             'title' => 'required|string|max:255',
             'author_id' => 'required|exists:authors,author_id',
@@ -425,10 +387,6 @@ class DashboardController extends Controller
 
     public function updateBook(Request $request, $bookId)
     {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->back()->with('error', 'Unauthorized.');
-        }
-
         $request->validate([
             'title' => 'required|string|max:255',
             'author_id' => 'required|exists:authors,author_id',
@@ -483,50 +441,40 @@ class DashboardController extends Controller
         return redirect()->route('admin.manageBooks')->with('success', 'Book updated successfully!');
     }
 
-    // ===== AUTHOR =====
+    // === ADD AUTHOR ===
     public function storeAuthor(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:authors,name',
-        ]);
+        $request->validate(['name' => 'required|string|max:255']);
 
-        DB::table('authors')->insertGetId([
-            'name' => $request->name,
-        ]);
-        return redirect()->back()->with('success', 'Author added successfully!');
+        author::create(['name' => $request->name]);
+
+        return redirect()->route('manageAuthorsGenres')
+            ->with('success', 'Author added successfully!');
     }
 
-    // ===== GENRE =====
+    // === ADD GENRE ===
     public function storeGenre(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:genres,name',
-        ]);
+        $request->validate(['name' => 'required|string|max:255']);
 
-        DB::table('genres')->insertGetId([
-            'name' => $request->name,
-        ]);
-        return redirect()->back()->with('success', 'Genre added successfully!');
+        genre::create(['name' => $request->name]);
+
+        return redirect()->route('manageAuthorsGenres')
+            ->with('success', 'Genre added successfully!');
     }
-
 
     // ===== DELETE =====
     // Delete Author
     public function destroyAuthor($authorId)
     {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->back()->with('error', 'Unauthorized.');
-        }
+        $author = author::findOrFail($authorId);
 
-        $bookCount = DB::table('books_joint_authors')
-            ->where('author_id', $authorId)
-            ->count();
-
-        if ($bookCount > 0) {
+        // Check if author has associated books
+        if ($author->books()->count() > 0) {
             return redirect()->back()->with('error', 'Cannot delete author with associated books.');
         }
 
-        DB::table('authors')->where('author_id', $authorId)->delete();
+        $author->delete();
 
         return redirect()->route('manageAuthorsGenres')
             ->with('success', 'Author deleted successfully!');
@@ -535,19 +483,14 @@ class DashboardController extends Controller
     // Delete Genre
     public function destroyGenre($genreId)
     {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->back()->with('error', 'Unauthorized.');
-        }
+        $genre = genre::findOrFail($genreId);
 
-        $bookCount = DB::table('books_joint_genres')
-            ->where('genre_id', $genreId)
-            ->count();
-
-        if ($bookCount > 0) {
+        // Check if genre has associated books
+        if ($genre->books()->count() > 0) {
             return redirect()->back()->with('error', 'Cannot delete genre with associated books.');
         }
 
-        DB::table('genres')->where('genre_id', $genreId)->delete();
+        $genre->delete();
 
         return redirect()->route('manageAuthorsGenres')
             ->with('success', 'Genre deleted successfully!');
@@ -556,16 +499,14 @@ class DashboardController extends Controller
     // Delete Books
     public function destroyBook($bookId)
     {
-        if (Auth::user()->role !== 'librarian') {
-            return redirect()->back()->with('error', 'Unauthorized.');
-        }
+        $book = book::findOrFail($bookId);
 
-        DB::table('book_type_avail')->where('book_id', $bookId)->delete();
-        DB::table('books_joint_authors')->where('book_id', $bookId)->delete();
-        DB::table('books_joint_genres')->where('book_id', $bookId)->delete();
+        $book->bookTypeAvail()->delete();
+        $book->authors()->detach();
+        $book->genres()->detach();
 
-        DB::table('books')->where('book_id', $bookId)->delete();
+        $book->delete();
 
-        return redirect()->route('manageBooks')->with('success', 'Book deleted successfully!');
+        return redirect()->route('admin.manageBooks')->with('success', 'Book deleted successfully!');
     }
 }
