@@ -27,7 +27,7 @@
             <!-- CARD 1 -->
             <div class="col-md-3 col-6">
                 <div class="status-box">
-                    <h3 class="fw-bold mb-0 text-dark">10K+</h3>
+                    <h3 class="fw-bold mb-0 text-dark">{{ $bookCount  }}</h3>
                     <p class="text-muted fw-bold text-uppercase">Books Available</p>
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <!-- CARD 2 -->
             <div class="col-md-3 col-6">
                 <div class="status-box" style="border-bottom: 5px solid #800000;">
-                    <h3 class="fw-bold mb-0 text-dark">5K+</h3>
+                    <h3 class="fw-bold mb-0 text-dark">{{ $userCount  }}</h3>
                     <small class="text-muted fw-bold text-uppercase">Students</small>
                 </div>
             </div>
