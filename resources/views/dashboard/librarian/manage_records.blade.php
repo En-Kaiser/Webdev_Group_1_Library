@@ -33,7 +33,7 @@
     @endif
 
     <!-- PHYSICAL BOOKS BORROWING TABLE -->
-    <div class="table-responsive shadow-sm rounded">
+    <div class="table-responsive table-container shadow-sm rounded">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-dark">
                 <tr>
@@ -80,8 +80,8 @@
             </tbody>
         </table>
     </div>
-    <div class="mt-3">
+
+    <div class="mt-4 flex justify-content-center">
         {{ $books->appends(request()->query())->links() }}
     </div>
-</div>
-@endsection
+    @endsection

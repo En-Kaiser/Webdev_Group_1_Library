@@ -59,8 +59,8 @@
                                     <form action="{{ route('librarian.authors.destroy', $author->author_id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="delete-icon" style="margin-right: 1rem;" title="Delete" onclick="return confirm('Are you sure you want to remove {{  $author->name  }}?')">
-                                            <img src="{{ asset('icons/delete.svg') }}" alt="Delete" style="margin-right: 3rem;" width="20" height="20">
+                                        <button type="submit" class="delete-icon" title="Delete" onclick="return confirm('Are you sure you want to remove {{  $author->name  }}?')">
+                                            <img src="{{ asset('icons/delete.svg') }}" alt="Delete" width="20" height="20">
                                         </button>
                                     </form>
                                 </div>
@@ -103,8 +103,8 @@
                                     <form action="{{ route('librarian.genres.destroy', $genre->genre_id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="delete-icon" style="margin-left: -5rem;" title="Delete" onclick="return confirm('Are you sure you want to remove {{  $genre->name  }}?')">
-                                            <img src="{{ asset('icons/delete.svg') }}" style="margin-right: -5rem;" alt="Delete" width="20" height="20">
+                                        <button type="submit" class="delete-icon" title="Delete" onclick="return confirm('Are you sure you want to remove {{  $genre->name  }}?')">
+                                            <img src="{{ asset('icons/delete.svg') }}" alt="Delete" width="20" height="20">
                                         </button>
                                     </form>
                                 </div>
