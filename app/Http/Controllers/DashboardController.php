@@ -27,11 +27,10 @@ class DashboardController extends Controller
             return view('dashboard.index');
         }
 
-        // If logged in, check role and redirect appropriately
         if (Auth::user()->role === 'librarian') {
-            return view('dashboard.index'); // Shows librarian cards
+            return view('dashboard.index');
         } else {
-            return view('dashboard.index'); // Shows student cards
+            return view('dashboard.index');
         }
     }
 
@@ -140,21 +139,25 @@ class DashboardController extends Controller
         return view('dashboard.student.history', compact('history'));
     }
 
-
     // == LIBRARIAN PAGES == 
     public function librarianViewAll(Request $request)
     {
-        $selectedGenre = $request->input('genre_id'); // Get from request
+        $selectedGenre = $request->input('genre');
 
-        $books = book::query()
+        $query = book::query()
             ->with(['authors', 'genres'])
             ->join('books_joint_genres as bjb', 'bjb.book_id', '=', 'books.book_id')
             ->join('genres as g', 'g.genre_id', '=', 'bjb.genre_id')
             ->join('books_joint_authors as bja', 'bja.book_id', '=', 'books.book_id')
             ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
             ->select('books.*', 'a.name as author', 'g.genre_id', 'g.name as genre')
-            ->get();
+            ->distinct();
 
+        if ($selectedGenre && $selectedGenre !== 'all') {
+            $query->where('g.name', $selectedGenre);
+        }
+
+        $books = $query->get();
         $genres = genre::all();
 
         return view('dashboard.librarian.view', compact('books', 'genres', 'selectedGenre'));

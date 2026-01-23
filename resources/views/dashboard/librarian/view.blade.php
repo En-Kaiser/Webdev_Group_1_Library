@@ -38,15 +38,21 @@
             <div class="dropdown">
                 <button class="btn-filter dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-funnel"></i>
-                    <span id="current-filter">{{ request('genre') && request('genre') !== 'all' ? request('genre') : 'Filter' }}</span>
+                    <span id="current-filter">{{ $selectedGenre && $selectedGenre !== 'all' ? $selectedGenre : 'Filter' }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item filter-opt" href="?genre=all">All Genres</a></li>
+                    <li>
+                        <a class="dropdown-item filter-opt {{ !$selectedGenre || $selectedGenre === 'all' ? 'active' : '' }}"
+                            href="?genre=all">All Genres</a>
+                    </li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     @foreach($genres as $genre)
-                    <li><a class="dropdown-item filter-opt" href="?genre={{ urlencode($genre->name) }}">{{ $genre->name }}</a></li>
+                    <li>
+                        <a class="dropdown-item filter-opt {{ $selectedGenre === $genre->name ? 'active' : '' }}"
+                            href="?genre={{ urlencode($genre->name) }}">{{ $genre->name }}</a>
+                    </li>
                     @endforeach
                 </ul>
             </div>
