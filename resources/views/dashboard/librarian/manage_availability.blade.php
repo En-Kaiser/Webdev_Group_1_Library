@@ -25,6 +25,13 @@
         </ul>
     </div>
 
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-2 pr-2 pt-2" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <!-- AVAILABILITY TABLE -->
     <div class="table-responsive table-container shadow-sm">
         <table class="table table-hover mb-0">
