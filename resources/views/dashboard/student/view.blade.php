@@ -51,6 +51,7 @@
                 </ul>
             </div>
             @auth
+            <!-- BOOKMARK -->
             <a href="{{ route('student.bookmarked') }}" class="icon-bookmark">
                 <i class="bi bi-bookmark outline-icon" title="View Bookmarks"></i>
                 <i class="bi bi-bookmark-fill fill-icon" title="View Bookmarks"></i>

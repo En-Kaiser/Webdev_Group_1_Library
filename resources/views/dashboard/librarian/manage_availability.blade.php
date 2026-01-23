@@ -40,7 +40,7 @@
                 @forelse($books as $book)
                 <tr>
                     <td>{{ $book->title }}</td>
-                    <td>Physical Copy</td> 
+                    <td>Physical Copy</td>
                     <td>
                         <span class="badge-status {{ strtolower($book->current_status) }}">
                             {{ strtoupper($book->current_status) }}
