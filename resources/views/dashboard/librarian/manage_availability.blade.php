@@ -63,7 +63,7 @@
                                 </option>
                                 <!-- <option value="borrowed" {{ $book->current_status === 'borrowed' ? 'selected' : '' }}>
                                     Borrowed -->
-                                <option value="unavailable" {{ $book->status === 'unavailable' ? 'selected' : '' }}>
+                                <option value="unavailable" {{ $book->current_status === 'unavailable' ? 'selected' : '' }}>
                                     Unavailable
                                 </option>
                             </select>

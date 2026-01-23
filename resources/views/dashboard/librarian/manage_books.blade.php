@@ -138,8 +138,8 @@
                                                                 class="form-control"
                                                                 placeholder="Change Book Cover"
                                                                 readonly>
-                                                            <input type="file" name="cover_image"
-                                                                class="d-none" accept="image/*">
+                                                            <input type="file" name="cover_image" 
+                                                                class="d-none" accept="image/*" onchange="if(this.files.length > 0) this.previousElementSibling.value = this.files[0].name">
                                                         </div>
                                                         <button type="button" class="btn btn-light"
                                                             onclick="this.previousElementSibling.querySelector('input[type=file]').click()">

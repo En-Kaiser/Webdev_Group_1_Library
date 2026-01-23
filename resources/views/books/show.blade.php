@@ -36,7 +36,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 
             <div class="book-hero-image">
                 @if($book->image)
-                <img src="{{ asset('images/' . $book->image) }}" alt="{{ $book->title }} Cover">
+                <img src="{{ asset('books/' . $book->image) }}" alt="{{ $book->title }} Cover">
                 @else
                 <div class="d-flex align-items-center justify-content-center" style="width:220px; height:300px; background:#f8f9fa;">
                     <i class="bi bi-book text-secondary" style="font-size: 3rem;"></i>

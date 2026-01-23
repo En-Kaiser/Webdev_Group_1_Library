@@ -282,7 +282,7 @@
               </div>
               <div class="mb-3">
                 <label class="form-label fw-medium">Password <small class="text-muted">(leave blank to keep current)</small></label>
-                <input type="password" class="form-control" name="password">
+                <input type="password" class="form-control" name="password" placeholder="Password (min. 6 chars)" >
               </div>
             </div>
           </div>
