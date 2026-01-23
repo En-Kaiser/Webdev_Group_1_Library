@@ -14,7 +14,7 @@
         <!-- TABS -->
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('manageBooks') ? 'active' : '' }}" href="{{ route('manageBooks') }}">Books</a>
+                <a class="nav-link {{ request()->routeIs('admin.manageBooks') ? 'active' : '' }}" href="{{ route('admin.manageBooks') }}">Books</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('manageAuthorsGenres') ? 'active' : '' }}" href="{{ route('manageAuthorsGenres') }}">Authors & Genres</a>
@@ -28,8 +28,7 @@
     <!-- Controls: Search, Filter, Add -->
     <div class="d-flex flex-wrap gap-3">
         <div class="search-container position-relative me-2">
-            <form action="{{ route('dashboard.search') }}" method="GET" class="d-flex align-items-center">
-
+            <form action="{{ route('admin.manageBooks') }}" method="GET" class="d-flex align-items-center">
                 <i class="bi bi-search position-absolute ms-3 text-muted"></i>
 
                 <input name="search"
@@ -46,15 +45,20 @@
         <div class="dropdown">
             <button class="btn-filter dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-funnel"></i>
-                <span id="current-filter">Filter</span>
+                <span id="current-filter">{{ $selectedGenre ?? 'Filter' }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item filter-opt" data-value="all">All Genres</a></li>
+                <li><a class="dropdown-item filter-opt" href="{{ route('admin.manageBooks', request()->except('genre')) }}">All Genres</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
                 @foreach($genres as $genre)
-                <li><a class="dropdown-item filter-opt" data-value="{{ $genre->name }}">{{ $genre->name }}</a></li>
+                <li>
+                    <a class="dropdown-item filter-opt {{ $selectedGenre == $genre->name ? 'active' : '' }}"
+                        href="{{ route('admin.manageBooks', array_merge(request()->query(), ['genre' => $genre->name])) }}">
+                        {{ $genre->name }}
+                    </a>
+                </li>
                 @endforeach
             </ul>
         </div>
@@ -220,11 +224,11 @@
                                                 <div class="col-md-6">
                                                     <select name="status" class="form-select" required>
                                                         <option value="">Status</option>
-                                                        <option value="Available" {{ $book->availability == 'Available' ? 'selected' : '' }}>
+                                                        <option value="available" {{ $book->availability == 'available' ? 'selected' : '' }}>
                                                             Available
                                                         </option>
-                                                        <option value="Borrowed" {{ $book->availability == 'Borrowed' ? 'selected' : '' }}>
-                                                            Borrowed
+                                                        <option value="unavailable" {{ $book->availability == 'unavailable' ? 'selected' : '' }}>
+                                                            Unavailable
                                                         </option>
                                                     </select>
                                                 </div>

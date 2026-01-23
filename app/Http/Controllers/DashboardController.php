@@ -6,6 +6,7 @@ use App\Models\bookmark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 use function Symfony\Component\Clock\now;
 
@@ -258,10 +259,6 @@ class DashboardController extends Controller
         return redirect()->back()->with('success', 'Transaction rejected!');
     }
 
-
-
-    // ===== HANNA =====
-
     // --- MANAGE BOOKS ---
     public function manageBooks(Request $request)
     {
@@ -291,10 +288,10 @@ class DashboardController extends Controller
                 'a.author_id',
                 'g.name as genre',
                 'g.genre_id',
+                DB::raw("CASE WHEN bta.type = 'physical' THEN 'Physical Book' WHEN bta.type = 'e_book' THEN 'E-Book' ELSE 'Physical Book' END as types"),
                 'bta.type',
-                'bta.availability',
-            )
-            ->groupBy('b.book_id', 'b.title', 'b.short_description', 'b.image', 'b.year', 'a.name', 'a.author_id', 'g.name', 'g.genre_id', 'bta.type', 'bta.availability');
+                'bta.availability'
+            );
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -311,8 +308,10 @@ class DashboardController extends Controller
         $books = $query->paginate(10);
         $genres = DB::table('genres')->get();
         $authors = DB::table('authors')->get();
+        $searchTerm = $request->search;
+        $selectedGenre = $request->genre; // Add this line
 
-        return view('dashboard.librarian.manage_books', compact('books', 'genres', 'authors'));
+        return view('dashboard.librarian.manage_books', compact('books', 'genres', 'authors', 'searchTerm', 'selectedGenre'));
     }
 
     // --- MANAGE AUTHORS & GENRES ---
@@ -374,33 +373,16 @@ class DashboardController extends Controller
 
     public function updateStatus(Request $request, $bookId)
     {
-
         $request->validate([
-            'status' => 'required|in:available,borrowed,due',
+            'status' => 'required|in:available,unavailable',
         ]);
-
-        $updated = DB::table('history')
-            ->where('book_id', $bookId)
-            ->where('status', '!=', 'returned') 
-            ->update([
-                'status' => 'returned',
-                'date_return' => now()
-            ]);
 
         DB::table('book_type_avail')
             ->where('book_id', $bookId)
             ->update(['availability' => 'available']);
 
-        if ($updated > 0) {
-            return redirect()->route('manageAvailability')
-                ->with('success', 'Book marked as returned and is now available.');
-        } else {
-            return redirect()->route('manageAvailability')
-                ->with('info', 'No active borrow records found. Book is already available.');
-        }
+        return redirect()->route('manageAvailability')->with('success', 'Status updated successfully!');
     }
-
-
 
     // ===== BOOKS =====
     public function storeBook(Request $request)
@@ -413,36 +395,38 @@ class DashboardController extends Controller
             'title' => 'required|string|max:255',
             'author_id' => 'required|exists:authors,author_id',
             'genre_id' => 'required|exists:genres,genre_id',
-            'type' => 'required|string',
-            'status' => 'required|in:Available,Borrowed',
+            'type' => 'required|in:physical,e_book',
+            'status' => 'required|in:available,unavailable',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'year' => 'nullable|integer|min:1000|max:' . date('Y'),
             'short_description' => 'nullable|string',
         ]);
 
-        // GINAWA KO MUNANG NULLABLE SA SQL KO PARA MA-TRY KO MAG ADD
-        $image = null;
+        // Handle cover image upload
+        $imageName = null;
         if ($request->hasFile('cover_image')) {
             $filename = $request->file('cover_image')->store('books', 'public');
-            $image = basename($filename);
+            $imageName = basename($filename);
         }
-
-        $type = match (strtolower($request->type)) {
-            'e_book' => 'e_book',
-            'physical' => 'physical',
-            default => 'physical'
-        };
 
         // Insert book
         $bookId = DB::table('books')->insertGetId([
             'title' => $request->title,
             'short_description' => $request->short_description,
             'year' => $request->year,
+            'image' => $imageName,
         ]);
 
         // Link author & genre
-        DB::table('books_joint_authors')->insert(['book_id' => $bookId, 'author_id' => $request->author_id]);
-        DB::table('books_joint_genres')->insert(['book_id' => $bookId, 'genre_id' => $request->genre_id]);
+        DB::table('books_joint_authors')->insert([
+            'book_id' => $bookId,
+            'author_id' => $request->author_id
+        ]);
+
+        DB::table('books_joint_genres')->insert([
+            'book_id' => $bookId,
+            'genre_id' => $request->genre_id
+        ]);
 
         // Set type & availability
         DB::table('book_type_avail')->insert([
@@ -451,46 +435,67 @@ class DashboardController extends Controller
             'availability' => $request->status,
         ]);
 
-        // Handle cover
-        if ($request->hasFile('cover_image')) {
-            $filename = $request->file('cover_image')->store('books', 'public');
-            DB::table('books')->where('book_id', $bookId)->update(['image' => basename($filename)]);
-        }
-
-        return redirect()->route('manageBooks')->with('success', 'Book added successfully!');
+        return redirect()->route('admin.manageBooks')->with('success', 'Book added successfully!');
     }
 
     public function updateBook(Request $request, $bookId)
     {
+        if (Auth::user()->role !== 'librarian') {
+            return redirect()->back()->with('error', 'Unauthorized.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'author_id' => 'required|exists:authors,author_id',
             'genre_id' => 'required|exists:genres,genre_id',
             'type' => 'required|in:physical,e_book',
-            'status' => 'required|in:Available,Borrowed',
+            'status' => 'required|in:available,unavailable',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'year' => 'nullable|integer|min:1000|max:' . date('Y'),
             'short_description' => 'nullable|string',
         ]);
 
+        $updateData = [
+            'title' => $request->title,
+            'short_description' => $request->short_description,
+            'year' => $request->year,
+        ];
+
+        if ($request->hasFile('cover_image')) {
+            $oldBook = DB::table('books')->where('book_id', $bookId)->first();
+            if ($oldBook && $oldBook->image) {
+                Storage::disk('public')->delete('books/' . $oldBook->image);
+            }
+
+            // Upload new image
+            $filename = $request->file('cover_image')->store('books', 'public');
+            $updateData['image'] = basename($filename);
+        }
+
         // Update books table
         DB::table('books')
             ->where('book_id', $bookId)
+            ->update($updateData);
+
+        // Update author relationship
+        DB::table('books_joint_authors')
+            ->where('book_id', $bookId)
+            ->update(['author_id' => $request->author_id]);
+
+        // Update genre relationship
+        DB::table('books_joint_genres')
+            ->where('book_id', $bookId)
+            ->update(['genre_id' => $request->genre_id]);
+
+        // Update type & availability
+        DB::table('book_type_avail')
+            ->where('book_id', $bookId)
             ->update([
-                'title' => $request->title,
-                'short_description' => $request->short_description,
-                'year' => $request->year,
+                'type' => $request->type,
+                'availability' => $request->status,
             ]);
 
-        // Update relationships
-        DB::table('books_joint_authors')->where('book_id', $bookId)->update(['author_id' => $request->author_id]);
-        DB::table('books_joint_genres')->where('book_id', $bookId)->update(['genre_id' => $request->genre_id]);
-        DB::table('book_type_avail')->where('book_id', $bookId)->update([
-            'type' => $request->type,
-            'availability' => $request->status,
-        ]);
-
-        return redirect()->route('manageBooks')->with('success', 'Book updated!');
+        return redirect()->route('admin.manageBooks')->with('success', 'Book updated successfully!');
     }
 
     // ===== AUTHOR =====
@@ -500,18 +505,10 @@ class DashboardController extends Controller
             'name' => 'required|string|max:255|unique:authors,name',
         ]);
 
-        $author = DB::table('authors')->insertGetId([
+        DB::table('authors')->insertGetId([
             'name' => $request->name,
         ]);
-
-        return redirect()->route('manageAuthorsGenres')
-            ->with('success', 'Author added successfully!');
-    }
-
-    public function listAuthors()
-    {
-        $authors = DB::table('authors')->orderBy('name')->get();
-        return response()->json($authors);
+        return redirect()->back()->with('success', 'Author added successfully!');
     }
 
     // ===== GENRE =====
@@ -521,18 +518,10 @@ class DashboardController extends Controller
             'name' => 'required|string|max:255|unique:genres,name',
         ]);
 
-        $genre = DB::table('genres')->insertGetId([
+        DB::table('genres')->insertGetId([
             'name' => $request->name,
         ]);
-
-        return redirect()->route('manageAuthorsGenres')
-            ->with('success', 'Genre added successfully!');
-    }
-
-    public function listGenres()
-    {
-        $genres = DB::table('genres')->orderBy('name')->get();
-        return response()->json($genres);
+        return redirect()->back()->with('success', 'Genre added successfully!');
     }
 
 
