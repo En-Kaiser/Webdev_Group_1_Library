@@ -28,14 +28,18 @@
     <!-- Controls: Search, Filter, Add -->
     <div class="d-flex flex-wrap gap-3">
         <div class="search-container position-relative me-2">
+            <!-- <form action="{{ route('dashboard.search') }}" method="GET" class="d-flex align-items-center"> -->
+
             <form action="{{ route('admin.manageBooks') }}" method="GET" class="d-flex align-items-center">
                 <i class="bi bi-search position-absolute ms-3 text-muted"></i>
+
                 <input name="search"
-                    class="form-control ps-5 search-input"
+                    class="form-control ps-5"
                     type="search"
                     placeholder="Search books..."
                     value="{{ $searchTerm ?? '' }}"
                     aria-label="Search">
+
                 <button type="submit" class="d-none">Search</button>
             </form>
         </div>
@@ -67,8 +71,8 @@
     </div>
 
     <!-- Books Table -->
-    <div class="table-responsive shadow-sm rounded">
-        <table class="table table-hover align-middle mb-0">
+    <div class="table-responsive table-container shadow-sm">
+        <table class="table table-hover mb-0">
             <thead class="table-dark">
                 <tr>
                     <th>Title</th>

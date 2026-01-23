@@ -6,7 +6,7 @@
 
       <div class="col-md-5 col-lg-5 col-xl-5 mx-auto">
         <h5 class="text-uppercase mb-4 font-weight-bold">
-          <a href="/about" class="footer-link title-link">About Us</a>
+          <a href="{{ route('about') }}" class="footer-link title-link">About Us</a>
         </h5>
         <p style="font-size: 0.9rem; line-height: 1.6;">
           The PUP Library Management System is a centralized digital platform designed to manage, organize, and provide access to library collections and online resources. It supports students and faculty by enabling efficient searching, borrowing, and utilization of academic materials to enhance learning and research.
