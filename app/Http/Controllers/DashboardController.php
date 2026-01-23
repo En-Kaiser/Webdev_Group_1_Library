@@ -10,6 +10,7 @@ use App\Models\bookmark;
 use App\Models\books_joint_author;
 use App\Models\books_joint_genre;
 use App\Models\genre;
+use App\Models\history;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -143,6 +144,8 @@ class DashboardController extends Controller
     // == LIBRARIAN PAGES == 
     public function librarianViewAll(Request $request)
     {
+        $selectedGenre = $request->input('genre_id'); // Get from request
+
         $books = book::query()
             ->with(['authors', 'genres'])
             ->join('books_joint_genres as bjb', 'bjb.book_id', '=', 'books.book_id')
@@ -325,39 +328,26 @@ class DashboardController extends Controller
     // --- MANAGE Records ---
     public function manageRecords()
     {
-        $books = DB::table('history')
-            ->join('books', 'history.book_id', '=', 'books.book_id')
-            ->join('user_accounts', 'history.user_id', '=', 'user_accounts.user_id')
-            // ->where('history.status', 'borrowed')
-            ->where('history.type', 'physical')
-            ->select(
-                'history.history_id',
-                'books.title',
-                'history.type',
-                'user_accounts.first_name',
-                'user_accounts.last_name',
-                'history.date_borrowed',
-                'history.status'
-            )
-            ->orderBy('history.date_borrowed', 'desc')
-            ->paginate(10);;
+        $books = history::with(['book', 'user'])
+            ->where('type', 'physical')
+            ->orderBy('date_borrowed', 'desc')
+            ->paginate(10);
 
         return view('dashboard.librarian.manage_records', compact('books'));
     }
 
     public function updateStatus(Request $request, $historyId)
     {
-
         $request->validate([
             'status' => 'required|in:borrowed,returned',
         ]);
 
-        DB::table('history')
-            ->where('history_id', $historyId)
-            ->update([
-                'status' => $request->status,
-                'date_return' => $request->status === 'returned' ? now() : null
-            ]);
+        $history = history::findOrFail($historyId);
+
+        $history->update([
+            'status' => $request->status,
+            'date_return' => $request->status === 'returned' ? now() : null
+        ]);
 
         return redirect()->route('manageRecords')->with('success', 'Status updated successfully!');
     }

@@ -46,26 +46,26 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($books as $book)
+                @forelse($books as $record)
                 <tr>
-                    <td>{{ $book->title }}</td>
-                    <td>{{ $book->first_name }} {{ $book->last_name }}</td>
+                    <td>{{ $record->book->title ?? 'N/A' }}</td>
+                    <td>{{ $record->user->first_name ?? '' }} {{ $record->user->last_name ?? '' }}</td>
                     <td>Physical Book</td>
-                    <td>{{ \Carbon\Carbon::parse($book->date_borrowed)->format('M d, Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($record->date_borrowed)->format('M d, Y') }}</td>
                     <td>
-                        <span class="badge-status {{ strtolower($book->status) }}">
-                            {{ strtoupper($book->status) }}
+                        <span class="badge-status {{ strtolower($record->status) }}">
+                            {{ strtoupper($record->status) }}
                         </span>
                     </td>
                     <td>
-                        <form action="{{ route('librarian.updateStatus', $book->history_id) }}" method="POST" class="d-inline">
+                        <form action="{{ route('librarian.updateStatus', $record->history_id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('PUT')
                             <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                <option value="borrowed" {{ $book->status === 'borrowed' ? 'selected' : '' }}>
+                                <option value="borrowed" {{ $record->status === 'borrowed' ? 'selected' : '' }}>
                                     Borrowed
                                 </option>
-                                <option value="returned" {{ $book->status === 'returned' ? 'selected' : '' }}>
+                                <option value="returned" {{ $record->status === 'returned' ? 'selected' : '' }}>
                                     Returned
                                 </option>
                             </select>
