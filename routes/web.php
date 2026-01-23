@@ -67,7 +67,7 @@ Route::middleware(['auth:admin'])->group(function () {
 
         // author-genre management
         Route::get('/manage-books/authors-genres', [DashboardController::class, 'manageAuthorsGenres'])->name('manageAuthorsGenres');
-        Route::get('/manage-books/availability', [DashboardController::class, 'manageAvailability'])->name('manageAvailability');
+        Route::get('/manage-books/records', [DashboardController::class, 'manageRecords'])->name('manageRecords');
 
         Route::post('/authors', [DashboardController::class, 'storeAuthor'])->name('librarian.authors.store');
         Route::get('/authors', [DashboardController::class, 'listAuthors'])->name('librarian.authors.list');

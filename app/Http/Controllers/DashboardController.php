@@ -313,33 +313,43 @@ class DashboardController extends Controller
         return view('dashboard.librarian.manage_authors_genres', compact('authors', 'genres'));
     }
 
-    // --- MANAGE AVAILABILITY ---
-    public function manageAvailability()
+    // --- MANAGE Records ---
+    public function manageRecords()
     {
-        $books = book::query()
-            ->with('bookTypeAvail')
-            ->leftJoin('book_type_avail as bta', 'bta.book_id', '=', 'books.book_id')
+        $books = DB::table('history')
+            ->join('books', 'history.book_id', '=', 'books.book_id')
+            ->join('user_accounts', 'history.user_id', '=', 'user_accounts.user_id')
+            // ->where('history.status', 'borrowed')
+            ->where('history.type', 'physical')
             ->select(
-                'books.book_id',
+                'history.history_id',
                 'books.title',
-                'bta.type',
-                'bta.availability as status'
+                'history.type',
+                'user_accounts.first_name',
+                'user_accounts.last_name',
+                'history.date_borrowed',
+                'history.status'
             )
+            ->orderBy('history.date_borrowed', 'desc')
             ->get();
 
-        return view('dashboard.librarian.manage_availability', compact('books'));
+        return view('dashboard.librarian.manage_records', compact('books'));
     }
 
-    public function updateStatus(Request $request, $bookId)
+    public function updateStatus(Request $request, $historyId)
     {
         $request->validate([
-            'status' => 'required|in:available,unavailable',
+            'status' => 'required|in:borrowed,returned',
         ]);
 
-        book_type_avail::where('book_id', $bookId)
-            ->update(['availability' => $request->status]);
+        DB::table('history')
+            ->where('history_id', $historyId)
+            ->update([
+                'status' => $request->status,
+                'date_return' => $request->status === 'returned' ? now() : null
+            ]);
 
-        return redirect()->route('manageAvailability')->with('success', 'Status updated successfully!');
+        return redirect()->route('manageRecords')->with('success', 'Status updated successfully!');
     }
 
     // ===== BOOKS =====
@@ -406,6 +416,33 @@ class DashboardController extends Controller
         return redirect()->route('admin.manageBooks')->with('success', 'Book updated successfully!');
     }
 
+    // == store author + genre
+    public function storeAuthor(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:authors,name',
+        ]);
+
+        author::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('manageAuthorsGenres')->with('success', 'Author added successfully!');
+    }
+
+    public function storeGenre(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:genres,name',
+        ]);
+
+        genre::create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('manageAuthorsGenres')->with('success', 'Genre added successfully!');
+    }
+
     // Delete Genre
     public function destroyGenre($genreId)
     {
@@ -419,6 +456,20 @@ class DashboardController extends Controller
 
         return redirect()->route('manageAuthorsGenres')
             ->with('success', 'Genre deleted successfully!');
+    }
+
+    // Delete author
+    public function destroyAuthor($authorId)
+    {
+        $author = author::findOrFail($authorId);
+
+        if ($author->books()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete author with associated books.');
+        }
+
+        $author->delete();
+
+        return redirect()->route('manageAuthorsGenres')->with('success', 'Author deleted successfully!');
     }
 
     // Delete Books

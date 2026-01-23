@@ -20,7 +20,7 @@
                 <a class="nav-link {{ request()->routeIs('manageAuthorsGenres') ? 'active' : '' }}" href="{{ route('manageAuthorsGenres') }}">Authors & Genres</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('manageAvailability') ? 'active' : '' }}" href="{{ route('manageAvailability') }}">Availability</a>
+                <a class="nav-link {{ request()->routeIs('manageRecords') ? 'active' : '' }}" href="{{ route('manageRecords') }}">Records</a>
             </li>
         </ul>
     </div>
