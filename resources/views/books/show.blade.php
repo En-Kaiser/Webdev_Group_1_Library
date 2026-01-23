@@ -100,22 +100,25 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                     </a>
                     @endauth
                 </div>
+
             </div>
+
         </div>
-    </div>
+        <hr class="info-divider">
 
-    <hr class="info-divider">
-
-    <div class="big-info-content">
-        <div class="content-columns">
-            <div class="left-column mt-5">
-                <strong>Description</strong>
-                <p>{{ $book->short_description }}</p>
+        <div class="big-info-content">
+            <div class="content-columns">
+                <div class="left-column mt-5">
+                    <strong>Description</strong>
+                    <p>{{ $book->short_description }}</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 </div>
+
+
 
 <!-- Borrow Modal -->
 <div class="modal fade pupshelf-modal" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
@@ -206,4 +209,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
         </div>
     </div>
 </div>
+
+
+
 @endsection

@@ -66,7 +66,7 @@ class BookController extends Controller
             ? $bookIds[$currentKey + 1]
             : null;
 
-        return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked', 'prevId','nextId'));
+        return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked', 'prevId', 'nextId'));
     }
 
 
@@ -100,7 +100,6 @@ class BookController extends Controller
             ->where('user_id', $userId)
             ->where('book_id', $id)
             ->where('status', 'borrowed')
-            ->whereNull('date_return')
             ->exists();
 
         if ($alreadyBorrowed) {
@@ -129,8 +128,24 @@ class BookController extends Controller
             }
         });
 
-        // return redirect()->route('student.history');
-        return redirect()->route('dashboard.student.history');
+        if ($availability->type === 'e_book') {
+            return redirect()->route('student.history')
+                ->with('success', 'Borrow successful!')
+                ->with('download_triggered', true); 
+        }
+
+        return redirect()->route('student.history');
+    }
+
+    public function downloadEbook()
+{
+    $path = public_path('e_books/ITDS.pdf');
+    
+    if (file_exists($path)) {
+        return response()->download($path, 'ITDS.pdf');
+    }
+    
+        return redirect()->route('student.history');
     }
 
     public function bookmark($id)
@@ -177,6 +192,4 @@ class BookController extends Controller
     {
         // to be implemented
     }
-
-
 }

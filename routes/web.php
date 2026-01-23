@@ -7,6 +7,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LogInController;
 use App\Http\Controllers\SignUpController;
+use App\Http\Controllers\TransactionController;
 use App\Models\book;
 use App\Models\user_account;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::get('/', function () {
 
 // == TESTING ==
 Route::get('/test', [SignUpController::class, 'json_string']);
+Route::get('/download-book', [BookController::class, 'downloadEbook'])->name('books.download.itds')->middleware('auth');
 // == AUTH ==
 Route::get('/signup', [SignUpController::class, 'showSignUp'])->name('auth.showSignUp');
 Route::post('/signup', [SignUpController::class, 'signup'])->name('auth.signup');
@@ -54,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth:admin'])->group(function () {
     Route::prefix('librarian')->group(function () {
         Route::get('/all', [DashboardController::class, 'librarianViewAll'])->name('librarian.viewAll');
-        Route::get('/transactions', [DashboardController::class, 'transactions'])->name('librarian.transactions');
+        Route::get('/transactions', [TransactionController::class, 'transactions'])->name('librarian.transactions');
         Route::get('/create', [DashboardController::class, 'createSubmission'])->name('librarian.create');
         Route::post('/create', [DashboardController::class, 'store'])->name('librarian.store');
         // User monitoring
@@ -86,8 +88,8 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::delete('/books/{id}', [DashboardController::class, 'destroyBook'])->name('librarian.books.destroy');
 
         // Transaction Actions
-        Route::post('/transactions/approve/{id}', [DashboardController::class, 'approve'])->name('librarian.transactions.approve');
-        Route::post('/transactions/reject/{id}', [DashboardController::class, 'reject'])->name('librarian.transactions.reject');
+        Route::post('/transactions/approve/{id}', [TransactionController::class, 'approve'])->name('librarian.transactions.approve');
+        Route::post('/transactions/reject/{id}', [TransactionController::class, 'reject'])->name('librarian.transactions.reject');
     });
 });
 

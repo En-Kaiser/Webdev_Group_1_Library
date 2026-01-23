@@ -174,90 +174,7 @@ class DashboardController extends Controller
         return redirect()->route('manageBooks')->with('success', 'Book added successfully!');
     }
 
-    public function monitorUsers()
-    {
-        // Logic
-        return view('dashboard.librarian.monitor_users');
-    }
-
-    public function transactions()
-    {
-        // Dummy Pending Requests (Top section)
-        $pendingRequests = collect([
-            (object)[
-                'id'     => 1,
-                'type'   => 'Physical',
-                'status' => 'Available',
-                'user'   => (object)['first_name' => 'Juan', 'last_name' => 'Dela Cruz'],
-                'book'   => (object)['title' => 'Introduction to Laravel']
-            ],
-            (object)[
-                'id'     => 2,
-                'type'   => 'E-Book',
-                'status' => 'Unavailable',
-                'user'   => (object)['first_name' => 'Maria', 'last_name' => 'Clara'],
-                'book'   => (object)['title' => 'Data Structures and Algorithms']
-            ],
-            (object)[
-                'id'     => 3,
-                'type'   => 'Physical',
-                'status' => 'Available',
-                'user'   => (object)['first_name' => 'Jose', 'last_name' => 'Rizal'],
-                'book'   => (object)['title' => 'Noli Me Tangere']
-            ]
-        ]);
-
-        // Dummy Completed Transactions (Bottom table section)
-        $completedTransactions = collect([
-            (object)[
-                'user_name'   => 'Cardo Dalisay',
-                'book_title'  => 'Web Development 101',
-                'type'        => 'Physical',
-                'borrow_date' => '01-10-2026',
-                'due_date'    => '01-17-2026',
-                'return_date' => '01-17-2026',
-                'status'      => 'Returned'
-            ],
-            (object)[
-                'user_name'   => 'Cardo Dalisay',
-                'book_title'  => 'Web Development 101',
-                'type'        => 'Physical',
-                'borrow_date' => '01-10-2026',
-                'due_date'    => '01-17-2026',
-                'return_date' => '01-17-2026',
-                'status'      => 'Returned'
-            ],
-            (object)[
-                'user_name'   => 'Niana Guerrero',
-                'book_title'  => 'Modern Database Systems',
-                'type'        => 'E-Book',
-                'borrow_date' => '01-15-2026',
-                'due_date'    => '01-17-2026',
-                'return_date' => null,
-                'status'      => 'Borrowed'
-            ]
-        ]);
-
-
-        // == DB Connected Version: NEED TRANSACTION MODEL ==
-        // $pendingRequests = Transaction::where('status', 'Pending')->get();
-
-        // $completedTransactions = Transaction::whereIn('status', ['Borrowed', 'Returned'])
-        //                                     ->orderBy('created_at', 'desc')
-        //                                     ->get();
-
-        return view('dashboard.librarian.transactions', compact('pendingRequests', 'completedTransactions'));
-    }
-
-    public function approve($id)
-    {
-        return redirect()->back()->with('success', 'Transaction approved!');
-    }
-
-    public function reject($id)
-    {
-        return redirect()->back()->with('success', 'Transaction rejected!');
-    }
+   
 
     // --- MANAGE BOOKS ---
     public function manageBooks(Request $request)
@@ -437,6 +354,13 @@ class DashboardController extends Controller
             'availability' => $request->status,
         ]);
 
+        DB::table('admin_history')->insert([
+            'admin_id'      => Auth::id(),        
+            'book_id'       => $bookId,     
+            'description'   => "New book added: " . $request->title,         
+            'change_created'=> now(),             
+        ]);
+
         return redirect()->route('admin.manageBooks')->with('success', 'Book added successfully!');
     }
 
@@ -463,10 +387,10 @@ class DashboardController extends Controller
             'year' => $request->year,
         ];
 
+        $oldBook = DB::table('books')->where('book_id', $bookId)->first();
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $oldBook = DB::table('books')->where('book_id', $bookId)->first();
             if ($oldBook && $oldBook->image) {
                 $oldPath = public_path('books/' . $oldBook->image);
                 if (file_exists($oldPath)) {
@@ -495,9 +419,18 @@ class DashboardController extends Controller
         // Update type & availability
         DB::table('book_type_avail')
             ->where('book_id', $bookId)
+            ->where('type',$request->type)
             ->update([
-                'type' => $request->type,
                 'availability' => $request->status,
+            ]);
+
+            DB::table('admin_history')->insert([
+                'admin_id'       => Auth::id(),
+                'user_id'        => NULL,
+                'book_id'        => $bookId,
+                'description'    => "Updated book: ". $request -> title,
+                'change_created' => now()
+                 
             ]);
 
         return redirect()->route('admin.manageBooks')->with('success', 'Book updated successfully!');
@@ -513,6 +446,11 @@ class DashboardController extends Controller
         DB::table('authors')->insertGetId([
             'name' => $request->name,
         ]);
+        DB::table('admin_history')->insert([
+            'admin_id'       => Auth::id(),
+            'description'    => "Added Author: ". $request->name,
+            'change_created' => now()
+        ]);
         return redirect()->back()->with('success', 'Author added successfully!');
     }
 
@@ -525,6 +463,11 @@ class DashboardController extends Controller
 
         DB::table('genres')->insertGetId([
             'name' => $request->name,
+        ]);
+        DB::table('admin_history')->insert([
+            'admin_id'       => Auth::id(),
+            'description'    => "Added Genre: ". $request->name,
+            'change_created' => now()
         ]);
         return redirect()->back()->with('success', 'Genre added successfully!');
     }
@@ -547,7 +490,11 @@ class DashboardController extends Controller
         }
 
         DB::table('authors')->where('author_id', $authorId)->delete();
-
+        DB::table('admin_history')->insert([
+            'admin_id'       => Auth::id(),
+            'description'    => "Deleted Author: ". $authorId,
+            'change_created' => now()
+        ]);
         return redirect()->route('manageAuthorsGenres')
             ->with('success', 'Author deleted successfully!');
     }
@@ -569,6 +516,11 @@ class DashboardController extends Controller
 
         DB::table('genres')->where('genre_id', $genreId)->delete();
 
+        DB::table('admin_history')->insert([
+            'admin_id'       => Auth::id(),
+            'description'    => "Deleted Genre: ". $genreId,
+            'change_created' => now()
+        ]);
         return redirect()->route('manageAuthorsGenres')
             ->with('success', 'Genre deleted successfully!');
     }
@@ -585,7 +537,12 @@ class DashboardController extends Controller
         DB::table('books_joint_genres')->where('book_id', $bookId)->delete();
 
         DB::table('books')->where('book_id', $bookId)->delete();
-
+        DB::table('admin_history')->insert([
+            'admin_id'       => Auth::id(),
+            'book_id'        => $bookId,
+            'description'    => "Book Deleted",
+            'change_created' => now()
+        ]);
         return redirect()->route('manageBooks')->with('success', 'Book deleted successfully!');
     }
 }
