@@ -51,7 +51,7 @@
     </div>
 
     <div class="table-responsive table-container shadow-sm">
-        <table class="table tbale-hover mb-0">
+        <table class="table table-hover mb-0">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -65,7 +65,7 @@
             </thead>
             <tbody>
                 @forelse($completedTransactions as $trans)
-                <tr class="">
+                <tr>
                     <td>{{ $trans->user_name }}</td>
                     <td>{{ $trans->book_title }}</td>
                     <td>{{ $trans->type }}</td>

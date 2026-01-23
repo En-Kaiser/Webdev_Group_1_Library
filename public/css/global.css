@@ -5,6 +5,7 @@
   --secondary-yellow: #D9A41F;
   --bg-gray: #D9D9D9;
   --status-green: #56F000;
+  --status-available: #4CAF50;
   --status-red: #FF0000;
   --status-orange: #D9A41F;
 }
@@ -27,6 +28,79 @@
   margin: 0;
 }
 
+.header-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.header-controls .dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 0.5rem 0;
+  margin-top: 10px !important;
+}
+
+.header-controls .dropdown-item {
+  transition: all 0.2s ease;
+}
+
+.header-controls .dropdown-item:hover {
+  background-color: #f8e5e5;
+  color: var(--primary-maroon);
+}
+
+.header-controls .dropdown-divider {
+  margin: 0.5rem 0;
+}
+
+/* == FILTER BUTTON == */
+.btn-filter {
+  border: 2px solid var(--primary-maroon);
+  color: var(--primary-maroon);
+  border-radius: 10px;
+  padding: 5px 20px;
+  font-weight: 600;
+  background: white;
+  transition: 0.2s;
+}
+
+.btn-filter:hover,
+.btn-filter:active,
+.btn-filter:focus {
+  transform: scale(1.02);
+  background-color: var(--primary-maroon);
+  color: white;
+}
+
+/* == BOOKMARK BUTTON == */
+.icon-bookmark {
+  font-size: 1.8rem;
+  color: var(--secondary-yellow);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.icon-bookmark .fill-icon {
+  display: none;
+}
+
+.icon-bookmark:hover .outline-icon {
+  display: none;
+}
+
+.icon-bookmark:hover .fill-icon {
+  display: inline-block;
+  transform: scale(1.02);
+}
+
+.icon-bookmark:active {
+  filter: brightness(0.9);
+  transition: transform 0.5s ease;
+}
+
 /* == BOOK STATUS == */
 .badge-status {
   display: inline-block;
@@ -36,7 +110,7 @@
   font-weight: 600;
   font-size: 0.85rem;
   text-transform: capitalize;
-} 
+}
 
 .badge-status.returned {
   background-color: var(--status-green);
@@ -48,11 +122,21 @@
   color: #614A00;
 }
 
+.badge-status.available {
+    background-color: var(--status-available);
+    color: white;
+}
+
+.status-badge.unavailable {
+    background-color: var(--status-red);  
+    color: white; 
+}
+
 /* == TABLE DESIGN == */
 .table-container {
   border: 2px solid var(--primary-maroon);
   border-radius: 15px;
-  overflow: hidden; 
+  overflow: hidden;
   margin-bottom: 4rem;
 }
 
@@ -64,14 +148,14 @@
 .table-container th {
   background-color: var(--primary-maroon) !important;
   color: white !important;
-  padding: 15px;
+  padding: 1rem 0.5rem !important;
   font-weight: 600;
   border-right: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: none;
+  border: none;
 }
 
 .table-container td {
-  padding: 12px 15px;
+  padding: 1rem;
   text-align: center;
   vertical-align: middle;
   border-right: 2px solid var(--primary-maroon);
@@ -88,6 +172,7 @@
   /* For too long text */
   text-overflow: ellipsis;
 }
+
 
 .btn-yellow {
   margin-left: 0.5rem;

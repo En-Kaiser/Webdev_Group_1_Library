@@ -67,7 +67,8 @@
                 :title="$book->title"
                 :author="$book->author"
                 :genre="$book->genre"
-                :year="$book->year" />
+                :year="$book->year" 
+                :cover="$book->image" />
             <!-- :cover="$book->cover_image" -->
         </div>
         @empty
