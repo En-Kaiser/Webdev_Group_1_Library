@@ -167,7 +167,7 @@ class DashboardController extends Controller
             'image' => $filename,
         ]);
 
-        return redirect()->route('admin.manageBooksd')->with('success', 'Book added successfully!');
+        return redirect()->route('admin.manageBooks')->with('success', 'Book added successfully!');
     }
 
     public function transactions()
