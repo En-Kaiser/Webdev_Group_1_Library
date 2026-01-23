@@ -8,6 +8,8 @@ class book extends Model
 {
     protected $table = 'books';
     protected $primaryKey = 'book_id';
+    protected $fillable = ['title', 'short_description', 'year', 'image'];
+    public $timestamps = false;
 
     public function authors()
     {
@@ -26,6 +28,15 @@ class book extends Model
             'books_joint_genres',
             'book_id',
             'genre_id'
+        );
+    }
+
+    public function typeAvail()
+    {
+        return $this->hasOne(
+            book_type_avail::class,
+            'book_id',
+            'book_id'
         );
     }
 
