@@ -32,7 +32,7 @@ Route::post('/logout', [LogInController::class, 'logout'])->name('auth.logout');
 Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
-
+    
     Route::get('/all', [DashboardController::class, 'studentViewAll'])->name('student.viewAll');
 });
 

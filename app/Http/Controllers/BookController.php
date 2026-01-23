@@ -129,13 +129,13 @@ class BookController extends Controller
             }
         });
 
-        return redirect()->route('dashboard.history');
+        return redirect()->route('student.history');
     }
 
     public function bookmark($id)
     {
         if (!Auth::check()) {
-            return redirect()->route('auth.showSignUp');
+            return redirect()->route('auth.showLogIn');
         }
 
         $userId = Auth::id();

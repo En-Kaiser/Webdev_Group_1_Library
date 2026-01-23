@@ -80,33 +80,39 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                 <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
                 @endauth
                 <div class="bookmark-controls">
+                    @auth
                     <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
                         @csrf
-
                         <button type="submit" style="border: none; background: none; padding: 0;" class="icon-bookmark">
-                                @if($isBookmarked)
-                                <i class="bi bi-bookmark-fill" title="Remove Bookmark"></i>
-                                @else
-                                <i class="bi bi-bookmark outline-icon" title="Add Bookmark"></i>
-                                <i class="bi bi-bookmark-fill fill-icon" title="Add Bookmark"></i>
-                                @endif
+                            @if($isBookmarked)
+                            <i class="bi bi-bookmark-fill" title="Remove Bookmark"></i>
+                            @else
+                            <i class="bi bi-bookmark outline-icon" title="Add Bookmark"></i>
+                            <i class="bi bi-bookmark-fill fill-icon" title="Add Bookmark"></i>
+                            @endif
                         </button>
                     </form>
-                </div>
-            </div>
-        </div>
-
-        <hr class="info-divider">
-
-        <div class="big-info-content">
-            <div class="content-columns">
-                <div class="left-column mt-5">
-                    <strong>Description</strong>
-                    <p>{{ $book->short_description }}</p>
+                    @else
+                    <a href="{{ route('auth.showSignUp') }}" style="text-decoration: none; color: inherit;">
+                        <i class="bi bi-bookmark outline-icon" title="Login to Bookmark"></i>
+                    </a>
+                    @endauth
                 </div>
             </div>
         </div>
     </div>
+
+    <hr class="info-divider">
+
+    <div class="big-info-content">
+        <div class="content-columns">
+            <div class="left-column mt-5">
+                <strong>Description</strong>
+                <p>{{ $book->short_description }}</p>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 <div class="modal fade" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">

@@ -67,6 +67,7 @@ class DashboardController extends Controller
 
     public function bookmarked(Request $request)
     {
+        
         $query = DB::table('books as b')
             ->join('bookmarks as bm', 'bm.book_id', '=', 'b.book_id')
             ->leftJoin('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
@@ -151,28 +152,30 @@ class DashboardController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max2048',
-        ]);
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-        $filename = null;
+    $filename = null;
 
-        if ($request->hasFile('cover_image')) {
-            $path = $request->file('cover_image')->store('books', 'public');
-            $filename = basename($path);
-        }
-
-        DB::table('books')->insert([
-            'title' => $request->title,
-            'image' => $filename ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return redirect()->route('manageBooks')->with('success', 'Book added successfully!');
+    if ($request->hasFile('cover_image')) {
+        $file = $request->file('cover_image');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('images'), $filename);
     }
+
+    
+    DB::table('books')->insert([
+        'title' => $request->title,
+        'image' => $filename, 
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    return redirect()->route('manageBooks')->with('success', 'Book added successfully!');
+}
 
     public function monitorUsers()
     {
