@@ -61,6 +61,7 @@
                         <form action="{{ route('librarian.updateStatus', $book->history_id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('PUT')
+
                             <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
                                 <option value="borrowed" {{ $book->status === 'borrowed' ? 'selected' : '' }}>
                                     Borrowed
@@ -79,9 +80,6 @@
                 @endforelse
             </tbody>
         </table>
-    </div>
-    <div class="mt-3">
-        {{ $books->appends(request()->query())->links() }}
     </div>
 </div>
 @endsection

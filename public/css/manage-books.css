@@ -55,7 +55,7 @@
     background: white;
     transition: 0.2s;
     height: fit-content;
-    margin-left: 43.5rem;
+    margin-left: 44.5rem;
 }
 
 .btn-filter:hover {
@@ -65,7 +65,7 @@
 /* Add Book Button */
 .btn-success {
     background-color: #FFD700;
-    color: #800000;
+    color: #2F0909;
     font-weight: bold;
     padding: 0.45rem 1rem;
     border-radius: 20px;
@@ -88,8 +88,41 @@
     margin-bottom: 1rem !important;
 }
 
+
+/* ===== TABLE STYLES ===== */
+.table-responsive {
+    border: 2px solid #8B0000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    margin: 0;
+    background-color: #fff;
+}
+
+.table th {
+    background-color: #8B0000;
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    padding: 1rem;
+    border: none;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-top: 1px solid #eee;
+}
+
+.table tbody tr:hover {
+    background-color: #fdfdfd;
+}
+
 /* ===== STATUS BADGE  ===== */
-/* .badge-status {
+.badge-status {
     padding: 0.35rem 0.75rem;
     border-radius: 20px;
     font-size: 0.85rem;
@@ -98,22 +131,22 @@
     display: inline-block;
     min-width: 80px;
     text-align: center;
-} */
-/* 
+}
+
 .badge-status.available {
     background-color: #4CAF50;
     color: white;
-} */
+}
 
 .badge-status.borrowed {
     background-color: #D9A41F;
     color: white;
 }
 
-/* .status-badge.unavailable {
+.status-badge.unavailable {
     background-color: #D9A41F;  
     color: #000; 
-} */
+}
 
 .badge-status.missing {
     background-color: #F44336;
@@ -345,6 +378,7 @@
     transition: all 0.2s;
     width: 100%;
     max-width: 200px;
+
 }
 
 .btn-cancel:hover {

@@ -31,7 +31,7 @@
     </div>
 
     <!-- TABLE -->
-    <div class="table-responsive table-container shadow-sm">
+    <div class="table-responsive table-container shadow sm">
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
@@ -56,7 +56,19 @@
                     </td>
                 </tr>
                 @empty
-                <td colspan="5" class="text-center py-4 text-muted">No transactions found.</td>
+                @for($i = 0; $i < 8; $i++)
+                    <tr>
+                    <td class="text-muted">-</td>
+                    <td class="text-muted">-</td>
+                    <td class="text-muted">-</td>
+                    <td class="text-muted">-</td>
+                    <td>
+                        <span class="badge-status">
+                            -
+                        </span>
+                    </td>
+                    </tr>
+                    @endfor
                     @endforelse
             </tbody>
         </table>

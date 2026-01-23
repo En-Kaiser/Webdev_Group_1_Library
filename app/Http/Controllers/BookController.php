@@ -56,17 +56,7 @@ class BookController extends Controller
                 ->exists();
         }
 
-        // HANNA - Added it for next next ng book
-        $bookIds = DB::table('books')->orderBy('book_id')->pluck('book_id');
-
-        $currentKey = $bookIds->search($id);
-
-        $prevId = $currentKey > 0 ? $bookIds[$currentKey - 1] : null;
-        $nextId = $currentKey !== false && $currentKey < $bookIds->count() - 1
-            ? $bookIds[$currentKey + 1]
-            : null;
-
-        return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked', 'prevId','nextId'));
+        return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked'));
     }
 
 
@@ -129,13 +119,13 @@ class BookController extends Controller
             }
         });
 
-        return redirect()->route('dashboard.student.history');
+        return redirect()->route('dashboard.history');
     }
 
     public function bookmark($id)
     {
         if (!Auth::check()) {
-            return redirect()->route('auth.showSignUp');
+            return redirect()->route('auth.showLogIn');
         }
 
         $userId = Auth::id();
@@ -177,5 +167,6 @@ class BookController extends Controller
         // to be implemented
     }
 
-
+    // ==== LIBRARIAN ====
+    
 }

@@ -13,25 +13,11 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 @section('content')
 <div class="book-container">
 
-    <!-- HERO SECTION -->
     <div class="book-hero-section">
         <div class="hero-left">
             <div class="side-votes">
-                @if($prevId)
-                <a href="{{ route('books.show', $prevId) }}" title="Previous Book">
-                    <img src="{{ asset('icons/arrow-up.svg') }}" class="icon" alt="Previous Book">
-                </a>
-                @else
-                <img src="{{ asset('icons/arrow-up.svg') }}" class="icon disabled" alt="No Previous Book" style="opacity: 0.4;">
-                @endif
-
-                @if($nextId)
-                <a href="{{ route('books.show', $nextId) }}" title="Next Book">
-                    <img src="{{ asset('icons/arrow-down.svg') }}" class="icon" alt="Next Book">
-                </a>
-                @else
-                <img src="{{ asset('icons/arrow-down.svg') }}" class="icon disabled" alt="No Next Book" style="opacity: 0.4;">
-                @endif
+                <img src="{{ asset('icons/arrow-up.svg') }}" class="icon" alt="Arrow Up">
+                <img src="{{ asset('icons/arrow-down.svg') }}" class="icon" alt="Arrow Down">
             </div>
 
             <div class="book-hero-image">
@@ -59,17 +45,16 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
         </div>
     </div>
 
-    <!-- INFO BOX -->
     <div class="big-info-box mb-5">
 
         <div class="book_type_avail-overlay d-flex justify-content-between align-items-center">
 
-            <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}" style="margin-left: 37rem;">
+            <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}">
                 Availability: <b>{{ $isAvailable ? 'Available' : 'Unavailable' }}</b>
             </span>
 
             <div class="d-flex align-items-center gap-3">
-                <!-- Borrow Button -->
+
                 @auth
                 <button type="button"
                     class="btn btn-primary btn-sm px-4"
@@ -77,32 +62,39 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                     data-bs-target="#borrowModal">
                     Borrow Book
                 </button>
+
                 @else
                 <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
                 @endauth
-
                 <div class="bookmark-controls">
                     <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
                         @csrf
 
-                        <button type="submit" style="border: none; background: none; padding: 0;" class="icon-bookmark">
-                            @if($isBookmarked)
-                            <i class="bi bi-bookmark-fill" title="Remove Bookmark"></i>
-                            @else
-                            <i class="bi bi-bookmark outline-icon" title="Add Bookmark"></i>
-                            <i class="bi bi-bookmark-fill fill-icon" title="Add Bookmark"></i>
-                            @endif
+                        <button type="submit" style="border: none; background: none; padding: 0;">
+                            <img src="{{ $isBookmarked ? asset('icons/bookmarked.svg') : asset('icons/bookmark.svg') }}"
+                                class="bookmark-icon"
+                                alt="Bookmark"
+                                title="{{ $isBookmarked ? 'Remove Bookmark' : 'Add Bookmark' }}"
+                                style="width:22px; height:22px; cursor:pointer;">
                         </button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <hr class="info-divider">
+        <script>
+            function toggleBookmark(el) {
+                const bookmark = "{{ asset('icons/bookmark.svg') }}";
+                const bookmarked = "{{ asset('icons/bookmarked.svg') }}";
+                el.src = el.src.includes('bookmarked.svg') ? bookmark : bookmarked;
+            }
+        </script>
 
+        <hr class="info-divider">
+        
         <div class="big-info-content">
             <div class="content-columns">
-                <div class="left-column mt-5">
+                <div class="left-column">
                     <strong>Description</strong>
                     <p>{{ $book->short_description }}</p>
                 </div>
@@ -111,58 +103,29 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
     </div>
 </div>
 
-<!-- Borrow Modal -->
-<div class="modal fade pupshelf-modal" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
-            <div class="modal-header pupshelf-modal-header">
-                <div>
-                    <h5 class="modal-title" id="borrowModalLabel">Borrow Form</h5>
-                    <small class="pupshelf-subtitle">Confirm details and choose a format</small>
-                </div>
-                <button type="button" class="btn-close pupshelf-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="borrowModalLabel">Borrow Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <form action="{{ route('books.borrow', $book->book_id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
-                    <div class="pupshelf-bookcard">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="pupshelf-label">Book Title</div>
-                                <div class="pupshelf-value">{{ $book->title }}</div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="pupshelf-label">Year</div>
-                                <div class="pupshelf-value">{{ $book->year }}</div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="pupshelf-label">Genre</div>
-                                <div class="pupshelf-value">
-                                    {{ $genres->pluck('name')->implode(', ') }}
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="pupshelf-label">Author</div>
-                                <div class="pupshelf-value">
-                                    {{ $authors->pluck('name')->implode(', ') }}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="mb-3 p-3 bg-light rounded">
+                        <p class="mb-1"><strong>Book Title:</strong> {{ $book->title }}</p>
+                        <p class="mb-1"><strong>Genre:</strong> {{ $genres->pluck('name')->implode(', ') }}</p>
+                        <p class="mb-1"><strong>Author:</strong> {{ $authors->pluck('name')->implode(', ') }}</p>
+                        <p class="mb-0"><strong>Year:</strong> {{ $book->year }}</p>
                     </div>
 
-                    <div class="mt-4">
-                        <label for="book_type_id" class="form-label pupshelf-form-label">
-                            Choose Format
-                        </label>
+                    <div class="mb-3">
+                        <label for="book_type_id" class="form-label">Choose Format</label>
 
-                        <select name="book_type_id" id="book_type_id"
-                            class="form-select pupshelf-select" required>
-                            <option value="" disabled selected>Select format...</option>
+                        <select name="book_type_id" id="book_type_id" class="form-select" required>
+                            <option value="" selected disabled>Select format...</option>
 
                             <option value="{{ $hasPhysical ? $hasPhysical->book_type_id : '' }}"
                                 {{ !$hasPhysical ? 'disabled' : '' }}>
@@ -176,26 +139,14 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                         </select>
 
                         @if(!$hasPhysical && !$hasEbook)
-                        <div class="pupshelf-alert mt-2">
-                            No copies are currently available.
-                        </div>
+                        <div class="form-text text-danger">No copies are currently available.</div>
                         @endif
                     </div>
-                </div>
 
-                <div class="modal-footer pupshelf-modal-footer">
-                    <button type="button"
-                        class="btn pupshelf-btn-outline"
-                        data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-
-                    <button type="submit"
-                        class="pupshelf-btn-primary"
-                        {{ !$isAvailable ? 'disabled' : '' }}>
-                        Borrow
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success" {{ !$isAvailable ? 'disabled' : '' }}>Borrow</button>
+                    </div>
             </form>
         </div>
     </div>

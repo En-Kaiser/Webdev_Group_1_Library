@@ -338,7 +338,6 @@ class DashboardController extends Controller
 
     public function updateStatus(Request $request, $historyId)
     {
-
         $request->validate([
             'status' => 'required|in:borrowed,returned',
         ]);

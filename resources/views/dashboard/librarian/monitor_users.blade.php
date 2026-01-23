@@ -7,7 +7,7 @@
 @endpush
 
 @section('content')
-<div class="container py-5">
+<div class="container px-md-5 mt-3">
   <div class="page-header">
     <h1 class="page-title">User Management</h1>
   </div>
