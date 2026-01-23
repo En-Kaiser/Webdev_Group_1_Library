@@ -331,7 +331,7 @@ class DashboardController extends Controller
                 'history.status'
             )
             ->orderBy('history.date_borrowed', 'desc')
-            ->get();
+            ->paginate(10);;
 
         return view('dashboard.librarian.manage_records', compact('books'));
     }
