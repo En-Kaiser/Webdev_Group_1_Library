@@ -29,12 +29,10 @@ class AdminController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Get users with borrowed books count
         $users = $query->withCount(['history as borrowed_books_count' => function ($q) {
             $q->where('status', 'borrowed');
         }])->orderBy('user_id', 'asc')->get();
 
-        // Add full name
         foreach ($users as $user) {
             $user->name = $user->first_name . ' ' . $user->last_name;
         }
