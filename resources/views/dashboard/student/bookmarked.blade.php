@@ -37,7 +37,7 @@
   </div>
 
   <!-- Mobile: 2 columns | Tablet: 3 columns | Desktop: 6 columns -->
-  <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4">
+  <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4"> 
     @forelse($books as $book)
     <div class="col book-card-item" data-genre="{{ $book->genre }}">
       <x-book-card

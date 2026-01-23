@@ -34,23 +34,24 @@
                 </form>
             </div>
 
+            <!-- FILTER BUTTON -->
             <div class="dropdown">
                 <button class="btn-filter dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-funnel"></i>
-                    <span id="current-filter">Filter</span>
+                    <span id="current-filter">{{ request('genre') && request('genre') !== 'all' ? request('genre') : 'Filter' }}</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item filter-opt" data-value="all">All Genres</a></li>
+                    <li><a class="dropdown-item filter-opt" href="?genre=all">All Genres</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     @foreach($genres as $genre)
-                    <li><a class="dropdown-item filter-opt" data-value="{{ $genre->name }}">{{ $genre->name }}</a></li>
+                    <li><a class="dropdown-item filter-opt" href="?genre={{ urlencode($genre->name) }}">{{ $genre->name }}</a></li>
                     @endforeach
-
                 </ul>
             </div>
 
+            <!-- MANAGE BOOKS BUTTON -->
             <a href="{{ route('admin.manageBooks') }}" class="btn-yellow">
                 <i class="fas fa-cogs me-1"></i> Manage Books
             </a>
@@ -67,9 +68,9 @@
                 :title="$book->title"
                 :author="$book->author"
                 :genre="$book->genre"
-                :year="$book->year" 
+                :year="$book->year"
                 :cover="$book->image" />
-            <!-- :cover="$book->cover_image" -->
+
         </div>
         @empty
         <div class="col-12 text-center py-5">
@@ -80,37 +81,3 @@
     <div class="m-5"></div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const filterOptions = document.querySelectorAll('.filter-opt');
-        const bookItems = document.querySelectorAll('.book-card-item');
-        const filterLabel = document.getElementById('current-filter');
-
-        filterOptions.forEach(option => {
-            option.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const selectedGenre = this.getAttribute('data-value');
-                const genreName = this.innerText;
-
-                if (filterLabel) {
-                    filterLabel.innerText = selectedGenre === 'all' ? 'Filter' : genreName;
-                }
-
-                bookItems.forEach(item => {
-                    const itemGenre = item.getAttribute('data-genre');
-
-                    if (selectedGenre === 'all' || itemGenre === selectedGenre) {
-                        // SHOW: Remove the hidden class
-                        item.classList.remove('d-none');
-                    } else {
-                        item.classList.add('d-none');
-                    }
-                });
-            });
-        });
-    });
-</script>
-@endpush

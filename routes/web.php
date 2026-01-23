@@ -34,7 +34,8 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
 
     Route::get('/all', [DashboardController::class, 'studentViewAll'])->name('student.viewAll');
-    Route::get('/about', function () {return view('dashboard.aboutus');})->name('about');
+    // Route::get('/about', function () {return view('dashboard.aboutus');})->name('about');
+    Route::get('/about', [DashboardController::class, 'aboutUs'])->name('aboutUs');
 });
 
 // == BOOKS (Open to Guests) ==
@@ -43,7 +44,7 @@ Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 // == STUDENT ROUTES - requires login ==
 Route::middleware(['auth'])->group(function () {
     // borrowing
-    Route::get('/books/{id}/borrow', [BookController::class, 'showBorrowPrompt'])->name('books.showBorrowPrompt');
+    // Route::get('/books/{id}/borrow', [BookController::class, 'showBorrowPrompt'])->name('books.showBorrowPrompt');
     Route::post('/books/{id}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
     Route::post('/books/{id}/bookmark', [BookController::class, 'bookmark'])->name('books.bookmark');
     // Student pages
