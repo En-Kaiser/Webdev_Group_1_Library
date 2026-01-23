@@ -42,7 +42,7 @@ Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
 // == STUDENT ROUTES - requires login ==
 Route::middleware(['auth'])->group(function () {
     // borrowing
-    Route::get('/books/{id}/borrow', [BookController::class, 'showBorrowPrompt'])->name('books.showBorrowPrompt');
+    // Route::get('/books/{id}/borrow', [BookController::class, 'showBorrowPrompt'])->name('books.showBorrowPrompt');
     Route::post('/books/{id}/borrow', [BookController::class, 'borrow'])->name('books.borrow');
     Route::post('/books/{id}/bookmark', [BookController::class, 'bookmark'])->name('books.bookmark');
     // Student pages

@@ -11,6 +11,27 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 @endpush
 
 @section('content')
+<div class="container mt-3">
+    {{-- Success Feedback --}}
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    {{-- Error Feedback --}}
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+</div>
+
+
 <div class="book-container">
 
     <!-- HERO SECTION -->
@@ -69,7 +90,11 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
             </span>
 
             <div class="d-flex align-items-center gap-3">
-                <!-- Borrow Button -->
+                {{-- Check if user is a Librarian / Admin --}}
+                @if(Auth::guard('admin')->check())
+                <span class="text-muted small">Admin View Mode</span>
+                @else
+                {{-- Check if user is a Student --}}
                 @auth
                 <button type="button"
                     class="btn btn-primary btn-sm px-4"
@@ -77,9 +102,6 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                     data-bs-target="#borrowModal">
                     Borrow Book
                 </button>
-                @else
-                <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
-                @endauth
 
                 <div class="bookmark-controls">
                     <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
@@ -95,6 +117,17 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                         </button>
                     </form>
                 </div>
+                @else
+                {{-- Guests --}}
+                <a href="{{ route('auth.showSignUp') }}" class="btn btn-primary btn-sm px-4">Borrow Book</a>
+                <div class="bookmark-controls">
+                    <a href="{{ route('auth.showSignUp') }}" class="icon-bookmark">
+                        <i class="bi bi-bookmark outline-icon" title="Sign Up to Bookmark"></i>
+                        <i class="bi bi-bookmark-fill fill-icon" title="Sign Up to Bookmark"></i>
+                    </a>
+                </div>
+                @endauth
+                @endif
             </div>
         </div>
 

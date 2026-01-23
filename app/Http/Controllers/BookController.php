@@ -69,8 +69,6 @@ class BookController extends Controller
         return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked', 'prevId','nextId'));
     }
 
-
-
     public function borrow(Request $request, $id)
     {
         if (!Auth::check()) {
@@ -95,7 +93,7 @@ class BookController extends Controller
                 ->with('error', 'This copy is currently unavailable.');
         }
 
-
+        // Check if user already borrowed this specific book
         $alreadyBorrowed = DB::table('history')
             ->where('user_id', $userId)
             ->where('book_id', $id)
@@ -108,10 +106,8 @@ class BookController extends Controller
                 ->with('error', 'You have already borrowed this book.');
         }
 
-
+        // Process transaction
         DB::transaction(function () use ($userId, $id, $availability, $bookTypeId) {
-
-
             DB::table('history')->insert([
                 'user_id' => $userId,
                 'book_id' => $id,
@@ -129,7 +125,18 @@ class BookController extends Controller
             }
         });
 
-        return redirect()->route('dashboard.student.history');
+        return back()->with('success', 'Book borrowed successfully!');
+    }
+
+    public function showBorrowPrompt($id) 
+    {
+        $book = DB::table('books')->where('book_id', $id)->first();
+
+        if (!$book) {
+            abort(404);
+        }
+
+        return view('books.borrow_confirm', compact('book'));
     }
 
     public function bookmark($id)
@@ -164,8 +171,6 @@ class BookController extends Controller
     {
         // to be implemented
     }
-
-
 
     public function byAuthor($authorId)
     {
