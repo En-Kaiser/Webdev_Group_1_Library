@@ -37,15 +37,15 @@ $currentUser = Auth::guard('admin')->check()
             @elseif(Auth::check())
             {{-- Student Pages --}}
             <li><a class="dropdown-item" href="{{ route('student.viewAll') }}">All Books</a></li>
-            <li><a class="dropdown-item" href="{{ route('student.bookmarked') }}">Bookmarked</a></li>
+            <li><a class="dropdown-item" href="{{ route('student.bookmarked') }}">Bookmarks</a></li>
             <li><a class="dropdown-item" href="{{ route('student.history') }}">History</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#">About Us</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('aboutUs') }}">About Us</a></li>
             @else
             {{-- Guest Pages --}}
             <li><a class="dropdown-item" href="{{ route('student.viewAll') }}">All Books</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ route('aboutUs') }}">About Us</a></li>
             @endif
           </ul>
         </li>

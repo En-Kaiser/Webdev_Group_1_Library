@@ -47,6 +47,11 @@ class DashboardController extends Controller
         return view('dashboard.student.view', compact('books', 'genres', 'searchTerm'));
     }
 
+    public function aboutUs()
+    {
+        return view('dashboard.aboutus');
+    }
+
     // == STUDENT PAGES ==
     public function studentViewAll(Request $request)
     {
@@ -129,20 +134,38 @@ class DashboardController extends Controller
 
 
     // == LIBRARIAN PAGES == 
-    public function librarianViewAll()
+    public function librarianViewAll(Request $request)
     {
-        $books = DB::table('books as b')
+        // $books = DB::table('books as b')
+        //     ->join('books_joint_genres as bjb', 'bjb.book_id', '=', 'b.book_id')
+        //     ->join('genres as g', 'g.genre_id', '=', 'bjb.genre_id')
+        //     ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
+        //     ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
+        //     ->select('b.*', 'a.name as author', 'g.genre_id', 'g.name as genre')
+        //     ->get();
+
+
+        // $genres = DB::table('genres')->get();
+
+        // return view('dashboard.librarian.view', compact('books', 'genres'));
+
+        $selectedGenre = $request->query('genre');
+
+        $query = DB::table('books as b')
             ->join('books_joint_genres as bjb', 'bjb.book_id', '=', 'b.book_id')
             ->join('genres as g', 'g.genre_id', '=', 'bjb.genre_id')
             ->join('books_joint_authors as bja', 'bja.book_id', '=', 'b.book_id')
-            ->join('authors as a', 'a.author_id', '=', 'bja.author_id')
-            ->select('b.*', 'a.name as author', 'g.genre_id', 'g.name as genre')
-            ->get();
+            ->join('authors as a', 'a.author_id', '=', 'bja.author_id');
 
+        if ($selectedGenre && $selectedGenre !== 'all') {
+            $query->where('g.name', '=', $selectedGenre);
+        }
+
+        $books = $query->select('b.*', 'a.name as author', 'g.genre_id', 'g.name as genre')->get();
 
         $genres = DB::table('genres')->get();
 
-        return view('dashboard.librarian.view', compact('books', 'genres'));
+        return view('dashboard.librarian.view', compact('books', 'genres', 'selectedGenre'));
     }
 
     public function createSubmission(Request $request)

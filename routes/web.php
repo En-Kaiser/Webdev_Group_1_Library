@@ -34,7 +34,8 @@ Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
 
     Route::get('/all', [DashboardController::class, 'studentViewAll'])->name('student.viewAll');
-    Route::get('/about', function () {return view('dashboard.aboutus');})->name('about');
+    // Route::get('/about', function () {return view('dashboard.aboutus');})->name('about');
+    Route::get('/about', [DashboardController::class, 'aboutUs'])->name('aboutUs');
 });
 
 // == BOOKS (Open to Guests) ==
