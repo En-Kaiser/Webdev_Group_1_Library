@@ -6,23 +6,6 @@
 @endpush
 
 @section('content')
-<div class="container">
-    
-    
-@if(session('download_triggered'))
-    <div class="alert alert-success mt-3">
-        <h4 class="alert-heading"><i class="bi bi-check-circle-fill"></i> Borrow Successful!</h4>
-        <p>Your download should start automatically.</p>
-        <hr>
-        <p class="mb-0">
-            If the download didn't start, 
-            {{-- MANUAL FALLBACK LINK --}}
-            <a href="{{ route('books.download.itds') }}" class="btn btn-primary btn-sm fw-bold">
-                Click here to download PDF
-            </a>
-        </p>
-    </div>
-@endif
 <div class="container px-md-5 mt-3">
     <div class="page-header">
 
@@ -79,16 +62,4 @@
         </table>
     </div>
 </div>
-@endsection
-@section('scripts')
-    @if(session('download_triggered'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // Wait 1 second for the page to settle, then trigger download
-                setTimeout(function() {
-                    window.location.href = "{{ route('books.download.itds') }}";
-                }, 1000);
-            });
-        </script>
-    @endif
 @endsection

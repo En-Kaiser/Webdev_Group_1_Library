@@ -4,7 +4,7 @@
   <a href="{{ $id ? route('books.show', $id) : '#' }}" class="text-decoration-none">
     <div class="book-placeholder shadow-sm">
       @if($cover)
-      <img src="{{ asset('books/' . $cover) }}" alt="{{ $title }}">
+      <img src="{{ asset('storage/books' . $cover) }}" alt="{{ $title }}">
       @else
       <i class="bi bi-book text-white-50" style="font-size: 2rem;"></i>
       @endif

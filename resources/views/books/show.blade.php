@@ -57,7 +57,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 
             <div class="book-hero-image">
                 @if($book->image)
-                <img src="{{ asset('books/' . $book->image) }}" alt="{{ $book->title }} Cover">
+                <img src="{{ asset('images/' . $book->image) }}" alt="{{ $book->title }} Cover">
                 @else
                 <div class="d-flex align-items-center justify-content-center" style="width:220px; height:300px; background:#f8f9fa;">
                     <i class="bi bi-book text-secondary" style="font-size: 3rem;"></i>
@@ -104,9 +104,9 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                 </button>
 
                 <div class="bookmark-controls">
-                    @auth
                     <form action="{{ route('books.bookmark', $book->book_id) }}" method="POST" id="bookmark-form">
                         @csrf
+
                         <button type="submit" style="border: none; background: none; padding: 0;" class="icon-bookmark">
                             @if($isBookmarked)
                             <i class="bi bi-bookmark-fill" title="Remove Bookmark"></i>
@@ -116,11 +116,6 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                             @endif
                         </button>
                     </form>
-                    @else
-                    <a href="{{ route('auth.showSignUp') }}" style="text-decoration: none; color: inherit;">
-                        <i class="bi bi-bookmark outline-icon" title="Login to Bookmark"></i>
-                    </a>
-                    @endauth
                 </div>
                 @else
                 {{-- Guests --}}
@@ -136,9 +131,6 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
             </div>
         </div>
 
-            </div>
-
-        </div>
         <hr class="info-divider">
 
         <div class="big-info-content">
@@ -151,9 +143,6 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
         </div>
     </div>
 </div>
-</div>
-
-
 
 <!-- Borrow Modal -->
 <div class="modal fade pupshelf-modal" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
@@ -244,7 +233,4 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
         </div>
     </div>
 </div>
-
-
-
 @endsection

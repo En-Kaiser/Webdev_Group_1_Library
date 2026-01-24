@@ -91,7 +91,8 @@
 /* ===== BIG GREY BOX ===== */
 .big-info-box {
     background: #EAEBEA;
-    padding: 2rem 1rem 1rem 1rem; /* Adjust padding as needed */
+    padding: 1rem 2rem 2rem;
+    /* for overlap */
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -147,15 +148,16 @@
 
 /* ===== DIVIDER & COLUMNS ===== */
 .info-divider {
-    position: static; /* Resets previous absolute positioning */
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-    margin-left: 24rem; /* Starts the line where the text starts */
-    margin-right: 1rem;
+    position: absolute;
+    top: 3rem;
+    left: 37rem;
+    right: 2rem;
     height: 1px;
-    background: #d1d1d1; /* Soft grey line */
+    background: #3f3f3f;
+    margin: 1rem;
+    padding: 0;
     border: none;
-    opacity: 1; /* Bootstrap hr sometimes has low opacity */
+    z-index: 1;
 }
 
 .content-columns {

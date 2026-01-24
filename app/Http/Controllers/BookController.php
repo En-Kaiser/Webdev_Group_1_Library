@@ -66,7 +66,7 @@ class BookController extends Controller
             ? $bookIds[$currentKey + 1]
             : null;
 
-        return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked', 'prevId', 'nextId'));
+        return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked', 'prevId','nextId'));
     }
 
     public function borrow(Request $request, $id)
@@ -98,6 +98,7 @@ class BookController extends Controller
             ->where('user_id', $userId)
             ->where('book_id', $id)
             ->where('status', 'borrowed')
+            ->whereNull('date_return')
             ->exists();
 
         if ($alreadyBorrowed) {
@@ -124,30 +125,24 @@ class BookController extends Controller
             }
         });
 
-        if ($availability->type === 'e_book') {
-            return redirect()->route('student.history')
-                ->with('success', 'Borrow successful!')
-                ->with('download_triggered', true); 
+        return back()->with('success', 'Book borrowed successfully!');
+    }
+
+    public function showBorrowPrompt($id) 
+    {
+        $book = DB::table('books')->where('book_id', $id)->first();
+
+        if (!$book) {
+            abort(404);
         }
 
-        return redirect()->route('student.history');
-    }
-
-    public function downloadEbook()
-{
-    $path = public_path('e_books/ITDS.pdf');
-    
-    if (file_exists($path)) {
-        return response()->download($path, 'ITDS.pdf');
-    }
-    
-        return redirect()->route('student.history');
+        return view('books.borrow_confirm', compact('book'));
     }
 
     public function bookmark($id)
     {
         if (!Auth::check()) {
-            return redirect()->route('auth.showLogIn');
+            return redirect()->route('auth.showSignUp');
         }
 
         $userId = Auth::id();
@@ -186,4 +181,6 @@ class BookController extends Controller
     {
         // to be implemented
     }
+
+
 }
