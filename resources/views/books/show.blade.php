@@ -85,7 +85,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
 
         <div class="book_type_avail-overlay d-flex justify-content-between align-items-center">
 
-            <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}" style="margin-left: 37rem;">
+            <span class="book_type_avail-badge {{ $isAvailable ? 'available' : 'unavailable' }}" style="margin-left: 43rem;">
                 Availability: <b>{{ $isAvailable ? 'Available' : 'Unavailable' }}</b>
             </span>
 
@@ -136,20 +136,20 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
             </div>
         </div>
 
-            </div>
+    </div>
 
-        </div>
-        <hr class="info-divider">
+</div>
+<hr class="info-divider">
 
-        <div class="big-info-content">
-            <div class="content-columns">
-                <div class="left-column mt-5">
-                    <strong>Description</strong>
-                    <p>{{ $book->short_description }}</p>
-                </div>
-            </div>
+<div class="big-info-content">
+    <div class="content-columns">
+        <div class="left-column mt-5">
+            <strong>Description</strong>
+            <p>{{ $book->short_description }}</p>
         </div>
     </div>
+</div>
+</div>
 </div>
 </div>
 

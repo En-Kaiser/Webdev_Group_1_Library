@@ -56,7 +56,6 @@ class BookController extends Controller
                 ->exists();
         }
 
-        // HANNA - Added it for next next ng book
         $bookIds = DB::table('books')->orderBy('book_id')->pluck('book_id');
 
         $currentKey = $bookIds->search($id);
@@ -127,20 +126,20 @@ class BookController extends Controller
         if ($availability->type === 'e_book') {
             return redirect()->route('student.history')
                 ->with('success', 'Borrow successful!')
-                ->with('download_triggered', true); 
+                ->with('download_triggered', true);
         }
 
         return redirect()->route('student.history');
     }
 
     public function downloadEbook()
-{
-    $path = public_path('e_books/ITDS.pdf');
-    
-    if (file_exists($path)) {
-        return response()->download($path, 'ITDS.pdf');
-    }
-    
+    {
+        $path = public_path('e_books/ITDS.pdf');
+
+        if (file_exists($path)) {
+            return response()->download($path, 'ITDS.pdf');
+        }
+
         return redirect()->route('student.history');
     }
 
