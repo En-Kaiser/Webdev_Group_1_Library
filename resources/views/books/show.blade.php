@@ -135,11 +135,7 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
                 @endif
             </div>
         </div>
-
-    </div>
-
-</div>
-<hr class="info-divider">
+        <hr class="info-divider">
 
 <div class="big-info-content">
     <div class="content-columns">
@@ -148,6 +144,10 @@ $hasEbook = $book_type_avail->where('type', 'e_book')->where('availability', 'av
             <p>{{ $book->short_description }}</p>
         </div>
     </div>
+    </div>
+
+</div>
+
 </div>
 </div>
 </div>
