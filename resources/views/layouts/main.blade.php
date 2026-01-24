@@ -8,7 +8,7 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="{{ asset('css/global.css') }}">
-  <link rel="icon" type="image/png" href="{{ asset('pup_icon.png') }}">
+  <link rel="icon" type="image/png" href="{{ asset('images/pup_icon.png') }}">
 
   @vite(['resources/sass/app.scss', 'resources/js/app.js'])
   @stack('styles')
@@ -31,7 +31,7 @@
     <p>Please do not close this page.</p>
   </div>
 
-  
+
   <script>
     window.addEventListener("load", function() {
       const loader = document.getElementById("global-loader");
