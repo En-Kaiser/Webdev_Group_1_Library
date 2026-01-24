@@ -105,10 +105,8 @@ return new class extends Migration
             $table->id('history_id');
             $table->unsignedBigInteger('admin_id');
             $table->foreign('admin_id')->references('admin_id')->on('admins');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('user_id')->on('user_accounts');
             $table->unsignedBigInteger('book_id');
-            $table->foreign('book_id')->references('book_id')->on('books')->onDelete('set null');;
+            $table->foreign('book_id')->references('book_id')->on('books')->onDelete('set null');
             $table->text('description');
             $table->timestamp('change_created')->useCurrent();
         });

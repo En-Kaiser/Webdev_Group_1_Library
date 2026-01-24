@@ -231,7 +231,7 @@ class DashboardController extends Controller
                 DB::raw("CASE WHEN bta.type = 'physical' THEN 'Physical Book' WHEN bta.type = 'e_book' THEN 'E-Book' ELSE 'Physical Book' END as types"),
                 'bta.type',
                 'bta.availability'
-            );
+            )->orderBy('books.title', 'asc');;
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -450,6 +450,14 @@ class DashboardController extends Controller
         }
 
         $book = Book::findOrFail($bookId);
+
+        $isBorrowed = history::where('book_id', $bookId)
+            ->whereIn('status', ['borrowed', 'due'])
+            ->exists();
+
+        if ($isBorrowed) {
+            return redirect()->back()->with('error', 'Cannot delete this book. It is currently borrowed.');
+        }
 
         $bookTitle = $book->title;
 
