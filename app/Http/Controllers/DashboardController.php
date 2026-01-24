@@ -305,7 +305,7 @@ class DashboardController extends Controller
             $imageName = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('books'), $imageName);
         }
-
+       
         $book = book::create([
             'title' => $request->title,
             'short_description' => $request->short_description,
@@ -320,6 +320,18 @@ class DashboardController extends Controller
             'book_id' => $book->book_id,
             'type' => $request->type,
             'availability' => $request->status,
+        ]);
+        
+        if (strcasecmp($request->type, 'Physical') == 0) {
+            $vice_versa = 'e_book'; 
+        } else {
+            $vice_versa = 'physical';
+        }
+        
+        book_type_avail::create([
+            'book_id' => $book->book_id,
+            'type' => $vice_versa,
+            'availability' => 'Unavailable', 
         ]);
 
         DB::table('admin_history')->insert([
@@ -465,14 +477,14 @@ class DashboardController extends Controller
         $book->genres()->detach();
         $book->bookTypeAvail()->delete();
 
+        
+        $book->delete();
         admin_history::create([
             'admin_id'       => Auth::id(),
             'book_id'        => $bookId,
             'description'    => "Deleted Book: {$bookTitle}",
             'change_created' => now()
         ]);
-
-        $book->delete();
 
         return redirect()->route('admin.manageBooks')->with('success', 'Book deleted successfully!');
     }

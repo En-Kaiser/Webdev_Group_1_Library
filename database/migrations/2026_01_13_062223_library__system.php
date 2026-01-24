@@ -109,7 +109,7 @@ return new class extends Migration
             $table->foreign('book_id')->references('book_id')->on('books')->onDelete('set null');
             $table->text('description');
             $table->timestamp('change_created')->useCurrent();
-        });
+        }); 
 
         $SeedLibraryProcedure = "
             DROP PROCEDURE IF EXISTS SeedLibraryData;
