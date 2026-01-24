@@ -76,7 +76,7 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained('books', 'book_id');
             $table->enum('type', ['physical', 'e_book']);
             $table->timestamp('date_borrowed')->useCurrent();
-            $table->timestamp('date_return')->default(now()->addDays(7));
+            $table->timestamp('date_return');
             $table->enum('status', ['borrowed', 'returned', 'due']);
         });
 
@@ -106,7 +106,6 @@ return new class extends Migration
             $table->unsignedBigInteger('admin_id');
             $table->foreign('admin_id')->references('admin_id')->on('admins');
             $table->unsignedBigInteger('book_id');
-            $table->foreign('book_id')->references('book_id')->on('books')->onDelete('set null');
             $table->text('description');
             $table->timestamp('change_created')->useCurrent();
         }); 
@@ -170,7 +169,7 @@ return new class extends Migration
             (3, 'physical', 'unavailable'),
             (4, 'physical', 'available'),
             (5, 'e_book', 'available'),
-            (6, 'physical', 'unavailable')
+            (6, 'physical', 'unavailable'),
             (7, 'physical', 'available'),
             (8, 'physical', 'available'),
             (9, 'physical', 'available'),

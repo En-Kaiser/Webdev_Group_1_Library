@@ -110,7 +110,7 @@
                                 <img src="{{ asset('icons/edit.svg') }}" alt="Edit" width="20" height="20">
                             </button>
                             <span class="action-divider">|</span>
-                            <form action="{{ route('librarian.books.destroy', $book->book_id) }}" method="POST" class="d-inline">
+                            <form action="{{ route('librarian.books.destroy', ['id' => $book->book_id, 'type' => $book->type]) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="delete-icon" title="Delete" onclick="return confirm('Are you sure you want to delete {{  $book->title  }}?')">

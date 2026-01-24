@@ -126,6 +126,18 @@ class BookManagementController extends Controller
             'availability' => $request->status,
         ]);
 
+        if (strcasecmp($request->type, 'Physical') == 0) {
+            $vice_versa = 'e_book';
+        } else {
+            $vice_versa = 'physical';
+        }
+       
+        book_type_avail::create([
+            'book_id' => $book->book_id,
+            'type' => $vice_versa,
+            'availability' => 'Unavailable',
+        ]);
+
         DB::table('admin_history')->insert([
             'admin_id'      => Auth::id(),
             'book_id'       => $book->book_id,
@@ -184,39 +196,61 @@ class BookManagementController extends Controller
         return redirect()->route('admin.manageBooks')->with('success', 'Book updated successfully!');
     }
 
-    // Delete Books
-    public function destroyBook($bookId)
+    public function destroyBook($bookId, $type)
     {
         if (Auth::user()->role !== 'librarian') {
             return redirect()->back()->with('error', 'Unauthorized.');
         }
-
+    
+       
         $book = Book::findOrFail($bookId);
-
+    
+       
         $isBorrowed = history::where('book_id', $bookId)
+            ->where('type', $type) 
             ->whereIn('status', ['borrowed', 'due'])
             ->exists();
-
+    
         if ($isBorrowed) {
-            return redirect()->back()->with('error', 'Cannot delete this book. It is currently borrowed.');
+            return redirect()->back()->with('error', "Cannot delete the {$type} version. It is currently borrowed.");
         }
-
-        $bookTitle = $book->title;
-
-        $book->authors()->detach();
-        $book->genres()->detach();
-        $book->bookTypeAvail()->delete();
-
+    
+        
+        book_type_avail::where('book_id', $bookId)
+            ->where('type', $type)
+            ->delete();
+    
+      
         admin_history::create([
             'admin_id'       => Auth::id(),
             'book_id'        => $bookId,
-            'description'    => "Deleted Book: {$bookTitle}",
+            'book_title'     => $book->title, 
+            'description'    => "Deleted Copy: {$book->title} ({$type})",
             'change_created' => now()
         ]);
-
-        $book->delete();
-
-        return redirect()->route('admin.manageBooks')->with('success', 'Book deleted successfully!');
+    
+        $remainingCopies = book_type_avail::where('book_id', $bookId)->count();
+    
+        if ($remainingCopies === 0) {
+            
+            $book->authors()->detach();
+            $book->genres()->detach();
+    
+          
+            admin_history::create([
+                'admin_id'       => Auth::id(),
+                'book_id'        => $bookId,
+                'book_title'     => $book->title,
+                'description'    => "All copies removed. Permanently deleted parent book: {$book->title}",
+                'change_created' => now()
+            ]);
+    
+            $book->delete(); 
+    
+            return redirect()->route('admin.manageBooks')->with('success', "{$type} copy deleted. No copies left, so the book was removed entirely.");
+        }
+    
+        return redirect()->route('admin.manageBooks')->with('success', "{$type} copy deleted successfully. Other versions remain.");
     }
 
     public function manageRecords()

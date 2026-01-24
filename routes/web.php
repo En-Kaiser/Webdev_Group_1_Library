@@ -77,7 +77,7 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('/manage-books', [BookManagementController::class, 'manageBooks'])->name('admin.manageBooks');
         Route::post('/books', [BookManagementController::class, 'storeBook'])->name('librarian.books.store');
         Route::put('/books/{book_id}/status', [BookManagementController::class, 'updateStatus'])->name('librarian.updateStatus');
-        Route::delete('/books/{id}', [BookManagementController::class, 'destroyBook'])->name('librarian.books.destroy');
+        Route::delete('/books/{id}/{type}', [BookManagementController::class, 'destroyBook'])->name('librarian.books.destroy');
         Route::get('/manage-books/records', [BookManagementController::class, 'manageRecords'])->name('manageRecords');
         Route::put('/books/{bookId}', [BookManagementController::class, 'updateBook'])->name('librarian.books.update');
 
