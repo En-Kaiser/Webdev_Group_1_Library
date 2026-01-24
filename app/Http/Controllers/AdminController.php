@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\user_account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -85,6 +87,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:user_accounts,email,' . $user->user_id . ',user_id',
             'status' => 'required|in:active,suspended,pending',
+            'password' => 'nullable|min:6'
         ]);
 
         $nameParts = explode(' ', $request->name, 2);
@@ -96,6 +99,7 @@ class AdminController extends Controller
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
+        
 
         $user->save();
 
@@ -108,6 +112,8 @@ class AdminController extends Controller
         $user->status = 'suspended';
         $user->save();
 
+       
+
         return redirect()->route('admin.users.index')->with('success', 'Student suspended successfully');
     }
 
@@ -116,7 +122,7 @@ class AdminController extends Controller
         $user = user_account::where('user_id', $id)->firstOrFail();
         $user->status = 'active';
         $user->save();
-
+       
         return redirect()->route('admin.users.index')->with('success', 'Student activated successfully');
     }
 }

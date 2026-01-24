@@ -26,7 +26,9 @@ class SignUpController extends Controller
         $user_account->email = $request->input('email');
         $user_account->password = Hash::make($request->input('password'));
         $user_account->role = 'student';
+        $user_account->status = 'active';
         $user_account->date_joined = NOW();
+        $user_account->last_active = NOW();
         $user_account->save();
 
         Auth::login($user_account);

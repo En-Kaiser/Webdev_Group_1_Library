@@ -27,6 +27,8 @@ class LogInController extends Controller
         if ($user && Hash::check($password, $user->password)) {
             Auth::login($user);
             $request->session()->regenerate();
+            $user->last_active = now();
+            $user -> save();
             return redirect()->route('dashboard.index');
         }
 
@@ -47,7 +49,7 @@ class LogInController extends Controller
             Auth::guard('admin')->logout();
         }
         elseif (Auth::check()) {
-            $user = Auth::user();
+            $user = Auth::user(); 
             $user->last_active = now();
             Auth::logout();
         }

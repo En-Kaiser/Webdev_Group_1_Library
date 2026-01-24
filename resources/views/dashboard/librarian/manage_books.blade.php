@@ -85,13 +85,23 @@
             </thead>
             <tbody>
                 @forelse($books as $book)
+                
                 <tr>
                     <td class="fw-medium">{{ Str::limit($book->title, 40) }}</td>
                     <td>{{ $book->author }}</td>
                     <td>{{ $book->genre }}</td>
                     <td>{{ $book->types ?? 'Physical Book' }}</td>
                     <td>
-                        <span class="badge-status {{ strtolower($book->status) }}">{{ $book->status }}</span>
+                        @php
+                            if ($book->status == 'Borrowed' && $book->type == 'physical') {
+                                $displayStatus = 'Borrowed';
+                            }elseif ($book->status == 'Borrowed' && $book->type == 'e_book'){ 
+                                $displayStatus = 'Available';
+                            }else {
+                                $displayStatus = $book->status ?? $book->availability;
+                            }
+                        @endphp
+                        <span class="badge-status {{ strtolower($displayStatus) }}">{{ $displayStatus }}</span>
                     </td>
                     <td>
                         <div class="action-icons">
@@ -138,8 +148,8 @@
                                                                 class="form-control"
                                                                 placeholder="Change Book Cover"
                                                                 readonly>
-                                                            <input type="file" name="cover_image"
-                                                                class="d-none" accept="image/*">
+                                                            <input type="file" name="cover_image" 
+                                                                class="d-none" accept="image/*" onchange="if(this.files.length > 0) this.previousElementSibling.value = this.files[0].name">
                                                         </div>
                                                         <button type="button" class="btn btn-light"
                                                             onclick="this.previousElementSibling.querySelector('input[type=file]').click()">
@@ -213,7 +223,7 @@
                                             <!-- Type + Status -->
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
-                                                    <select name="type" class="form-select" required>
+                                                    <select name="type" class="form-select" readonly>
                                                         <option value="">Choose Type of Book</option>
                                                         <option value="physical" {{ $book->type == 'physical' ? 'selected' : '' }}>
                                                             Physical Book
