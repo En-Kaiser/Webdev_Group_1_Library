@@ -14,6 +14,7 @@ use App\Models\history;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class BookManagementController extends Controller
 {
@@ -235,7 +236,14 @@ class BookManagementController extends Controller
             
             $book->authors()->detach();
             $book->genres()->detach();
+            if ($book->image) {
+               
+                $imagePath = public_path('books/' . $book->image);
     
+                if (File::exists($imagePath)) {
+                    File::delete($imagePath);
+                }
+            }
           
             admin_history::create([
                 'admin_id'       => Auth::id(),

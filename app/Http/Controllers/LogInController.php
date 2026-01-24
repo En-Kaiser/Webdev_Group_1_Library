@@ -22,9 +22,13 @@ class LogInController extends Controller
     {
         $email = $request->email;
         $password = $request->password;
-
         $user = user_account::where('email', $email)->first();
-        if ($user && Hash::check($password, $user->password)) {
+        $inputCourse = $request->input('course');
+        
+        if ($user 
+            && Hash::check($password, $user->password) 
+            && ($user -> course_id == $inputCourse)) {
+
             Auth::login($user);
             $request->session()->regenerate();
             $user->last_active = now();

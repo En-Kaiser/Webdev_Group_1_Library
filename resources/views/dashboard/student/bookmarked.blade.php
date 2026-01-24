@@ -44,8 +44,9 @@
         :id="$book->book_id"
         :title="$book->title"
         :author="$book->author ?? 'Unknown Author'"
-        :genre="$book->genre ?? 'Unknown Genre'" />
-      <!-- :cover="$book->cover_image" -->
+        :genre="$book->genre ?? 'Unknown Genre'" 
+        :cover="$book->image"/>
+     
     </div>
     @empty
     <div class="col-12 text-center py-5">
