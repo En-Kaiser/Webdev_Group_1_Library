@@ -85,7 +85,7 @@
             </thead>
             <tbody>
                 @forelse($books as $book)
-                
+
                 <tr>
                     <td class="fw-medium">{{ Str::limit($book->title, 40) }}</td>
                     <td>{{ $book->author }}</td>
@@ -93,13 +93,13 @@
                     <td>{{ $book->types ?? 'Physical Book' }}</td>
                     <td>
                         @php
-                            if ($book->status == 'Borrowed' && $book->type == 'physical') {
-                                $displayStatus = 'Borrowed';
-                            }elseif ($book->status == 'Borrowed' && $book->type == 'e_book'){ 
-                                $displayStatus = 'Available';
-                            }else {
-                                $displayStatus = $book->status ?? $book->availability;
-                            }
+                        if ($book->status == 'Borrowed' && $book->type == 'physical') {
+                        $displayStatus = 'Borrowed';
+                        }elseif ($book->status == 'Borrowed' && $book->type == 'e_book'){
+                        $displayStatus = 'Available';
+                        }else {
+                        $displayStatus = $book->status ?? $book->availability;
+                        }
                         @endphp
                         <span class="badge-status {{ strtolower($displayStatus) }}">{{ $displayStatus }}</span>
                     </td>
@@ -148,7 +148,7 @@
                                                                 class="form-control"
                                                                 placeholder="Change Book Cover"
                                                                 readonly>
-                                                            <input type="file" name="cover_image" 
+                                                            <input type="file" name="cover_image"
                                                                 class="d-none" accept="image/*" onchange="if(this.files.length > 0) this.previousElementSibling.value = this.files[0].name">
                                                         </div>
                                                         <button type="button" class="btn btn-light"
@@ -274,6 +274,15 @@
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show mt-2 pr-2 pt-2" role="alert">
         {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     @endif

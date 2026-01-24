@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthorGenreController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LogInController;
+use App\Http\Controllers\MonitorUsersController;
 use App\Http\Controllers\SignUpController;
 use App\Http\Controllers\TransactionController;
 use App\Models\book;
@@ -34,7 +34,7 @@ Route::post('/logout', [LogInController::class, 'logout'])->name('auth.logout');
 Route::group(['prefix' => 'dashboard'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
-    
+
     Route::get('/all', [DashboardController::class, 'studentViewAll'])->name('student.viewAll');
     // Route::get('/about', function () {return view('dashboard.aboutus');})->name('about');
     Route::get('/about', [DashboardController::class, 'aboutUs'])->name('aboutUs');
@@ -59,35 +59,27 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::prefix('librarian')->group(function () {
         Route::get('/all', [DashboardController::class, 'librarianViewAll'])->name('librarian.viewAll');
         Route::get('/transactions', [TransactionController::class, 'transactions'])->name('librarian.transactions');
-        Route::get('/create', [DashboardController::class, 'createSubmission'])->name('librarian.create');
-        Route::post('/create', [DashboardController::class, 'store'])->name('librarian.store');
+
         // User monitoring
-        Route::get('/users', [AdminController::class, 'index'])->name('admin.users.index');
-        Route::put('/users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
-        Route::post('/users/{id}/suspend', [AdminController::class, 'suspend'])->name('admin.users.suspend');
-        Route::post('/users/{id}/activate', [AdminController::class, 'activate'])->name('admin.users.activate');
-        // Book management
-        Route::get('/manage-books', [DashboardController::class, 'manageBooks'])->name('admin.manageBooks');
+        Route::get('/users', [MonitorUsersController::class, 'index'])->name('admin.users.index');
+        Route::put('/users/{id}', [MonitorUsersController::class, 'update'])->name('admin.users.update');
+        Route::post('/users/{id}/suspend', [MonitorUsersController::class, 'suspend'])->name('admin.users.suspend');
+        Route::post('/users/{id}/activate', [MonitorUsersController::class, 'activate'])->name('admin.users.activate');
 
         // author-genre management
-        Route::get('/manage-books/authors-genres', [DashboardController::class, 'manageAuthorsGenres'])->name('manageAuthorsGenres');
-        Route::get('/manage-books/records', [DashboardController::class, 'manageRecords'])->name('manageRecords');
+        Route::get('/manage-books/authors-genres', [AuthorGenreController::class, 'manageAuthorsGenres'])->name('manageAuthorsGenres');
+        Route::post('/authors', [AuthorGenreController::class, 'storeAuthor'])->name('librarian.authors.store');
+        Route::delete('/authors/{id}', [AuthorGenreController::class, 'destroyAuthor'])->name('librarian.authors.destroy');
+        Route::post('/genres', [AuthorGenreController::class, 'storeGenre'])->name('librarian.genres.store');
+        Route::delete('/genres/{id}', [AuthorGenreController::class, 'destroyGenre'])->name('librarian.genres.destroy');
 
-        Route::post('/authors', [DashboardController::class, 'storeAuthor'])->name('librarian.authors.store');
-        Route::get('/authors', [DashboardController::class, 'listAuthors'])->name('librarian.authors.list');
-        Route::delete('/authors/{id}', [DashboardController::class, 'destroyAuthor'])->name('librarian.authors.destroy');
-
-        Route::post('/genres', [DashboardController::class, 'storeGenre'])->name('librarian.genres.store');
-        Route::get('/genres', [DashboardController::class, 'listGenres'])->name('librarian.genres.list');
-        Route::delete('/genres/{id}', [DashboardController::class, 'destroyGenre'])->name('librarian.genres.destroy');
-
-        // book management
-        Route::get('/books/create', [DashboardController::class, 'create'])->name('books.create');
-        Route::post('/books', [DashboardController::class, 'storeBook'])->name('librarian.books.store');
-        Route::get('/books/{id}/edit', [DashboardController::class, 'edit'])->name('books.edit');
-        Route::put('/books/{bookId}', [DashboardController::class, 'updateBook'])->name('librarian.books.update');
-        Route::put('/books/{book_id}/status', [DashboardController::class, 'updateStatus'])->name('librarian.updateStatus');
-        Route::delete('/books/{id}', [DashboardController::class, 'destroyBook'])->name('librarian.books.destroy');
+        // Book management
+        Route::get('/manage-books', [BookManagementController::class, 'manageBooks'])->name('admin.manageBooks');
+        Route::post('/books', [BookManagementController::class, 'storeBook'])->name('librarian.books.store');
+        Route::put('/books/{book_id}/status', [BookManagementController::class, 'updateStatus'])->name('librarian.updateStatus');
+        Route::delete('/books/{id}', [BookManagementController::class, 'destroyBook'])->name('librarian.books.destroy');
+        Route::get('/manage-books/records', [BookManagementController::class, 'manageRecords'])->name('manageRecords');
+        Route::put('/books/{bookId}', [BookManagementController::class, 'updateBook'])->name('librarian.books.update');
 
         // Transaction Actions
         Route::post('/transactions/approve/{id}', [TransactionController::class, 'approve'])->name('librarian.transactions.approve');
