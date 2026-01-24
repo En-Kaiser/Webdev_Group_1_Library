@@ -58,7 +58,6 @@
                     <th>Book Title</th>
                     <th>Type</th>
                     <th>Date Borrowed</th>
-                    <th>Due Date</th>
                     <th>Date Returned</th>
                     <th>Status</th>
                 </tr>
@@ -70,7 +69,6 @@
                     <td>{{ $trans->book_title }}</td>
                     <td>{{ $trans->type }}</td>
                     <td>{{ $trans->borrow_date }}</td>
-                    <td>{{ $trans->due_date }}</td>
                     <td>{{ $trans->return_date ?? '-' }}</td>
                     <td>
                         <span class="badge-status {{ strtolower($trans->status) }}">
