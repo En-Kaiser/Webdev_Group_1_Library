@@ -87,7 +87,7 @@ class MonitorUsersController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:user_accounts,email,' . $user->user_id . ',user_id',
             'status' => 'required|in:active,suspended,pending',
-            'password' => 'nullable|min:6'
+            'password' => 'nullable|min:8'
         ]);
 
         $nameParts = explode(' ', $request->name, 2);

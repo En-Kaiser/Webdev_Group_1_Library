@@ -131,3 +131,48 @@
     /* Space above and below */
     margin-bottom: 2rem;
 }
+
+/* == PASSWORD FIELD == */
+.password-wrapper {
+    position: relative;
+    width: 300;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 60px;
+}
+
+.password-wrapper button {
+    position: absolute;
+    right: 5px;
+    top: 43%;
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 70px;
+    height: 40px;
+
+    border: none;
+    border-radius: 12px;
+    background: none;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.password-wrapper button:hover {
+    color: var(--secondary-maroon);
+    font-weight: 600;
+    background: none;
+}
+
+.password-wrapper button:active {
+    transform: translateY(-50%) scale(0.9);
+}
