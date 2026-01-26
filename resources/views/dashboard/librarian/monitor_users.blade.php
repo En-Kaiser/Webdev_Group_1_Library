@@ -282,7 +282,14 @@
               </div>
               <div class="mb-3">
                 <label class="form-label fw-medium">Password <small class="text-muted">(leave blank to keep current)</small></label>
-                <input type="password" class="form-control" name="password" placeholder="Password (min. 6 chars)" >
+
+                <div class="password-wrapper">
+                  <input type="password" id="password" placeholder="Password (min. 6 chars)" name="password" class="form-control" required>
+                  <button type="button" id="togglePassword" class="toggle-btn">
+                    SHOW
+                  </button>
+                </div>
+
               </div>
             </div>
           </div>
@@ -394,6 +401,19 @@
         document.getElementById('statusLabel').textContent = this.textContent;
         document.getElementById('searchForm').submit();
       });
+    });
+
+    // Password Toggle
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function() {
+      // Toggle the type attribute
+      const isPassword = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+
+      // Toggle the button text (SHOW / HIDE)
+      this.textContent = isPassword ? 'HIDE' : 'SHOW';
     });
   });
 </script>
