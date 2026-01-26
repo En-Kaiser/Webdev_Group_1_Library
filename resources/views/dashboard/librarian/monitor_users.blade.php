@@ -284,7 +284,7 @@
                 <label class="form-label fw-medium">Password <small class="text-muted">(leave blank to keep current)</small></label>
 
                 <div class="password-wrapper">
-                  <input type="password" id="password" placeholder="Password (min. 8 chars)" name="password" class="form-control" required>
+                  <input type="password" id="password" placeholder="Password (min. 8 chars)" name="password" class="form-control">
                   <button type="button" id="togglePassword" class="toggle-btn">
                     SHOW
                   </button>

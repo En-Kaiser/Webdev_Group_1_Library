@@ -78,7 +78,8 @@ class MonitorUsersController extends Controller
             'editUser'
         ));
     }
-
+    
+    // Update user information
     public function update(Request $request, $id)
     {
         $user = user_account::where('user_id', $id)->firstOrFail();
@@ -105,7 +106,7 @@ class MonitorUsersController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'Student updated successfully');
     }
-
+    // Suspend and activate account
     public function suspend($id)
     {
         $user = user_account::where('user_id', $id)->firstOrFail();

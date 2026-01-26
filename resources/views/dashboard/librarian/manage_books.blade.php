@@ -26,7 +26,7 @@
     </div>
 
     <!-- Controls: Search, Filter, Add -->
-    <div class="d-flex flex-wrap gap-3">
+    <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="search-container position-relative me-2">
             <!-- <form action="{{ route('dashboard.search') }}" method="GET" class="d-flex align-items-center"> -->
 
@@ -106,7 +106,7 @@
                     <td>
                         <div class="action-icons">
                             <!-- Edit button that opens modal -->
-                            <button type="button" class="edit-icon" title="Edit" data-bs-toggle="modal" data-bs-target="#editBookModal{{ $book->book_id }}">
+                            <button type="button" class="edit-icon" title="Edit" data-bs-toggle="modal" data-bs-target="#editBookModal{{ $book->book_id }}_{{ $book->type }}">
                                 <img src="{{ asset('icons/edit.svg') }}" alt="Edit" width="20" height="20">
                             </button>
                             <span class="action-divider">|</span>
@@ -120,7 +120,7 @@
                         </div>
 
                         <!-- EDIT BOOK MODAL -->
-                        <div class="modal fade" id="editBookModal{{ $book->book_id }}" tabindex="-1"
+                        <div class="modal fade" id="editBookModal{{ $book->book_id }}_{{ $book->type }}" tabindex="-1"
                             aria-labelledby="editBookModalLabel{{ $book->book_id }}" aria-hidden="true">
 
                             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -132,7 +132,8 @@
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
-
+                                            
+                                            <input type="hidden" name="type" value="{{ $book->type }}">
                                             <!-- Title + Cover -->
                                             <div class="row mb-3">
                                                 <div class="col-md-8">

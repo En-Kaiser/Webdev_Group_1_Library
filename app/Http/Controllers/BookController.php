@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
+    // Show each user's bookmarks based on ID
     public function show($id)
     {
         $bookRows = DB::table('books as b')
@@ -68,6 +69,7 @@ class BookController extends Controller
         return view('books.show', compact('book', 'authors', 'genres', 'book_type_avail', 'isAvailable', 'isBookmarked', 'prevId', 'nextId'));
     }
 
+    // Borrow a book
     public function borrow(Request $request, $id)
     {
         if (!Auth::check()) {
@@ -122,7 +124,7 @@ class BookController extends Controller
                     ->update(['availability' => 'unavailable']);
             }
         });
-
+        // If e_book then prompt download 
         if ($availability->type === 'e_book') {
             return redirect()->route('student.history')
                 ->with('success', 'Borrow successful!')
@@ -132,6 +134,7 @@ class BookController extends Controller
         return redirect()->route('student.history');
     }
 
+    // Download e_book based on file_path
     public function downloadEbook()
     {
         $path = public_path('e_books/ITDS.pdf');
@@ -143,6 +146,7 @@ class BookController extends Controller
         return redirect()->route('student.history');
     }
 
+    // Bookmark 
     public function bookmark($id)
     {
         if (!Auth::check()) {

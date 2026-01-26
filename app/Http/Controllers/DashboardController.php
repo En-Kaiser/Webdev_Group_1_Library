@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
 
 use function Symfony\Component\Clock\now;
 
+// This controller is mainly for viewing 
 class DashboardController extends Controller
 {
     // == SHARED PAGES ==
@@ -60,6 +61,7 @@ class DashboardController extends Controller
         return view('dashboard.aboutus');
     }
 
+    // View books based on genre
     public function studentViewAll(Request $request)
     {
         $selectedGenre = $request->query('genre');
@@ -81,6 +83,7 @@ class DashboardController extends Controller
         return view('dashboard.student.view', compact('books', 'genres'));
     }
 
+    // View books that user bookmarked
     public function bookmarked(Request $request)
     {
         $query = DB::table('books as b')

@@ -10,10 +10,11 @@ class TransactionController extends Controller
 {
     public function monitorUsers()
     {
-        // Logic
+        
         return view('dashboard.librarian.monitor_users');
     }
 
+    // Check current pending and completed requests (For physical books)
     public function transactions()
     {
         $pendingRequestsData = DB::table('history')
@@ -35,7 +36,7 @@ class TransactionController extends Controller
             )
             ->get();
 
-       
+        
         $pendingRequests = $pendingRequestsData->map(function ($item) {
             return (object) [
                 'id'     => $item->id,
@@ -87,6 +88,7 @@ class TransactionController extends Controller
         return view('dashboard.librarian.transactions', compact('pendingRequests', 'completedTransactions'));
     }
 
+    // Approve borrow of book
     public function approve($id)
 {
     $request = DB::table('history')
@@ -107,7 +109,7 @@ class TransactionController extends Controller
 
     return redirect()->back()->with('success', 'Request approved! Time started.');
 }
-
+    // Delete borrow history
     public function reject($id)
     {
         $request = DB::table('history')->where('history_id', $id)->first();

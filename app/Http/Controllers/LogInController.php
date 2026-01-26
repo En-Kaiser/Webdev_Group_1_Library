@@ -18,6 +18,7 @@ class LogInController extends Controller
         return view('auth.login', compact('courses'));
     }
 
+    // Login function
     public function login(LoginRequest $request)
     {
         $email = $request->email;
@@ -46,6 +47,7 @@ class LogInController extends Controller
         ])->onlyInput('email');
     }
 
+    // Logout function
     public function logout(Request $request)
     {
         if (Auth::guard('admin')->check()) {

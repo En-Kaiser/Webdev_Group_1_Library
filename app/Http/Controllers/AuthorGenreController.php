@@ -23,6 +23,7 @@ class AuthorGenreController extends Controller
         return view('dashboard.librarian.manage_authors_genres', compact('authors', 'genres'));
     }
 
+    // Store Author
     public function storeAuthor(Request $request)
     {
         $request->validate([
@@ -36,6 +37,7 @@ class AuthorGenreController extends Controller
         return redirect()->route('manageAuthorsGenres')->with('success', 'Author added successfully!');
     }
 
+    // Store Genre
     public function storeGenre(Request $request)
     {
         $request->validate([

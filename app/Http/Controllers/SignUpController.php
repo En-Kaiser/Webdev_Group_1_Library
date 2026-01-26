@@ -17,6 +17,7 @@ class SignUpController extends Controller
         return view('auth.signup', compact('courses'));
     }
 
+    // Sign students in 
     public function signup(SignUpRequest $request)
     {
         $user_account = new user_account();
@@ -36,6 +37,7 @@ class SignUpController extends Controller
         return redirect()->route('dashboard.index');
     }
 
+    // Test
     public function json_string()
     {
         return user_account::all();

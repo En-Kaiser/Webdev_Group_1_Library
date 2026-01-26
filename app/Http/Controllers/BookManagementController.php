@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\File;
 
 class BookManagementController extends Controller
 {
+    
     public function manageBooks(Request $request)
     {
         $bookStatusQuery = history::query()
@@ -70,9 +71,12 @@ class BookManagementController extends Controller
         return view('dashboard.librarian.manage_books', compact('books', 'genres', 'authors', 'searchTerm', 'selectedGenre'));
     }
 
+    // Add book
     public function storeBook(BookRequest $request)
     {
         $imageName = null;
+
+        // Add picture 
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
             $imageName = time() . '_' . $file->getClientOriginalName();
@@ -82,7 +86,8 @@ class BookManagementController extends Controller
         $existingBook = book::where('title', $request->title)
             ->where('year', $request->year)
             ->first();
-
+        /* If book_id exists, check if specific type
+           also exists, if true then go back else create as usual*/
         if ($existingBook) {
             $typeExists = book_type_avail::where('book_id', $existingBook->book_id)
                 ->where('type', $request->type)
@@ -99,7 +104,8 @@ class BookManagementController extends Controller
                 'type' => $request->type,
                 'availability' => $request->status,
             ]);
-
+            
+            // Log to admin history changes
             DB::table('admin_history')->insert([
                 'admin_id'      => Auth::id(),
                 'book_id'       => $existingBook->book_id,
@@ -110,7 +116,7 @@ class BookManagementController extends Controller
             return redirect()->route('admin.manageBooks')
                 ->with('success', 'Book type added successfully to existing book!');
         }
-
+        // If book_id does not exist, create 1 physical and e_book type
         $book = book::create([
             'title' => $request->title,
             'short_description' => $request->short_description,
@@ -150,26 +156,30 @@ class BookManagementController extends Controller
             ->with('success', 'Book added successfully!');
     }
 
+    // Update book
     public function updateBook(BookRequest $request, $bookId)
     {
+        
         $book = book::findOrFail($bookId);
 
         $book->title = $request->title;
         $book->short_description = $request->short_description;
         $book->year = $request->year;
 
-        $oldBook = DB::table('books')->where('book_id', $bookId)->first();
         if ($request->hasFile('cover_image')) {
             $file = $request->file('cover_image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            if ($oldBook && $oldBook->image) {
-                $oldPath = public_path('books/' . $oldBook->image);
+            // Update image path
+            if ($book->image) {
+                $oldPath = public_path('books/' . $book->image);
                 if (file_exists($oldPath)) {
                     unlink($oldPath);
                 }
             }
+
             $file->move(public_path('books'), $filename);
-            $updateData['image'] = $filename;
+
+            $book->image = $filename;
         }
 
         $book->save();
@@ -180,23 +190,25 @@ class BookManagementController extends Controller
         books_joint_genre::where('book_id', $bookId)
             ->update(['genre_id' => $request->genre_id]);
 
+
         book_type_avail::where('book_id', $bookId)
+            ->where('type', $request->type) 
             ->update([
                 'availability' => $request->status,
             ]);
 
+        // Log to admin history update changes
         DB::table('admin_history')->insert([
             'admin_id'       => Auth::id(),
-            'user_id'        => NULL,
             'book_id'        => $bookId,
             'description'    => "Updated book: " . $request->title,
             'change_created' => now()
-
         ]);
 
         return redirect()->route('admin.manageBooks')->with('success', 'Book updated successfully!');
     }
 
+    // Remove book
     public function destroyBook($bookId, $type)
     {
         if (Auth::user()->role !== 'librarian') {
@@ -221,7 +233,7 @@ class BookManagementController extends Controller
             ->where('type', $type)
             ->delete();
     
-      
+         // Log to admin history delete changes
         admin_history::create([
             'admin_id'       => Auth::id(),
             'book_id'        => $bookId,
@@ -231,7 +243,7 @@ class BookManagementController extends Controller
         ]);
     
         $remainingCopies = book_type_avail::where('book_id', $bookId)->count();
-    
+        // If a physical and e_book type doesn't exists, remove book entirely
         if ($remainingCopies === 0) {
             
             $book->authors()->detach();
@@ -271,6 +283,7 @@ class BookManagementController extends Controller
         return view('dashboard.librarian.manage_records', compact('books'));
     }
 
+    // Update book status
     public function updateStatus(Request $request, $historyId)
     {
         $request->validate([
