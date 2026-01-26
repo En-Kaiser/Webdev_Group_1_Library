@@ -76,7 +76,7 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained('books', 'book_id');
             $table->enum('type', ['physical', 'e_book']);
             $table->timestamp('date_borrowed')->useCurrent();
-            $table->timestamp('date_return');
+            $table->timestamp('date_return')->nullable();
             $table->enum('status', ['borrowed', 'returned', 'due']);
         });
 
