@@ -8,12 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
-    public function monitorUsers()
-    {
-        
-        return view('dashboard.librarian.monitor_users');
-    }
-
     // Check current pending and completed requests (For physical books)
     public function transactions()
     {
@@ -24,8 +18,8 @@ class TransactionController extends Controller
                 $join->on('history.book_id', '=', 'book_type_avail.book_id')
                     ->on('history.type', '=', 'book_type_avail.type');
             })
-            ->where('history.type', 'physical') 
-            ->whereNull('history.date_return','=',null)
+            ->where('history.type', 'physical')
+            ->whereNull('history.date_return', '=', null)
             ->select(
                 'history.history_id as id',
                 'history.type',
@@ -36,7 +30,7 @@ class TransactionController extends Controller
             )
             ->get();
 
-        
+
         $pendingRequests = $pendingRequestsData->map(function ($item) {
             return (object) [
                 'id'     => $item->id,
@@ -67,11 +61,11 @@ class TransactionController extends Controller
             ->orderBy('history.date_borrowed', 'desc')
             ->get();
 
-      
+
         $completedTransactions = $completedData->map(function ($item) {
 
             $borrowDate = $item->date_borrowed ? Carbon::parse($item->date_borrowed) : null;
-          
+
             $returnDate = $item->date_return ? Carbon::parse($item->date_return) : null;
 
             return (object) [
@@ -80,8 +74,8 @@ class TransactionController extends Controller
                 'type'        => $item->type == 'physical' ? 'Physical' : 'E-Book',
                 'borrow_date' => $borrowDate ? $borrowDate->format('m-d-Y') : '-',
                 'due_date'    => '-',
-                'return_date' => $returnDate ? $returnDate->format('m-d-Y') : null, 
-                'status'      => ucfirst($item->status) 
+                'return_date' => $returnDate ? $returnDate->format('m-d-Y') : null,
+                'status'      => ucfirst($item->status)
             ];
         });
 
@@ -90,25 +84,25 @@ class TransactionController extends Controller
 
     // Approve borrow of book
     public function approve($id)
-{
-    $request = DB::table('history')
-        ->where('history_id', $id)
-        ->whereNull('date_return')
-        ->first();
+    {
+        $request = DB::table('history')
+            ->where('history_id', $id)
+            ->whereNull('date_return')
+            ->first();
 
-    if (!$request) {
-        return redirect()->back()->with('error', 'Request not found or already processed.');
+        if (!$request) {
+            return redirect()->back()->with('error', 'Request not found or already processed.');
+        }
+
+
+        DB::table('history')
+            ->where('history_id', $id)
+            ->update([
+                'date_return' => Carbon::now()->addDays(7)
+            ]);
+
+        return redirect()->back()->with('success', 'Request approved! Time started.');
     }
-
-    
-    DB::table('history')
-        ->where('history_id', $id)
-        ->update([
-            'date_return' => Carbon::now()->addDays(7)
-        ]);
-
-    return redirect()->back()->with('success', 'Request approved! Time started.');
-}
     // Delete borrow history
     public function reject($id)
     {
@@ -118,7 +112,7 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'Request not found.');
         }
 
-        
+
         DB::table('history')->where('history_id', $id)->delete();
 
         DB::table('book_type_avail')
